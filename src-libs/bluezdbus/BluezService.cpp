@@ -22,6 +22,7 @@ void BluezService::init() {
 }
 
 void BluezService::run_async() {
+    // TODO Make this process all remaining messages in the queue!
     SimpleDBus::Message message = conn.read_write_pop();
     if (!message.is_valid()) {
         return;
@@ -95,5 +96,19 @@ std::shared_ptr<BluezAdapter> BluezService::get_first_adapter() {
         return_value = adapters.begin()->second;
     }
 
+    return return_value;
+}
+
+std::shared_ptr<BluezAdapter> BluezService::get_adapter(std::string adapter_name) {
+    // TODO: This function should eventually query each BluezAdapter.
+    std::shared_ptr<BluezAdapter> return_value = nullptr;
+    std::string expected_path = "/org/bluez/" + adapter_name;
+    // Propagate the paths downwards until someone claims it.
+    for (auto& [adapter_path, adapter] : adapters) {
+        if (adapter_path == expected_path) {
+            return_value = adapter;
+            break;
+        }
+    }
     return return_value;
 }
