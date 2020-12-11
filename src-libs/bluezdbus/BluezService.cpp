@@ -22,19 +22,17 @@ void BluezService::init() {
 }
 
 void BluezService::run_async() {
-    // TODO Make this process all remaining messages in the queue!
-    SimpleDBus::Message message = conn.read_write_pop();
-    if (!message.is_valid()) {
-        return;
-    }
-
-    switch (message.get_type()) {
-        case SimpleDBus::MessageType::SIGNAL:
-            process_received_signal(message);
-            break;
-
-        default:
-            break;
+    conn.read_write();
+    SimpleDBus::Message message = conn.pop_message();
+    while (message.is_valid()) {
+        switch (message.get_type()) {
+            case SimpleDBus::MessageType::SIGNAL:
+                process_received_signal(message);
+                break;
+            default:
+                break;
+        }
+        message = conn.pop_message();
     }
 }
 

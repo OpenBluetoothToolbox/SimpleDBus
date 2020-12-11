@@ -9,5 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - BlueZ service can now pick a specific adapter.
 
+### Fixed
+- SimpleDBus::Message copy-assignments would cause memory leaks of the underlying DBus message object.
+
 ## [1.0.0] - 2020-06-19
 - First implementation!
