@@ -27,14 +27,14 @@ class Message {
     friend class Connection;
 
     static int creation_counter;
-    int unique_id;
     int indent;
 
+    int _unique_id;
+    DBusMessageIter _iter;
     bool _iter_initialized;
     bool _is_extracted;
     Holder _extracted;
     DBusMessage* _msg;
-    DBusMessageIter _iter;
 
     Holder _extract_bytearray(DBusMessageIter* iter);
     Holder _extract_array(DBusMessageIter* iter);

@@ -11,34 +11,26 @@ Message::Message() : Message(nullptr) {}
 
 Message::Message(DBusMessage* msg) : _msg(msg), _iter_initialized(false), _is_extracted(false), indent(0) {
     if (is_valid()) {
-        unique_id = creation_counter++;
-        // std::cout << "CREATING " << to_string() << std::endl;
+        _unique_id = creation_counter++;
     } else {
-        unique_id = -1;
+        _unique_id = -1;
     }
 }
 
 Message::~Message() {
     if (is_valid()) {
-        // std::cout << "DELETING " << to_string() << std::endl;
         _safe_delete();
     }
 }
 
 Message& Message::operator=(Message&& other) {
     // Move assignment: Other needs to be completely cleared.
-    // std::cout << "MOVE_ASIGNMENT\n\t" << to_string() << " FROM " << other.to_string() << std::endl;
-    // Before bringing in the new values, we need to flush the old message if it is valid.
     if (this != &other) {
-        if (is_valid()) {
-            // std::cout << "\tDELETING (COPY) " << to_string() << std::endl;
-            _safe_delete();  // Can be moved outside of the if statement
-        }
-
+        _safe_delete();
         // Copy all fields over directly.
-        unique_id = other.unique_id;
         indent = other.indent;
 
+        this->_unique_id = other._unique_id;
         this->_iter_initialized = other._iter_initialized;
         this->_is_extracted = other._is_extracted;
         this->_extracted = other._extracted;
@@ -54,21 +46,14 @@ Message& Message::operator=(Message&& other) {
 
 Message& Message::operator=(const Message& other) {
     // Copy assignment: We need a completely new message and preserve the old one.
-    // std::cout << "COPY_ASIGNMENT\n\t" << to_string() << " FROM " << other.to_string() << std::endl;
-    // Before bringing in the new values, we need to flush the old message if it is valid.
-
     if (this != &other) {
-        if (is_valid()) {
-            // std::cout << "\tDELETING (COPY) " << to_string() << std::endl;
-            _safe_delete();  // Can be moved outside of the if statement
-        }
-
+        _safe_delete();
         // After a safe deletion, a copy only needs to be made if the other message is valid.
         if (other.is_valid()) {
             // Copy all fields over directly
-            unique_id = creation_counter++;
             indent = other.indent;
 
+            this->_unique_id = creation_counter++;
             this->_is_extracted = other._is_extracted;
             this->_extracted = other._extracted;
             this->_msg = dbus_message_copy(other._msg);
@@ -79,7 +64,7 @@ Message& Message::operator=(const Message& other) {
 }
 
 void Message::_invalidate() {
-    // std::cout << "\tINVALIDATE " << to_string() << std::endl;
+    this->_unique_id = -1;
     this->_msg = nullptr;
     this->_iter_initialized = false;
     this->_is_extracted = false;
@@ -89,13 +74,8 @@ void Message::_invalidate() {
 
 void Message::_safe_delete() {
     if (is_valid()) {
-        // std::cout << "\tSAFE DELETE " << to_string() << std::endl;
         dbus_message_unref(this->_msg);
-        this->_msg = nullptr;
-        this->_iter_initialized = false;
-        this->_is_extracted = false;
-        this->_extracted = Holder();
-        this->_iter = DBUS_MESSAGE_ITER_INIT_CLOSED;
+        _invalidate();
     }
 }
 
@@ -289,7 +269,7 @@ std::string Message::to_string() const {
     destination = dbus_message_get_destination(_msg);
     destination = destination ? destination : "(null)";
 
-    oss << "[" << unique_id << "] " << type_to_name(dbus_message_get_type(_msg)) << "[" << sender << "->" << destination
+    oss << "[" << _unique_id << "] " << type_to_name(dbus_message_get_type(_msg)) << "[" << sender << "->" << destination
         << "] ";
     oss << dbus_message_get_path(_msg) << " " << dbus_message_get_interface(_msg) << " "
         << dbus_message_get_member(_msg) << " ";
@@ -318,8 +298,9 @@ void Message::extract_reset() {
 bool Message::extract_has_next() { return _iter_initialized && dbus_message_iter_has_next(&_iter); }
 
 void Message::extract_next() {
-    if (_iter_initialized) {
+    if (extract_has_next()) {
         dbus_message_iter_next(&_iter);
+        _is_extracted = false;
     }
 }
 
@@ -378,8 +359,8 @@ Holder Message::_extract_dict(DBusMessageIter* iter) {
 }
 
 Holder Message::_extract_generic(DBusMessageIter* iter) {
-    int current_type;
-    if ((current_type = dbus_message_iter_get_arg_type(iter)) != DBUS_TYPE_INVALID) {
+    int current_type = dbus_message_iter_get_arg_type(iter);
+    if (current_type != DBUS_TYPE_INVALID) {
         // for (int i = 0; i < indent; i++) {
         //     std::cout << '\t';
         // }
@@ -457,7 +438,6 @@ Holder Message::_extract_generic(DBusMessageIter* iter) {
                 return Holder::create_signature(contents);
                 break;
             }
-
             case DBUS_TYPE_ARRAY: {
                 DBusMessageIter sub;
                 dbus_message_iter_recurse(iter, &sub);
@@ -469,7 +449,6 @@ Holder Message::_extract_generic(DBusMessageIter* iter) {
                 }
                 break;
             }
-
             case DBUS_TYPE_VARIANT: {
                 DBusMessageIter sub;
                 dbus_message_iter_recurse(iter, &sub);
