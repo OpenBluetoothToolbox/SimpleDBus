@@ -13,6 +13,9 @@ SimpleDBus is a C++ low-level binding around DBus designed to be easy to integra
 - The current examples is all I have for now. :-P
 - If you want to use the library and need help. **Please reach out!**
 
+## More information
+- You can find the official documentation for BlueZ in [this link](https://git.kernel.org/pub/scm/bluetooth/bluez.git/plain/doc/gatt-api.txt).
+
 ## Contributing
 If you want to help, here is what's needed:
 - The remaining functionality of the existing components.

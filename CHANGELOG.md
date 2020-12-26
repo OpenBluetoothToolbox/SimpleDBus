@@ -6,10 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.X.X] - 2020-XX-XX
 ### Added
-- BlueZ service can now pick a specific adapter.
+- BlueZService can now pick a specific adapter.
 
 ### Changed
 - The bytearray Holder representation gets its own specific print functionality.
+- Adapter1, Device1 and GattCharacteristic1 DBus objects now run some basic validations before issuing commands to BlueZ.
 
 ### Fixed
 - Message copy-assignments would cause memory leaks of the underlying DBus message object.
