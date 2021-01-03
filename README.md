@@ -21,7 +21,7 @@ cd <source-root>
 mkdir build && cd build
 cmake ..
 make -j
-sudo make install
+sudo make install # Not available yet.
 ```
 
 ### Build as part of another project
