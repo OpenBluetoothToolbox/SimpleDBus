@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.X.X] - 2020-XX-XX
 ### Added
 - BlueZService can now pick a specific adapter.
+- Basic logging capabilities.
 
 ### Changed
 - The bytearray Holder representation gets its own specific print functionality.
