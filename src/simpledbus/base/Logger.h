@@ -21,7 +21,7 @@ class Logger {
         LOG_DEBUG,
         LOG_VERBOSE_0,
         LOG_VERBOSE_1,
-        LOG_VERBOSE_3
+        LOG_VERBOSE_2
     } LogLevel;
 
     static Logger *get();
