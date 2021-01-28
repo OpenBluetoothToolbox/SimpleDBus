@@ -6,8 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.X.X] - 2020-XX-XX
 ### Added
-- BlueZService can now pick a specific adapter.
+- BluezService can now pick a specific adapter.
 - Basic logging capabilities.
+- Added `Alias` and `RSSI` fields to BluezDevice. (Thank you xloem!)
 
 ### Changed
 - The bytearray Holder representation gets its own specific print functionality.
@@ -19,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Message copy-assignments would cause memory leaks of the underlying DBus message object.
 - Check if a message iterator has additional contents before attempting to fetch them.
+- Message iterator initialization would not work with older DBus headers. (Thank you xloem!)
+- Recursion deadlock when attempting to print logs. (Thank you xloem!)
+- Proper cleanup of internal string buffer of the logging module. (Thank you xloem!)
 
 ## [1.0.0] - 2020-06-19
 - First implementation!
