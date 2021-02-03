@@ -34,6 +34,7 @@ class Message {
     bool _iter_initialized;
     bool _is_extracted;
     Holder _extracted;
+    DBusConnection* _borrowed_from;
     DBusMessage* _msg;
 
     Holder _extract_bytearray(DBusMessageIter* iter);
@@ -47,7 +48,7 @@ class Message {
 
   public:
     Message();
-    Message(DBusMessage* msg);
+    Message(DBusMessage* msg, DBusConnection* borrowed_from = nullptr);
     Message(Message&& other) = delete;         // Remove the move constructor
     Message(const Message& other) = delete;    // Remove the copy constructor
     Message& operator=(Message&& other);       // Implement custom move assignment
@@ -55,7 +56,12 @@ class Message {
     ~Message();
 
     bool is_valid() const;
+    void release();
     void append_argument(Holder argument, std::string signature);
+    
+    bool is_borrowed() const;
+    void steal_if_borrowed();
+    void copy_if_borrowed();
 
     Holder extract();
     void extract_reset();

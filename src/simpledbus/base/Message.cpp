@@ -9,7 +9,7 @@ int Message::creation_counter = 0;
 
 Message::Message() : Message(nullptr) {}
 
-Message::Message(DBusMessage* msg) : _msg(msg), _iter_initialized(false), _is_extracted(false), indent(0) {
+Message::Message(DBusMessage* msg, DBusConnection* borrowed_from) : _msg(msg), _borrowed_from(borrowed_from), _iter_initialized(false), _is_extracted(false), indent(0) {
     if (is_valid()) {
         _unique_id = creation_counter++;
     } else {
@@ -34,6 +34,7 @@ Message& Message::operator=(Message&& other) {
         this->_iter_initialized = other._iter_initialized;
         this->_is_extracted = other._is_extracted;
         this->_extracted = other._extracted;
+        this->_borrowed_from = other._borrowed_from;
         this->_msg = other._msg;
         this->_iter = other._iter;
 
@@ -66,6 +67,7 @@ Message& Message::operator=(const Message& other) {
 void Message::_invalidate() {
     this->_unique_id = -1;
     this->_msg = nullptr;
+    this->_borrowed_from = nullptr;
     this->_iter_initialized = false;
     this->_is_extracted = false;
     this->_extracted = Holder();
@@ -80,12 +82,18 @@ void Message::_invalidate() {
 
 void Message::_safe_delete() {
     if (is_valid()) {
-        dbus_message_unref(this->_msg);
+        if (_borrowed_from == nullptr) {
+            dbus_message_unref(this->_msg);
+        } else {
+            dbus_connection_return_message(this->_borrowed_from, this->_msg);
+        }
         _invalidate();
     }
 }
 
 bool Message::is_valid() const { return _msg != nullptr; }
+
+void Message::release() { _safe_delete(); }
 
 void Message::_append_argument(DBusMessageIter* iter, Holder& argument, std::string signature) {
     switch (signature[0]) {
@@ -207,6 +215,27 @@ void Message::_append_argument(DBusMessageIter* iter, Holder& argument, std::str
 void Message::append_argument(Holder argument, std::string signature) {
     dbus_message_iter_init_append(_msg, &_iter);
     _append_argument(&_iter, argument, signature);
+}
+
+bool Message::is_borrowed() const
+{
+    return this->_borrowed_from != nullptr;
+}
+void Message::steal_if_borrowed()
+{
+    if (is_borrowed()) {
+        dbus_connection_steal_borrowed_message(_borrowed_from, _msg);
+        _borrowed_from = nullptr;
+    }
+}
+
+void Message::copy_if_borrowed()
+{
+    if (is_borrowed()) {
+        Message temp;
+        temp = std::move(*this);
+        *this = temp;
+    }
 }
 
 std::string Message::get_signature() {

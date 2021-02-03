@@ -66,6 +66,15 @@ Message Connection::pop_message() {
     }
 }
 
+Message Connection::borrow_message() {
+    DBusMessage* msg = dbus_connection_borrow_message(conn);
+    if (msg == nullptr) {
+        return Message();
+    } else {
+        return Message(msg, conn);
+    }
+}
+
 uint32_t Connection::send(Message& msg) {
     uint32_t msg_serial = 0;
     bool success = dbus_connection_send(conn, msg._msg, &msg_serial);
