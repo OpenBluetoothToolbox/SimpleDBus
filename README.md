@@ -43,6 +43,9 @@ make -j
 ## More information
 - You can find the official documentation for BlueZ in [this link](https://git.kernel.org/pub/scm/bluetooth/bluez.git/plain/doc/gatt-api.txt).
 
+## Known issues
+- The handling of all externally exposed components with `std::shared_ptr` is not particularly safe in case the underlying object gets deleted by BlueZ, as the end user still has the capability to send requests to that deleted object. This will be addressed in a future release, but it's important for users of SimpleDBus to keep in mind.
+
 ## Contributing
 If you want to help, here is what's needed:
 - The remaining functionality of the existing components.
