@@ -1,52 +1,55 @@
 cmake_minimum_required(VERSION 3.0.0)
 
-SET(PROJECT_DIR_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(SIMPLEDBUS)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++17 -Wfatal-errors -Wpedantic")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -std=c17 -Wfatal-errors -Wpedantic")
-
-
-# DEPENDENCIES
+# Load dependencies
 find_package(PkgConfig REQUIRED)
 pkg_search_module(DBUS REQUIRED dbus-1)
-if(DBUS_FOUND)
-    include_directories(${DBUS_INCLUDE_DIRS})
-    message(STATUS "Using DBUS from path: ${DBUS_INCLUDE_DIRS}")
+
+# Detect if the project is being build within a project or standalone.
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    set(STANDALONE true)
+
+    # Configure the build path
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+else()
+    set(STANDALONE false)
 endif()
 
-set(BLE_LIBS ${BLE_LIBS} ${BLUEZ_LIBRARIES} ${DBUS_LIBRARIES} pthread)
-
-# LIBRARY INCLUDES
-include_directories(${PROJECT_DIR_PATH}/src-libs)
+# Library includes
+include_directories(${DBUS_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # OUTPUTS
 message("-- [INFO] Building SimpleDBus")
-file(GLOB_RECURSE SRC_SIMPLEDBUS_FILES "src-libs/simpledbus/*.cpp")
+file(GLOB_RECURSE SRC_SIMPLEDBUS_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/simpledbus/*.cpp")
 
 add_library(simpledbus-static STATIC ${SRC_SIMPLEDBUS_FILES})
 add_library(simpledbus SHARED ${SRC_SIMPLEDBUS_FILES})
-target_link_libraries(simpledbus-static ${DBUS_LIBRARIES})
-target_link_libraries(simpledbus ${DBUS_LIBRARIES})
+
+target_compile_options(simpledbus-static PUBLIC -std=c++17 -fPIC -Wfatal-errors -Wpedantic)
+target_compile_options(simpledbus PUBLIC -std=c++17 -fPIC -Wfatal-errors -Wpedantic)
+
+target_link_libraries(simpledbus-static PUBLIC ${DBUS_LIBRARIES})
+target_link_libraries(simpledbus PUBLIC ${DBUS_LIBRARIES})
 
 message("-- [INFO] Building BlueZDBus")
-file(GLOB_RECURSE SRC_BLUEZDBUS_FILES "src-libs/bluezdbus/*.cpp")
+file(GLOB_RECURSE SRC_BLUEZDBUS_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/bluezdbus/*.cpp")
+
 add_library(bluezdbus-static STATIC ${SRC_BLUEZDBUS_FILES})
 add_library(bluezdbus SHARED ${SRC_BLUEZDBUS_FILES})
-target_link_libraries(bluezdbus-static simpledbus-static)
-target_link_libraries(bluezdbus simpledbus-static)
 
-message("-- [INFO] Building Example")
-file(GLOB_RECURSE SRC_EXAMPLE1_FILES "src-example/*.cpp")
-add_executable(example ${SRC_EXAMPLE1_FILES})
-target_link_libraries(example bluezdbus-static pthread)
+target_compile_options(bluezdbus-static PUBLIC -std=c++17 -fPIC -Wfatal-errors -Wpedantic)
+target_compile_options(bluezdbus PUBLIC -std=c++17 -fPIC -Wfatal-errors -Wpedantic)
 
-message("-- [INFO] Building Example Notification")
-file(GLOB_RECURSE SRC_EXAMPLE1_FILES "src-example-minimal/*.cpp")
-add_executable(example_minimal ${SRC_EXAMPLE1_FILES})
-target_link_libraries(example_minimal bluezdbus-static pthread)
+target_link_libraries(bluezdbus-static PUBLIC simpledbus-static)
+target_link_libraries(bluezdbus PUBLIC simpledbus-static)
+
+# Export the variables needed by the parent project
+if(NOT ${STANDALONE})
+    set(SIMPLEDBUS_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src ${DBUS_INCLUDE_DIRS} PARENT_SCOPE)
+endif()
