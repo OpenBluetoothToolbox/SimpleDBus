@@ -126,7 +126,9 @@ std::vector<std::string> Holder::_represent_container() {
                 additional_lines.push_back(temp_line);
             } else {
                 for (int i = 0; i < holder_array.size(); i++) {
-                    additional_lines = holder_array[i]._represent_container();
+                    for(auto& line : holder_array[i]._represent_container()){
+                        additional_lines.push_back(line);
+                    }
                 }
             }
             for (auto& line : additional_lines) {
