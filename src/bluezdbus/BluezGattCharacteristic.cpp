@@ -14,7 +14,6 @@ BluezGattCharacteristic::BluezGattCharacteristic(SimpleDBus::Connection* conn, s
         // std::cout << "(" << _path << ") PropertiesChanged" << std::endl;
         // std::cout << changed_properties.represent() << std::endl;
         // std::cout << invalidated_properties.represent() << std::endl;
-        // // TODO: Handle the changed property.
 
         if (interface == "org.bluez.GattCharacteristic1") {
             GattCharacteristic1::set_options(changed_properties, invalidated_properties);
@@ -35,7 +34,7 @@ BluezGattCharacteristic::~BluezGattCharacteristic() {
 bool BluezGattCharacteristic::process_received_signal(SimpleDBus::Message& message) {
     if (message.get_path() == _path) {
         if (Properties::process_received_signal(message)) return true;
-        std::cout << message.to_string() << std::endl;
+        // TODO: Add any remaining signal receivers.
     }
     return false;
 }
