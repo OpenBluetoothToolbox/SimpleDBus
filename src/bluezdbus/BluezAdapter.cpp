@@ -84,7 +84,7 @@ bool BluezAdapter::remove_path(std::string path, SimpleDBus::Holder options) {
                 return str == "org.freedesktop.DBus.Properties" || str == "org.freedesktop.DBus.Introspectable" ||
                        str == "org.bluez.Device1";
             });
-            if(must_erase) {
+            if (must_erase) {
                 devices.erase(path);
             }
             return true;

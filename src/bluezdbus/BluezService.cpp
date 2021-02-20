@@ -9,10 +9,7 @@ BluezService::BluezService() : conn(DBUS_BUS_SYSTEM), object_manager(&conn, "org
     };
 }
 
-BluezService::~BluezService() {
-    // std::cout << "Destroying BluezService" << std::endl;
-    conn.remove_match("type='signal',sender='org.bluez'");
-}
+BluezService::~BluezService() { conn.remove_match("type='signal',sender='org.bluez'"); }
 
 void BluezService::init() {
     conn.init();
