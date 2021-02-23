@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.X.X] - 2021-XX-XX
+### Added
+- Added function to request a list of all available adapters.
+
+
 ## [1.1.1] - 2021-02-20
 ### Added
 - Implemented move and copy constructors for `SimpleDBus::Message`.
@@ -16,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `SimpleDBus::Holder` array representation would only print the last element of the array.
 - `InterfacesRemoved` signal would unnecessarily delete an object.
+
 
 ## [1.1.0] - 2021-02-08
 ### Added

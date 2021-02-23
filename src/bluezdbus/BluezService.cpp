@@ -119,3 +119,11 @@ std::shared_ptr<BluezAdapter> BluezService::get_adapter(std::string adapter_name
     }
     return return_value;
 }
+
+std::vector<std::shared_ptr<BluezAdapter>> BluezService::get_all_adapters() {
+    std::vector<std::shared_ptr<BluezAdapter>> adapter_list;
+    for (auto& [adapter_path, adapter] : adapters) {
+        adapter_list.push_back(adapter);
+    }
+    return adapter_list;
+}
