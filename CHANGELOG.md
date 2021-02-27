@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.X.X] - 2021-XX-XX
 ### Added
 - Added function to request a list of all available adapters.
+- Adapters now provide their address and their OS identifier.
 
 
 ## [1.1.1] - 2021-02-20

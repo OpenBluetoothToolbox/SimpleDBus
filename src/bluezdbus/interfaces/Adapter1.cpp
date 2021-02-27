@@ -18,6 +18,8 @@ void Adapter1::add_option(std::string option_name, SimpleDBus::Holder value) {
             LOG_F(VERBOSE_0, "%s -> OnDiscoveryStopped", _path.c_str());
             OnDiscoveryStopped();
         }
+    } else if (option_name == "Address") {
+        _address = value.get_string();
     }
 }
 void Adapter1::remove_option(std::string option_name) {}
@@ -56,6 +58,10 @@ void Adapter1::SetDiscoveryFilter(SimpleDBus::Holder properties) {
     auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "SetDiscoveryFilter");
     msg.append_argument(properties, "a{sv}");
     _conn->send_with_reply_and_block(msg);
+}
+
+std::string Adapter1::Address() {
+    return _address;
 }
 
 bool Adapter1::is_discovering() { return _discovering; }

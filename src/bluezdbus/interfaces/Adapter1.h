@@ -12,6 +12,7 @@ class Adapter1 : public SimpleDBus::Interfaces::PropertyHandler {
     std::string _path;
 
     bool _discovering;
+    std::string _address;
 
     void add_option(std::string option_name, SimpleDBus::Holder value);
     void remove_option(std::string option_name);
@@ -24,6 +25,7 @@ class Adapter1 : public SimpleDBus::Interfaces::PropertyHandler {
     void StartDiscovery();
     void StopDiscovery();
     void SetDiscoveryFilter(SimpleDBus::Holder properties);
+    std::string Address();
     SimpleDBus::Holder GetDiscoveryFilters();
 
     bool is_discovering();
