@@ -32,5 +32,6 @@ class BluezAdapter : public Adapter1, public SimpleDBus::Properties {
     void discovery_filter_transport_set(std::string value);
 
     std::function<void(std::string address, std::string name)> OnDeviceFound;
+    std::function<void(std::shared_ptr<BluezDevice>)> OnDeviceUpdated;
 
 };
