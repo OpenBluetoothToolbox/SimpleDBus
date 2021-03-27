@@ -75,6 +75,22 @@ bool BluezDevice::remove_path(std::string path, SimpleDBus::Holder options) {
     return false;
 }
 
+std::vector<std::string> BluezDevice::get_service_list() {
+    std::vector<std::string> service_list;
+    for (auto& [gatt_service_path, gatt_service] : gatt_services) {
+        service_list.push_back(gatt_service->get_uuid());
+    }
+    return service_list;
+}
+
+std::vector<std::string> BluezDevice::get_characteristic_list(std::string service_uuid) {
+    std::shared_ptr<BluezGattService> service = get_service(service_uuid);
+    if (service != nullptr) {
+        return service->get_characteristic_list();
+    }
+    return std::vector<std::string>();
+}
+
 std::shared_ptr<BluezGattService> BluezDevice::get_service(std::string service_uuid) {
     std::shared_ptr<BluezGattService> return_value = nullptr;
 

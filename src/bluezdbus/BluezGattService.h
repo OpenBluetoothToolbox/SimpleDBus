@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 class BluezGattService : public GattService1, public SimpleDBus::Properties {
   private:
@@ -25,5 +26,6 @@ class BluezGattService : public GattService1, public SimpleDBus::Properties {
     bool remove_path(std::string path, SimpleDBus::Holder options);
     bool process_received_signal(SimpleDBus::Message& message);
 
+    std::vector<std::string> get_characteristic_list();
     std::shared_ptr<BluezGattCharacteristic> get_characteristic(std::string char_uuid);
 };

@@ -75,6 +75,14 @@ bool BluezGattService::remove_path(std::string path, SimpleDBus::Holder options)
     return false;
 }
 
+std::vector<std::string> BluezGattService::get_characteristic_list() {
+    std::vector<std::string> characteristic_list;
+    for (auto& [gatt_char_path, gatt_characteristic] : gatt_characteristics) {
+        characteristic_list.push_back(gatt_characteristic->get_uuid());
+    }
+    return characteristic_list;
+}
+
 std::shared_ptr<BluezGattCharacteristic> BluezGattService::get_characteristic(std::string char_uuid) {
     std::shared_ptr<BluezGattCharacteristic> return_value = nullptr;
 
