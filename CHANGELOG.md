@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adapters now provide another callback that notifies whenever a device is updated.
 - Devices can now be queried for their list of services and characteristics.
 
+### Fixed
+- Made project compilation settings private.
+
 ## [1.1.1] - 2021-02-20
 ### Added
 - Implemented move and copy constructors for `SimpleDBus::Message`.
