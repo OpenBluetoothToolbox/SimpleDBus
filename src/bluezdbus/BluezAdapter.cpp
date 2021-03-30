@@ -58,7 +58,7 @@ bool BluezAdapter::add_path(std::string path, SimpleDBus::Holder options) {
             // Corresponds to a device
             _devices.emplace(std::make_pair(path, new BluezDevice(_conn, path, options)));
             if (OnDeviceFound) {
-                OnDeviceFound(_devices[path]->get_address(), _devices[path]->get_name());
+                OnDeviceFound(_devices[path]);
             }
             if (OnDeviceUpdated) {
                 OnDeviceUpdated(_devices[path]);

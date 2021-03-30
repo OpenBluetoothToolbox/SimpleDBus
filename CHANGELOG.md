@@ -12,7 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Devices can now be queried for their list of services and characteristics.
 
 ### Fixed
-- Made project compilation settings private.
+- Made project compilation settings private, as it would interfere when embedded in other projects.
+
+### Changed
+- `BluezAdapter::OnDeviceFound` callback now expects a pointer to a `BluezDevice`.
 
 ## [1.1.1] - 2021-02-20
 ### Added

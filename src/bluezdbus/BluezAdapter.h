@@ -31,7 +31,7 @@ class BluezAdapter : public Adapter1, public SimpleDBus::Properties {
     // TODO: Add support for more complex filter types.
     void discovery_filter_transport_set(std::string value);
 
-    std::function<void(std::string address, std::string name)> OnDeviceFound;
+    std::function<void(std::shared_ptr<BluezDevice>)> OnDeviceFound;
     std::function<void(std::shared_ptr<BluezDevice>)> OnDeviceUpdated;
 
 };
