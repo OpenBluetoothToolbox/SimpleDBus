@@ -33,6 +33,7 @@ class Device1 : public SimpleDBus::Interfaces::PropertyHandler {
     std::string get_alias();
     std::string get_address();
     bool is_connected();
+    bool is_services_resolved();
 
     std::function<void(void)> OnConnected;
     std::function<void(void)> OnDisconnected;

@@ -84,3 +84,5 @@ std::string Device1::get_alias() { return _alias; }
 std::string Device1::get_address() { return _address; }
 
 bool Device1::is_connected() { return _connected; }
+
+bool Device1::is_services_resolved() { return _services_resolved; }
