@@ -4,7 +4,7 @@
 
 #include <string>
 
-class Adapter1 : public SimpleDBus::Interfaces::PropertyHandler {
+class Adapter1 : public SimpleDBus::Interfaces::PropertyHandler, public SimpleDBus::Properties {
   private:
     static const std::string _interface_name;
 
@@ -27,6 +27,8 @@ class Adapter1 : public SimpleDBus::Interfaces::PropertyHandler {
     void SetDiscoveryFilter(SimpleDBus::Holder properties);
     std::string Address();
     SimpleDBus::Holder GetDiscoveryFilters();
+
+    bool Property_Discovering();
 
     bool is_discovering();
 

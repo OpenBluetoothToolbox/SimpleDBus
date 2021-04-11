@@ -5,7 +5,7 @@
 #include <iostream>
 
 BluezAdapter::BluezAdapter(SimpleDBus::Connection* conn, std::string path, SimpleDBus::Holder managed_interfaces)
-    : _conn(conn), _path(path), Adapter1{conn, path}, Properties{conn, "org.bluez", path} {
+    : _conn(conn), _path(path), Adapter1{conn, path} {
     // std::cout << "Creating BluezAdapter" << std::endl;
 
     Properties::PropertiesChanged = [&](std::string interface, SimpleDBus::Holder changed_properties,

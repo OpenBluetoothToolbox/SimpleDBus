@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adapters now provide another callback that notifies whenever a device is updated.
 - Devices can now be queried for their list of services and characteristics.
 - Devices now indicate if their services have been resolved.
+- Adapters can now query the `Discovering` property directly. (Proof of concept).
+- Added logging methods to `SimpleDBus::Properties`.
 
 ### Fixed
 - Made project compilation settings private, as it would interfere when embedded in other projects.

@@ -4,7 +4,8 @@
 
 const std::string Adapter1::_interface_name = "org.bluez.Adapter1";
 
-Adapter1::Adapter1(SimpleDBus::Connection* conn, std::string path) : _conn(conn), _path(path), _discovering(false) {}
+Adapter1::Adapter1(SimpleDBus::Connection* conn, std::string path)
+    : _conn(conn), _path(path), _discovering(false), Properties{conn, "org.bluez", path} {}
 
 Adapter1::~Adapter1() {}
 
@@ -44,6 +45,12 @@ void Adapter1::StopDiscovery() {
     }
 }
 
+bool Adapter1::Property_Discovering() {
+    auto value = Get(_interface_name, "Discovering");
+    add_option("Discovering", value);
+    return _discovering;
+}
+
 SimpleDBus::Holder Adapter1::GetDiscoveryFilters() {
     LOG_F(DEBUG, "%s -> GetDiscoveryFilters", _path.c_str());
     auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "GetDiscoveryFilters");
@@ -60,8 +67,6 @@ void Adapter1::SetDiscoveryFilter(SimpleDBus::Holder properties) {
     _conn->send_with_reply_and_block(msg);
 }
 
-std::string Adapter1::Address() {
-    return _address;
-}
+std::string Adapter1::Address() { return _address; }
 
 bool Adapter1::is_discovering() { return _discovering; }
