@@ -21,16 +21,12 @@ class Properties {
 
   public:
     Properties(Connection* conn, std::string service, std::string path);
-    ~Properties();
+    virtual ~Properties();
 
     // Names are made matching the ones from the DBus specification
     Holder Get(std::string interface, std::string name);
     Holder GetAll(std::string interface);
     void Set(std::string interface, std::string name, Holder value);
-
-    std::function<void(std::string interface, Holder changed, Holder invalidated)> PropertiesChanged;
-
-    bool process_received_signal(Message& message);
 };
 
 }  // namespace SimpleDBus

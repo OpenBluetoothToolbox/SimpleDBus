@@ -4,8 +4,8 @@
 
 BluezGattService::BluezGattService(SimpleDBus::Connection* conn, std::string path,
                                    SimpleDBus::Holder managed_interfaces)
-    : _conn(conn), _path(path), GattService1{conn, path}, Properties{conn, "org.bluez", path} {
-    Properties::PropertiesChanged = [&](std::string interface, SimpleDBus::Holder changed_properties,
+    : _conn(conn), _path(path), GattService1{conn, path} {
+    PropertyHandler::PropertiesChanged = [&](std::string interface, SimpleDBus::Holder changed_properties,
                                         SimpleDBus::Holder invalidated_properties) {
         if (interface == "org.bluez.GattService1") {
             GattService1::set_options(changed_properties, invalidated_properties);
@@ -23,7 +23,7 @@ BluezGattService::~BluezGattService() {}
 
 bool BluezGattService::process_received_signal(SimpleDBus::Message& message) {
     if (message.get_path() == _path) {
-        if (Properties::process_received_signal(message)) return true;
+        if (PropertyHandler::process_received_signal(message)) return true;
     } else {
         for (auto& [gatt_char_path, gatt_characteristic] : gatt_characteristics) {
             if (gatt_characteristic->process_received_signal(message)) return true;

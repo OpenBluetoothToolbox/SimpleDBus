@@ -55,17 +55,3 @@ void Properties::Set(std::string interface, std::string name, Holder value) {
     _conn->send_with_reply_and_block(query_msg);
 }
 
-bool Properties::process_received_signal(Message& message) {
-    if (message.get_path() == _path && message.is_signal(_interface, "PropertiesChanged")) {
-        Holder interface = message.extract();
-        message.extract_next();
-        Holder changed_properties = message.extract();
-        message.extract_next();
-        Holder invalidated_properties = message.extract();
-        if (PropertiesChanged) {
-            PropertiesChanged(interface.get_string(), changed_properties, invalidated_properties);
-        }
-        return true;
-    }
-    return false;
-}

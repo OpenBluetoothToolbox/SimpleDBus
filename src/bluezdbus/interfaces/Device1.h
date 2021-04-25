@@ -4,7 +4,7 @@
 
 #include <string>
 
-class Device1 : public SimpleDBus::Interfaces::PropertyHandler {
+class Device1 : public SimpleDBus::Interfaces::PropertyHandler, public SimpleDBus::Properties {
   private:
     static const std::string _interface_name;
 
@@ -34,6 +34,9 @@ class Device1 : public SimpleDBus::Interfaces::PropertyHandler {
     std::string get_address();
     bool is_connected();
     bool is_services_resolved();
+
+    bool Property_Connected();
+    bool Property_ServicesResolved();
 
     std::function<void(void)> OnConnected;
     std::function<void(void)> OnDisconnected;

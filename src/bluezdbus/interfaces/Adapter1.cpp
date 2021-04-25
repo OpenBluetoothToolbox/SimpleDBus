@@ -5,7 +5,7 @@
 const std::string Adapter1::_interface_name = "org.bluez.Adapter1";
 
 Adapter1::Adapter1(SimpleDBus::Connection* conn, std::string path)
-    : _conn(conn), _path(path), _discovering(false), Properties{conn, "org.bluez", path} {}
+    : _conn(conn), _path(path), _discovering(false), Properties{conn, "org.bluez", path}, PropertyHandler(path) {}
 
 Adapter1::~Adapter1() {}
 

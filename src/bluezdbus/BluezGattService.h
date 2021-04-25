@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-class BluezGattService : public GattService1, public SimpleDBus::Properties {
+class BluezGattService : public GattService1 {
   private:
     SimpleDBus::Connection* _conn;
     std::string _path;

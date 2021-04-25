@@ -5,7 +5,7 @@
 const std::string GattCharacteristic1::_interface_name = "org.bluez.GattCharacteristic1";
 
 GattCharacteristic1::GattCharacteristic1(SimpleDBus::Connection* conn, std::string path)
-    : _conn(conn), _path(path), _notifying(false) {}
+    : _conn(conn), _path(path), _notifying(false), Properties{conn, "org.bluez", path}, PropertyHandler(path) {}
 
 GattCharacteristic1::~GattCharacteristic1() {}
 

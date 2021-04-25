@@ -5,7 +5,7 @@
 const std::string Device1::_interface_name = "org.bluez.Device1";
 
 Device1::Device1(SimpleDBus::Connection* conn, std::string path)
-    : _conn(conn), _path(path), _address(""), _name(""), _connected(false), _services_resolved(false) {}
+    : _conn(conn), _path(path), _address(""), _name(""), _connected(false), _services_resolved(false), Properties{conn, "org.bluez", path}, PropertyHandler(path) {}
 
 Device1::~Device1() {}
 
@@ -73,6 +73,18 @@ void Device1::Disconnect() {
             OnDisconnected();
         }
     }
+}
+
+bool Device1::Property_Connected() {
+    auto value = Get(_interface_name, "Connected");
+    add_option("Connected", value);
+    return _connected;
+}
+
+bool Device1::Property_ServicesResolved() {
+    auto value = Get(_interface_name, "ServicesResolved");
+    add_option("ServicesResolved", value);
+    return _services_resolved;
 }
 
 int16_t Device1::get_rssi() { return _rssi; }

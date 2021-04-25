@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-class BluezDevice : public Device1, public SimpleDBus::Properties {
+class BluezDevice : public Device1 {
   private:
     SimpleDBus::Connection* _conn;
     std::string _path;
