@@ -28,6 +28,9 @@ class Adapter1 : public SimpleDBus::Interfaces::PropertyHandler, public SimpleDB
     std::string Address();
     SimpleDBus::Holder GetDiscoveryFilters();
 
+    void Action_StartDiscovery();
+    void Action_StopDiscovery();
+
     bool Property_Discovering();
 
     bool is_discovering();

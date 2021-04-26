@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Devices now indicate if their services have been resolved.
 - Adapters can now query the `Discovering` property directly. (Proof of concept).
 - Added logging methods to `SimpleDBus::Properties`.
+- Added direct action calls to Adapter1, bypassing any state checks.
 
 ### Fixed
 - Made project compilation settings private, as it would interfere when embedded in other projects.

@@ -45,6 +45,19 @@ void Adapter1::StopDiscovery() {
     }
 }
 
+void Adapter1::Action_StartDiscovery() {
+    LOG_F(DEBUG, "%s -> StartDiscovery", _path.c_str());
+    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "StartDiscovery");
+    _conn->send_with_reply_and_block(msg);
+}
+
+void Adapter1::Action_StopDiscovery() {
+    LOG_F(DEBUG, "%s -> StopDiscovery", _path.c_str());
+    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "StopDiscovery");
+    _conn->send_with_reply_and_block(msg);
+    // NOTE: It might take a few seconds until the peripheral reports that is has actually stopped discovering.
+}
+
 bool Adapter1::Property_Discovering() {
     auto value = Get(_interface_name, "Discovering");
     add_option("Discovering", value);
