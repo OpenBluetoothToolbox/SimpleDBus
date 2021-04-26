@@ -36,4 +36,9 @@ class GattCharacteristic1 : public SimpleDBus::Interfaces::PropertyHandler, publ
 
     std::string get_uuid();
     std::vector<uint8_t> get_value();
+
+    void Action_StartNotify();
+    void Action_StopNotify();
+
+    bool Property_Notifying();
 };

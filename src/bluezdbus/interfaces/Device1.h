@@ -35,6 +35,9 @@ class Device1 : public SimpleDBus::Interfaces::PropertyHandler, public SimpleDBu
     bool is_connected();
     bool is_services_resolved();
 
+    void Action_Connect();
+    void Action_Disconnect();
+
     bool Property_Connected();
     bool Property_ServicesResolved();
 

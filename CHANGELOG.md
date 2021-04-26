@@ -11,9 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adapters now provide another callback that notifies whenever a device is updated.
 - Devices can now be queried for their list of services and characteristics.
 - Devices now indicate if their services have been resolved.
-- Adapters can now query the `Discovering` property directly. (Proof of concept).
 - Added logging methods to `SimpleDBus::Properties`.
-- Added direct action calls to Adapter1, bypassing any state checks.
+- Adapter1, Device1 and GattCharacteristic1 can now execute direct queries and action calls, bypassing any state checks.
 
 ### Fixed
 - Made project compilation settings private, as it would interfere when embedded in other projects.
@@ -21,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `BluezAdapter::OnDeviceFound` callback now expects a pointer to a `BluezDevice`.
 - `SimpleDBus::PropertyHandler` now handles property events, leaving `SimpleDBus::Properties` for getting/setting properties.
+
 
 ## [1.1.1] - 2021-02-20
 ### Added

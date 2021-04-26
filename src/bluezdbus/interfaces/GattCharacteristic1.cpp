@@ -89,3 +89,21 @@ void GattCharacteristic1::write_command(const uint8_t* data, uint16_t length) {
     options.dict_append("type", SimpleDBus::Holder::create_string("command"));
     WriteValue(value, options);
 }
+
+bool GattCharacteristic1::Property_Notifying() {
+    auto value = Get(_interface_name, "Notifying");
+    add_option("Notifying", value);
+    return _notifying;
+}
+
+void GattCharacteristic1::Action_StartNotify() {
+    LOG_F(DEBUG, "%s -> StartNotify", _path.c_str());
+    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "StartNotify");
+    _conn->send_with_reply_and_block(msg);
+}
+
+void GattCharacteristic1::Action_StopNotify() {
+    LOG_F(DEBUG, "%s -> StopNotify", _path.c_str());
+    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "StopNotify");
+    _conn->send_with_reply_and_block(msg);
+}

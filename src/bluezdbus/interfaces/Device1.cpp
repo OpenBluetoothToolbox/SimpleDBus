@@ -75,6 +75,20 @@ void Device1::Disconnect() {
     }
 }
 
+void Device1::Action_Connect() {
+    // Only attempt connection if disconnected.
+    LOG_F(DEBUG, "%s -> Connect", _path.c_str());
+    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "Connect");
+    _conn->send_with_reply_and_block(msg);
+}
+
+void Device1::Action_Disconnect() {
+    // Only attempt disconnection if connected.
+    LOG_F(DEBUG, "%s -> Disconnect", _path.c_str());
+    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "Disconnect");
+    _conn->send_with_reply_and_block(msg);
+}
+
 bool Device1::Property_Connected() {
     auto value = Get(_interface_name, "Connected");
     add_option("Connected", value);
