@@ -9,7 +9,7 @@
 #include "BluezAdapter.h"
 #include "BluezAgent.h"
 
-class BluezService {
+class BluezService : public SimpleDBus::Introspectable {
   private:
     SimpleDBus::Connection conn;
     SimpleDBus::ObjectManager object_manager;

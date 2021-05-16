@@ -7,3 +7,4 @@
 
 #include "common/ObjectManager.h"
 #include "common/Properties.h"
+#include "common/Introspectable.h"

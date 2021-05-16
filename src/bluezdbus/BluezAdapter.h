@@ -9,7 +9,7 @@
 #include <memory>
 #include <string>
 
-class BluezAdapter : public Adapter1 {
+class BluezAdapter : public Adapter1, public SimpleDBus::Introspectable {
   private:
     SimpleDBus::Connection* _conn;
     std::string _path;

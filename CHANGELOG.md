@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Devices now indicate if their services have been resolved.
 - Added logging methods to `SimpleDBus::Properties`.
 - Adapter1, Device1 and GattCharacteristic1 can now execute direct queries and action calls, bypassing any state checks.
+- Added introspection capability to BluezService and BluezAdapter.
 
 ### Fixed
 - Made project compilation settings private, as it would interfere when embedded in other projects.
