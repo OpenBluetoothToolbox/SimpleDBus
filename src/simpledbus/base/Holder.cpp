@@ -7,7 +7,7 @@
 
 using namespace SimpleDBus;
 
-Holder::Holder() : _type(NONE) holder_boolean(false) holder_integer(0) holder_double(0) {}
+Holder::Holder() : _type(NONE), holder_boolean(false), holder_integer(0), holder_double(0) {}
 
 Holder::~Holder() {}
 
