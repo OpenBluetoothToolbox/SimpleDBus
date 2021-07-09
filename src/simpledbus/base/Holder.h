@@ -31,11 +31,9 @@ class Holder {
   private:
     HolderType _type;
 
-    union {
-        bool holder_boolean;
-        uint64_t holder_integer;
-        double holder_double;
-    };
+    bool holder_boolean;
+    uint64_t holder_integer;
+    double holder_double;
     std::string holder_string;
     std::vector<Holder> holder_array;
     std::map<std::string, Holder> holder_dict;

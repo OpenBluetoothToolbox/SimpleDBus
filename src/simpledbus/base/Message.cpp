@@ -324,6 +324,10 @@ std::string Message::to_string() const {
 }
 
 Holder Message::extract() {
+    if (!is_valid()) {
+        return Holder();
+    }
+
     if (!_is_extracted) {
         if (!_iter_initialized) {
             extract_reset();
