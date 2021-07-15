@@ -41,6 +41,14 @@ std::string Holder::_represent_simple() {
         case UINT64:
             output << get_uint64();
             break;
+        case DOUBLE:
+            output << get_double();
+            break;
+        case STRING:
+        case OBJ_PATH:
+        case SIGNATURE:
+            output << get_string();
+            break;
     }
     return output.str();
 }
