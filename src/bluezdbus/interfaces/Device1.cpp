@@ -2,10 +2,19 @@
 
 #include "simpledbus/base/Logger.h"
 
+#include <iostream>
+
 const std::string Device1::_interface_name = "org.bluez.Device1";
 
 Device1::Device1(SimpleDBus::Connection* conn, std::string path)
-    : _conn(conn), _path(path), _address(""), _name(""), _connected(false), _services_resolved(false), Properties{conn, "org.bluez", path}, PropertyHandler(path) {}
+    : _conn(conn),
+      _path(path),
+      _address(""),
+      _name(""),
+      _connected(false),
+      _services_resolved(false),
+      Properties{conn, "org.bluez", path},
+      PropertyHandler(path) {}
 
 Device1::~Device1() {}
 
@@ -18,6 +27,16 @@ void Device1::add_option(std::string option_name, SimpleDBus::Holder value) {
         _alias = value.get_string();
     } else if (option_name == "RSSI") {
         _rssi = value.get_int16();
+    } else if (option_name == "ManufacturerData") {
+        std::map<uint64_t, SimpleDBus::Holder> manuf_data = value.get_dict_numeric();
+        // Loop through all received keys and store them.
+        for (auto& [key, value_array] : manuf_data) {
+            std::vector<uint8_t> raw_manuf_data;
+            for (auto& elem : value_array.get_array()) {
+                raw_manuf_data.push_back(elem.get_byte());
+            }
+            _manufacturer_data[(uint16_t)key] = raw_manuf_data;
+        }
     } else if (option_name == "Connected") {
         _connected = value.get_boolean();
         if (_connected && OnConnected) {
@@ -34,7 +53,6 @@ void Device1::add_option(std::string option_name, SimpleDBus::Holder value) {
             OnServicesResolved();
         }
     }
-    // TODO: Add ManufacturerData
 }
 
 void Device1::remove_option(std::string option_name) {}
@@ -108,6 +126,8 @@ std::string Device1::get_name() { return _name; }
 std::string Device1::get_alias() { return _alias; }
 
 std::string Device1::get_address() { return _address; }
+
+std::map<uint16_t, std::vector<uint8_t>> Device1::get_manufacturer_data() { return _manufacturer_data; }
 
 bool Device1::is_connected() { return _connected; }
 

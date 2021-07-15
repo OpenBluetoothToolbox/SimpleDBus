@@ -14,9 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added logging methods to `SimpleDBus::Properties`.
 - Adapter1, Device1 and GattCharacteristic1 can now execute direct queries and action calls, bypassing any state checks.
 - Added introspection capability to BluezService and BluezAdapter.
+- Added ManufacturerData field to Device1.
 
 ### Fixed
 - Made project compilation settings private, as it would interfere when embedded in other projects.
+- Message won't trigger a crash when extracting an invalid message.
+- Removed broken copy constructor and copy assignment functions for Holder.
 
 ### Changed
 - `BluezAdapter::OnDeviceFound` callback now expects a pointer to a `BluezDevice`.

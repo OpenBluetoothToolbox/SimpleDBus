@@ -23,6 +23,7 @@ typedef enum {
     SIGNATURE,
     ARRAY,
     DICT,
+    DICT_NUMERIC,
 } HolderType;  // TODO: Move into the Holder class.
 
 class Holder;
@@ -30,7 +31,7 @@ class Holder;
 class Holder {
   private:
     HolderType _type = NONE;
-  
+
     bool holder_boolean = false;
     uint64_t holder_integer = 0;
     double holder_double = 0;
@@ -38,6 +39,7 @@ class Holder {
     std::string holder_string;
     std::vector<Holder> holder_array;
     std::map<std::string, Holder> holder_dict;
+    std::map<uint64_t, Holder> holder_dict_numeric;
 
     std::vector<std::string> _represent_container();
     std::string _represent_simple();
@@ -64,7 +66,8 @@ class Holder {
     static Holder create_object_path(const char* str);
     static Holder create_signature(const char* str);
     static Holder create_array();
-    static Holder create_dict();  // TODO: Add support for different key types.
+    static Holder create_dict(); // TODO: Is there a better way to handle dictionaries?
+    static Holder create_dict_numeric();
 
     bool get_boolean();
     uint8_t get_byte();
@@ -80,9 +83,11 @@ class Holder {
     std::string get_signature();
     std::vector<Holder> get_array();
     std::map<std::string, Holder> get_dict();
+    std::map<uint64_t, Holder> get_dict_numeric();
 
     void array_append(Holder holder);
     void dict_append(std::string key, Holder value);
+    void dict_numeric_append(uint64_t key, Holder value);
 };
 
 }  // namespace SimpleDBus
