@@ -7,46 +7,9 @@
 
 using namespace SimpleDBus;
 
-Holder::Holder() : _type(NONE), holder_boolean(false), holder_integer(0), holder_double(0) {}
+Holder::Holder() {}
 
 Holder::~Holder() {}
-
-Holder::Holder(const Holder& other) { *this = other; }
-
-Holder& Holder::operator=(const Holder& other) {
-    if (this != &other) {
-        _type = other._type;
-        switch (_type) {
-            case BOOLEAN:
-                this->holder_boolean = other.holder_boolean;
-                break;
-            case BYTE:
-            case INT16:
-            case UINT16:
-            case INT32:
-            case UINT32:
-            case INT64:
-            case UINT64:
-                this->holder_integer = other.holder_integer;
-                break;
-            case DOUBLE:
-                this->holder_double = other.holder_double;
-                break;
-            case STRING:
-            case OBJ_PATH:
-            case SIGNATURE:
-                this->holder_string = other.holder_string;
-                break;
-            case ARRAY:
-                this->holder_array = other.holder_array;
-                break;
-            case DICT:
-                this->holder_dict = other.holder_dict;
-                break;
-        }
-    }
-    return *this;
-}
 
 HolderType Holder::type() { return _type; }
 
@@ -77,14 +40,6 @@ std::string Holder::_represent_simple() {
             break;
         case UINT64:
             output << get_uint64();
-            break;
-        case DOUBLE:
-            output << get_double();
-            break;
-        case STRING:
-        case OBJ_PATH:
-        case SIGNATURE:
-            output << get_string();
             break;
     }
     return output.str();
