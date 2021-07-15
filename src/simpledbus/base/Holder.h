@@ -30,9 +30,11 @@ class Holder;
 class Holder {
   private:
     HolderType _type = NONE;
+  
     bool holder_boolean = false;
     uint64_t holder_integer = 0;
     double holder_double = 0;
+
     std::string holder_string;
     std::vector<Holder> holder_array;
     std::map<std::string, Holder> holder_dict;
