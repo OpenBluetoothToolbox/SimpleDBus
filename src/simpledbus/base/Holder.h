@@ -29,11 +29,12 @@ class Holder;
 
 class Holder {
   private:
-    HolderType _type;
+    HolderType _type = NONE;
+  
+    bool holder_boolean = false;
+    uint64_t holder_integer = 0;
+    double holder_double = 0;
 
-    bool holder_boolean;
-    uint64_t holder_integer;
-    double holder_double;
     std::string holder_string;
     std::vector<Holder> holder_array;
     std::map<std::string, Holder> holder_dict;
@@ -45,8 +46,6 @@ class Holder {
   public:
     Holder();
     ~Holder();
-    Holder(const Holder& other);
-    Holder& operator=(const Holder& other);
 
     HolderType type();
     std::string represent();
