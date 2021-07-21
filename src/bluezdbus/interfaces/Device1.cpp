@@ -38,17 +38,19 @@ void Device1::add_option(std::string option_name, SimpleDBus::Holder value) {
             _manufacturer_data[(uint16_t)key] = raw_manuf_data;
         }
     } else if (option_name == "Connected") {
+        bool callback_required = value.get_boolean() != _connected;
         _connected = value.get_boolean();
-        if (_connected && OnConnected) {
+        if (callback_required && _connected && OnConnected) {
             LOG_F(VERBOSE_0, "%s -> OnConnected", _path.c_str());
             OnConnected();
-        } else if (!_connected && OnDisconnected) {
+        } else if (callback_required && !_connected && OnDisconnected) {
             LOG_F(VERBOSE_0, "%s -> OnDisconnected", _path.c_str());
             OnDisconnected();
         }
     } else if (option_name == "ServicesResolved") {
+        bool callback_required = value.get_boolean() != _connected;
         _services_resolved = value.get_boolean();
-        if (_services_resolved && OnServicesResolved) {
+        if (callback_required && _services_resolved && OnServicesResolved) {
             LOG_F(VERBOSE_0, "%s -> OnServicesResolved", _path.c_str());
             OnServicesResolved();
         }

@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Made project compilation settings private, as it would interfere when embedded in other projects.
 - Message won't trigger a crash when extracting an invalid message.
 - Removed broken copy constructor and copy assignment functions for Holder.
+- Fixed multiple callback issue in Device1.
 
 ### Changed
 - `BluezAdapter::OnDeviceFound` callback now expects a pointer to a `BluezDevice`.
