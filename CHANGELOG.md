@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `BluezAdapter::OnDeviceFound` callback now expects a pointer to a `BluezDevice`.
 - `SimpleDBus::PropertyHandler` now handles property events, leaving `SimpleDBus::Properties` for getting/setting properties.
+- Device1 will now always run a DBus query to check if connected.
 
 
 ## [1.1.1] - 2021-02-20

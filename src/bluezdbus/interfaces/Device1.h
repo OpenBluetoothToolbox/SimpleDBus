@@ -17,7 +17,6 @@ class Device1 : public SimpleDBus::Interfaces::PropertyHandler, public SimpleDBu
     std::string _name;
     std::string _alias;
     std::string _address;
-    bool _connected;
     bool _services_resolved;
     std::map<uint16_t, std::vector<uint8_t>> _manufacturer_data;
 

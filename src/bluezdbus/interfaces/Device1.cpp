@@ -11,7 +11,6 @@ Device1::Device1(SimpleDBus::Connection* conn, std::string path)
       _path(path),
       _address(""),
       _name(""),
-      _connected(false),
       _services_resolved(false),
       Properties{conn, "org.bluez", path},
       PropertyHandler(path) {}
@@ -38,17 +37,16 @@ void Device1::add_option(std::string option_name, SimpleDBus::Holder value) {
             _manufacturer_data[(uint16_t)key] = raw_manuf_data;
         }
     } else if (option_name == "Connected") {
-        bool callback_required = value.get_boolean() != _connected;
-        _connected = value.get_boolean();
-        if (callback_required && _connected && OnConnected) {
+        bool connected = value.get_boolean();
+        if (connected && OnConnected) {
             LOG_F(VERBOSE_0, "%s -> OnConnected", _path.c_str());
             OnConnected();
-        } else if (callback_required && !_connected && OnDisconnected) {
+        } else if (!connected && OnDisconnected) {
             LOG_F(VERBOSE_0, "%s -> OnDisconnected", _path.c_str());
             OnDisconnected();
         }
     } else if (option_name == "ServicesResolved") {
-        bool callback_required = value.get_boolean() != _connected;
+        bool callback_required = value.get_boolean() != _services_resolved;
         _services_resolved = value.get_boolean();
         if (callback_required && _services_resolved && OnServicesResolved) {
             LOG_F(VERBOSE_0, "%s -> OnServicesResolved", _path.c_str());
@@ -60,7 +58,7 @@ void Device1::add_option(std::string option_name, SimpleDBus::Holder value) {
 void Device1::remove_option(std::string option_name) {}
 
 void Device1::Connect() {
-    if (!_connected) {
+    if (!Property_Connected()) {
         // Only attempt connection if disconnected.
         LOG_F(DEBUG, "%s -> Connect", _path.c_str());
         auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "Connect");
@@ -80,7 +78,7 @@ void Device1::Connect() {
 }
 
 void Device1::Disconnect() {
-    if (_connected) {
+    if (Property_Connected()) {
         // Only attempt disconnection if connected.
         LOG_F(DEBUG, "%s -> Disconnect", _path.c_str());
         auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "Disconnect");
@@ -111,8 +109,7 @@ void Device1::Action_Disconnect() {
 
 bool Device1::Property_Connected() {
     auto value = Get(_interface_name, "Connected");
-    add_option("Connected", value);
-    return _connected;
+    return value.get_boolean();
 }
 
 bool Device1::Property_ServicesResolved() {
@@ -131,6 +128,6 @@ std::string Device1::get_address() { return _address; }
 
 std::map<uint16_t, std::vector<uint8_t>> Device1::get_manufacturer_data() { return _manufacturer_data; }
 
-bool Device1::is_connected() { return _connected; }
+bool Device1::is_connected() { return Property_Connected(); }
 
 bool Device1::is_services_resolved() { return _services_resolved; }
