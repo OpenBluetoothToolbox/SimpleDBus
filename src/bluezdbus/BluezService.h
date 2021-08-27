@@ -4,11 +4,12 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <vector>
 
 #include "BluezAdapter.h"
 #include "BluezAgent.h"
 
-class BluezService {
+class BluezService : public SimpleDBus::Introspectable {
   private:
     SimpleDBus::Connection conn;
     SimpleDBus::ObjectManager object_manager;
@@ -30,4 +31,5 @@ class BluezService {
 
     std::shared_ptr<BluezAdapter> get_first_adapter();
     std::shared_ptr<BluezAdapter> get_adapter(std::string adapter_name);
+    std::vector<std::shared_ptr<BluezAdapter>> get_all_adapters();
 };

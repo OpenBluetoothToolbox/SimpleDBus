@@ -7,46 +7,9 @@
 
 using namespace SimpleDBus;
 
-Holder::Holder() : _type(NONE) {}
+Holder::Holder() {}
 
 Holder::~Holder() {}
-
-Holder::Holder(const Holder& other) { *this = other; }
-
-Holder& Holder::operator=(const Holder& other) {
-    if (this != &other) {
-        _type = other._type;
-        switch (_type) {
-            case BOOLEAN:
-                this->holder_boolean = other.holder_boolean;
-                break;
-            case BYTE:
-            case INT16:
-            case UINT16:
-            case INT32:
-            case UINT32:
-            case INT64:
-            case UINT64:
-                this->holder_integer = other.holder_integer;
-                break;
-            case DOUBLE:
-                this->holder_double = other.holder_double;
-                break;
-            case STRING:
-            case OBJ_PATH:
-            case SIGNATURE:
-                this->holder_string = other.holder_string;
-                break;
-            case ARRAY:
-                this->holder_array = other.holder_array;
-                break;
-            case DICT:
-                this->holder_dict = other.holder_dict;
-                break;
-        }
-    }
-    return *this;
-}
 
 HolderType Holder::type() { return _type; }
 
@@ -146,6 +109,16 @@ std::vector<std::string> Holder::_represent_container() {
                 // output_lines.push_back(value.represent());
             }
             break;
+        case DICT_NUMERIC:
+            for (auto& [key, value] : holder_dict_numeric) {
+                output_lines.push_back(std::to_string(key));
+                auto additional_lines = value._represent_container();
+                for (auto& line : additional_lines) {
+                    output_lines.push_back("  " + line);
+                }
+                // output_lines.push_back(value.represent());
+            }
+            break;
     }
     return output_lines;
 }
@@ -217,11 +190,12 @@ std::string Holder::signature() {
             }
             break;
         case DICT:
+        case DICT_NUMERIC:
             output = DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING;
             // ! FIXME: This is not entirely correct, we're assuming all key elements are strings.
             output += DBUS_TYPE_VARIANT_AS_STRING;
             output += holder_dict.begin()->second.signature();
-            output = DBUS_DICT_ENTRY_END_CHAR_AS_STRING;
+            output += DBUS_DICT_ENTRY_END_CHAR_AS_STRING;
             break;
     }
     return output;
@@ -312,6 +286,13 @@ Holder Holder::create_dict() {
     return h;
 }
 
+Holder Holder::create_dict_numeric() {
+    Holder h;
+    h._type = DICT_NUMERIC;
+    h.holder_dict_numeric.clear();
+    return h;
+}
+
 bool Holder::get_boolean() { return holder_boolean; }
 uint8_t Holder::get_byte() { return (uint8_t)(holder_integer & 0x00000000000000FFL); }
 int16_t Holder::get_int16() { return (int16_t)(holder_integer & 0x000000000000FFFFL); }
@@ -326,6 +307,8 @@ std::string Holder::get_object_path() { return holder_string; }
 std::string Holder::get_signature() { return holder_string; }
 std::vector<Holder> Holder::get_array() { return holder_array; }
 std::map<std::string, Holder> Holder::get_dict() { return holder_dict; }
+std::map<uint64_t, Holder> Holder::get_dict_numeric() { return holder_dict_numeric; }
 
 void Holder::array_append(Holder holder) { holder_array.push_back(holder); }
 void Holder::dict_append(std::string key, Holder value) { holder_dict[key] = value; }
+void Holder::dict_numeric_append(uint64_t key, Holder value) { holder_dict_numeric[key] = value; }

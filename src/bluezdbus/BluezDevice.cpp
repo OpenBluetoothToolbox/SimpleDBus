@@ -5,8 +5,8 @@
 #include <iostream>
 
 BluezDevice::BluezDevice(SimpleDBus::Connection* conn, std::string path, SimpleDBus::Holder managed_interfaces)
-    : _conn(conn), _path(path), Device1{conn, path}, Properties{conn, "org.bluez", path} {
-    Properties::PropertiesChanged = [&](std::string interface, SimpleDBus::Holder changed_properties,
+    : _conn(conn), _path(path), Device1{conn, path} {
+    PropertyHandler::PropertiesChanged = [&](std::string interface, SimpleDBus::Holder changed_properties,
                                         SimpleDBus::Holder invalidated_properties) {
         if (interface == "org.bluez.Device1") {
             Device1::set_options(changed_properties, invalidated_properties);
@@ -24,7 +24,7 @@ BluezDevice::~BluezDevice() {}
 
 bool BluezDevice::process_received_signal(SimpleDBus::Message& message) {
     if (message.get_path() == _path) {
-        if (Properties::process_received_signal(message)) return true;
+        if (PropertyHandler::process_received_signal(message)) return true;
     } else {
         for (auto& [gatt_service_path, gatt_service] : gatt_services) {
             if (gatt_service->process_received_signal(message)) return true;
@@ -73,6 +73,22 @@ bool BluezDevice::remove_path(std::string path, SimpleDBus::Holder options) {
         }
     }
     return false;
+}
+
+std::vector<std::string> BluezDevice::get_service_list() {
+    std::vector<std::string> service_list;
+    for (auto& [gatt_service_path, gatt_service] : gatt_services) {
+        service_list.push_back(gatt_service->get_uuid());
+    }
+    return service_list;
+}
+
+std::vector<std::string> BluezDevice::get_characteristic_list(std::string service_uuid) {
+    std::shared_ptr<BluezGattService> service = get_service(service_uuid);
+    if (service != nullptr) {
+        return service->get_characteristic_list();
+    }
+    return std::vector<std::string>();
 }
 
 std::shared_ptr<BluezGattService> BluezDevice::get_service(std::string service_uuid) {

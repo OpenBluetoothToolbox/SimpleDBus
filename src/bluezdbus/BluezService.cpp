@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-BluezService::BluezService() : conn(DBUS_BUS_SYSTEM), object_manager(&conn, "org.bluez", "/") {
+BluezService::BluezService() : conn(DBUS_BUS_SYSTEM), object_manager(&conn, "org.bluez", "/"), Introspectable{&conn, "org.bluez", "/"} {
     object_manager.InterfacesAdded = [&](std::string path, SimpleDBus::Holder options) { add_path(path, options); };
     object_manager.InterfacesRemoved = [&](std::string path, SimpleDBus::Holder options) {
         remove_path(path, options);
@@ -118,4 +118,12 @@ std::shared_ptr<BluezAdapter> BluezService::get_adapter(std::string adapter_name
         }
     }
     return return_value;
+}
+
+std::vector<std::shared_ptr<BluezAdapter>> BluezService::get_all_adapters() {
+    std::vector<std::shared_ptr<BluezAdapter>> adapter_list;
+    for (auto& [adapter_path, adapter] : adapters) {
+        adapter_list.push_back(adapter);
+    }
+    return adapter_list;
 }

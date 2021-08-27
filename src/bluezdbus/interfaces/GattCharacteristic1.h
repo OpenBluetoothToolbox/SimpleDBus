@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-class GattCharacteristic1 : public SimpleDBus::Interfaces::PropertyHandler {
+class GattCharacteristic1 : public SimpleDBus::Interfaces::PropertyHandler, public SimpleDBus::Properties {
   private:
     static const std::string _interface_name;
 
@@ -36,4 +36,9 @@ class GattCharacteristic1 : public SimpleDBus::Interfaces::PropertyHandler {
 
     std::string get_uuid();
     std::vector<uint8_t> get_value();
+
+    void Action_StartNotify();
+    void Action_StopNotify();
+
+    bool Property_Notifying();
 };

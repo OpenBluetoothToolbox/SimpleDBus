@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2021-08-26
+### Added
+- Added function to request a list of all available adapters.
+- Adapters now provide their address and their OS identifier.
+- Adapters now provide another callback that notifies whenever a device is updated.
+- Devices can now be queried for their list of services and characteristics.
+- Devices now indicate if their services have been resolved.
+- Added logging methods to `SimpleDBus::Properties`.
+- Adapter1, Device1 and GattCharacteristic1 can now execute direct queries and action calls, bypassing any state checks.
+- Added introspection capability to BluezService and BluezAdapter.
+- Added ManufacturerData field to Device1.
+
+### Fixed
+- Made project compilation settings private, as it would interfere when embedded in other projects.
+- Message won't trigger a crash when extracting an invalid message.
+- Removed broken copy constructor and copy assignment functions for Holder.
+- Fixed multiple callback issue in Device1.
+
+### Changed
+- `BluezAdapter::OnDeviceFound` callback now expects a pointer to a `BluezDevice`.
+- `SimpleDBus::PropertyHandler` now handles property events, leaving `SimpleDBus::Properties` for getting/setting properties.
+- Device1 will now always run a DBus query to check if connected.
+
+
 ## [1.1.1] - 2021-02-20
 ### Added
 - Implemented move and copy constructors for `SimpleDBus::Message`.
@@ -16,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `SimpleDBus::Holder` array representation would only print the last element of the array.
 - `InterfacesRemoved` signal would unnecessarily delete an object.
+
 
 ## [1.1.0] - 2021-02-08
 ### Added

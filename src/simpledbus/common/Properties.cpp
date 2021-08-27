@@ -1,6 +1,7 @@
 #include "Properties.h"
 
 #include "../base/Message.h"
+#include "../base/Logger.h"
 
 #include <iostream>
 
@@ -13,6 +14,7 @@ Properties::~Properties() {}
 
 // Names are made matching the ones from the DBus specification
 Holder Properties::Get(std::string interface, std::string name) {
+    LOG_F(DEBUG, "%s -> Get(%s, %s)", _path.c_str(), interface.c_str(), name.c_str());
     Message query_msg = Message::create_method_call(_service, _path, _interface, "Get");
 
     Holder h_interface = Holder::create_string(interface.c_str());
@@ -27,6 +29,7 @@ Holder Properties::Get(std::string interface, std::string name) {
 }
 
 Holder Properties::GetAll(std::string interface) {
+    LOG_F(DEBUG, "%s -> GetAll(%s)", _path.c_str(), interface.c_str());
     Message query_msg = Message::create_method_call(_service, _path, _interface, "GetAll");
 
     Holder h_interface = Holder::create_string(interface.c_str());
@@ -38,6 +41,7 @@ Holder Properties::GetAll(std::string interface) {
 }
 
 void Properties::Set(std::string interface, std::string name, Holder value) {
+    LOG_F(DEBUG, "%s -> Set(%s, %s, %s)", _path.c_str(), interface.c_str(), name.c_str(), value.represent().c_str());
     Message query_msg = Message::create_method_call(_service, _path, _interface, "Set");
 
     Holder h_interface = Holder::create_string(interface.c_str());
@@ -51,17 +55,3 @@ void Properties::Set(std::string interface, std::string name, Holder value) {
     _conn->send_with_reply_and_block(query_msg);
 }
 
-bool Properties::process_received_signal(Message& message) {
-    if (message.get_path() == _path && message.is_signal(_interface, "PropertiesChanged")) {
-        Holder interface = message.extract();
-        message.extract_next();
-        Holder changed_properties = message.extract();
-        message.extract_next();
-        Holder invalidated_properties = message.extract();
-        if (PropertiesChanged) {
-            PropertiesChanged(interface.get_string(), changed_properties, invalidated_properties);
-        }
-        return true;
-    }
-    return false;
-}

@@ -6,7 +6,7 @@
 
 #include <string>
 
-class BluezGattCharacteristic : public GattCharacteristic1, public SimpleDBus::Properties {
+class BluezGattCharacteristic : public GattCharacteristic1 {
   private:
     SimpleDBus::Connection* _conn;
     std::string _path;

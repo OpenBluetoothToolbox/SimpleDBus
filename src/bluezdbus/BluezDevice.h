@@ -8,8 +8,9 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
-class BluezDevice : public Device1, public SimpleDBus::Properties {
+class BluezDevice : public Device1 {
   private:
     SimpleDBus::Connection* _conn;
     std::string _path;
@@ -27,6 +28,9 @@ class BluezDevice : public Device1, public SimpleDBus::Properties {
 
     void connect();
     void disconnect();
+
+    std::vector<std::string> get_service_list();
+    std::vector<std::string> get_characteristic_list(std::string service_uuid);
 
     std::shared_ptr<BluezGattService> get_service(std::string service_uuid);
     std::shared_ptr<BluezGattCharacteristic> get_characteristic(std::string service_uuid, std::string char_uuid);

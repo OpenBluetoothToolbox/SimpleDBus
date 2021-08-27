@@ -3,8 +3,10 @@
 #include "simpledbus/SimpleDBus.h"
 
 #include <string>
+#include <map>
+#include <vector>
 
-class Device1 : public SimpleDBus::Interfaces::PropertyHandler {
+class Device1 : public SimpleDBus::Interfaces::PropertyHandler, public SimpleDBus::Properties {
   private:
     static const std::string _interface_name;
 
@@ -15,8 +17,8 @@ class Device1 : public SimpleDBus::Interfaces::PropertyHandler {
     std::string _name;
     std::string _alias;
     std::string _address;
-    bool _connected;
     bool _services_resolved;
+    std::map<uint16_t, std::vector<uint8_t>> _manufacturer_data;
 
     void add_option(std::string option_name, SimpleDBus::Holder value);
     void remove_option(std::string option_name);
@@ -32,7 +34,15 @@ class Device1 : public SimpleDBus::Interfaces::PropertyHandler {
     std::string get_name();
     std::string get_alias();
     std::string get_address();
+    std::map<uint16_t, std::vector<uint8_t>> get_manufacturer_data();
     bool is_connected();
+    bool is_services_resolved();
+
+    void Action_Connect();
+    void Action_Disconnect();
+
+    bool Property_Connected();
+    bool Property_ServicesResolved();
 
     std::function<void(void)> OnConnected;
     std::function<void(void)> OnDisconnected;

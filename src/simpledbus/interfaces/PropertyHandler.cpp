@@ -2,6 +2,10 @@
 
 using namespace SimpleDBus::Interfaces;
 
+PropertyHandler::PropertyHandler(std::string path) : _path(path) {}
+
+PropertyHandler::~PropertyHandler() {}
+
 void PropertyHandler::set_options(SimpleDBus::Holder changed_properties) {
     this->set_options(changed_properties, SimpleDBus::Holder());
 }
@@ -16,4 +20,19 @@ void PropertyHandler::set_options(SimpleDBus::Holder changed_properties, SimpleD
     for (auto& removed_option : removed_options) {
         this->remove_option(removed_option.get_string());
     }
+}
+
+bool PropertyHandler::process_received_signal(Message& message) {
+    if (message.get_path() == _path && message.is_signal("org.freedesktop.DBus.Properties", "PropertiesChanged")) {
+        Holder interface = message.extract();
+        message.extract_next();
+        Holder changed_properties = message.extract();
+        message.extract_next();
+        Holder invalidated_properties = message.extract();
+        if (PropertiesChanged) {
+            PropertiesChanged(interface.get_string(), changed_properties, invalidated_properties);
+        }
+        return true;
+    }
+    return false;
 }

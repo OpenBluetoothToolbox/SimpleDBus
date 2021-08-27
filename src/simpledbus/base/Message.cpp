@@ -324,6 +324,10 @@ std::string Message::to_string() const {
 }
 
 Holder Message::extract() {
+    if (!is_valid()) {
+        return Holder();
+    }
+
     if (!_is_extracted) {
         if (!_iter_initialized) {
             extract_reset();
@@ -381,7 +385,8 @@ Holder Message::_extract_array(DBusMessageIter* iter) {
 }
 
 Holder Message::_extract_dict(DBusMessageIter* iter) {
-    Holder holder_dict = Holder::create_dict();
+    bool holder_initialized = false;
+    Holder holder_dict;
     indent += 1;
     int current_type;
 
@@ -394,10 +399,32 @@ Holder Message::_extract_dict(DBusMessageIter* iter) {
         Holder key = _extract_generic(&sub);
         dbus_message_iter_next(&sub);
         Holder value = _extract_generic(&sub);
+
         bool key_is_text = key.type() == STRING || key.type() == OBJ_PATH || key.type() == SIGNATURE;
-        if (key_is_text && value.type() != NONE) {
-            holder_dict.dict_append(key.get_string(), value);
+        if (key_is_text) {
+            if (!holder_initialized) {
+                holder_dict = Holder::create_dict();
+                holder_initialized = true;
+            }
+            if (value.type() != NONE) {
+                holder_dict.dict_append(key.get_string(), value);
+            }
         }
+
+        bool key_is_numeric = key.type() == BYTE || key.type() == INT16 || key.type() == UINT16 ||
+                              key.type() == INT32 || key.type() == UINT32 || key.type() == INT64 ||
+                              key.type() == UINT64;
+
+        if (key_is_numeric) {
+            if (!holder_initialized) {
+                holder_dict = Holder::create_dict_numeric();
+                holder_initialized = true;
+            }
+            if (value.type() != NONE) {
+                holder_dict.dict_numeric_append(key.get_uint64(), value);
+            }
+        }
+
         dbus_message_iter_next(iter);
     }
     indent -= 1;

@@ -11,7 +11,7 @@ namespace SimpleDBus {
 class Holder;
 class Connection;
 
-class Properties {
+class Introspectable {
   private:
     const std::string _interface;
 
@@ -20,13 +20,11 @@ class Properties {
     Connection* _conn;
 
   public:
-    Properties(Connection* conn, std::string service, std::string path);
-    virtual ~Properties();
+    Introspectable(Connection* conn, std::string service, std::string path);
+    virtual ~Introspectable();
 
     // Names are made matching the ones from the DBus specification
-    Holder Get(std::string interface, std::string name);
-    Holder GetAll(std::string interface);
-    void Set(std::string interface, std::string name, Holder value);
+    Holder Introspect();
 };
 
 }  // namespace SimpleDBus

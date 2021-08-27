@@ -15,4 +15,5 @@ add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/.. ${CMAKE_BINARY_DIR}/simpledbus)
 include_directories(${SIMPLEDBUS_INCLUDES})
 
 add_subdirectory(ble_nus)
+add_subdirectory(manuf_data)
 add_subdirectory(notification)

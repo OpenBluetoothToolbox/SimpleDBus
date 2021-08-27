@@ -5,10 +5,10 @@
 #include <iostream>
 
 BluezAdapter::BluezAdapter(SimpleDBus::Connection* conn, std::string path, SimpleDBus::Holder managed_interfaces)
-    : _conn(conn), _path(path), Adapter1{conn, path}, Properties{conn, "org.bluez", path} {
+    : _conn(conn), _path(path), Adapter1{conn, path}, Introspectable{conn, "org.bluez", path} {
     // std::cout << "Creating BluezAdapter" << std::endl;
 
-    Properties::PropertiesChanged = [&](std::string interface, SimpleDBus::Holder changed_properties,
+    PropertyHandler::PropertiesChanged = [&](std::string interface, SimpleDBus::Holder changed_properties,
                                         SimpleDBus::Holder invalidated_properties) {
         if (interface == "org.bluez.Adapter1") {
             Adapter1::set_options(changed_properties, invalidated_properties);
@@ -28,10 +28,15 @@ BluezAdapter::~BluezAdapter() {
 
 bool BluezAdapter::process_received_signal(SimpleDBus::Message& message) {
     if (message.get_path() == _path) {
-        if (Properties::process_received_signal(message)) return true;
+        if (PropertyHandler::process_received_signal(message)) return true;
     } else {
-        for (auto& [device_path, device] : devices) {
-            if (device->process_received_signal(message)) return true;
+        for (auto& [device_path, device] : _devices) {
+            if (device->process_received_signal(message)) {
+                if (OnDeviceUpdated) {
+                    OnDeviceUpdated(device);
+                }
+                return true;
+            }
         }
     }
     return false;
@@ -51,14 +56,17 @@ bool BluezAdapter::add_path(std::string path, SimpleDBus::Holder options) {
     if (path.rfind(_path, 0) == 0) {
         if (path_elements == 4) {
             // Corresponds to a device
-            devices.emplace(std::make_pair(path, new BluezDevice(_conn, path, options)));
+            _devices.emplace(std::make_pair(path, new BluezDevice(_conn, path, options)));
             if (OnDeviceFound) {
-                OnDeviceFound(devices[path]->get_address(), devices[path]->get_name());
+                OnDeviceFound(_devices[path]);
+            }
+            if (OnDeviceUpdated) {
+                OnDeviceUpdated(_devices[path]);
             }
             return true;
         } else {
             // Corresponds to a device component
-            for (auto& [device_path, device] : devices) {
+            for (auto& [device_path, device] : _devices) {
                 if (device->add_path(path, options)) return true;
             }
         }
@@ -85,12 +93,12 @@ bool BluezAdapter::remove_path(std::string path, SimpleDBus::Holder options) {
                        str == "org.bluez.Device1";
             });
             if (must_erase) {
-                devices.erase(path);
+                _devices.erase(path);
             }
             return true;
         } else {
             // Propagate the paths downwards until someone claims it.
-            for (auto& [device_path, device] : devices) {
+            for (auto& [device_path, device] : _devices) {
                 if (device->remove_path(path, options)) return true;
             }
         }
@@ -117,10 +125,15 @@ std::shared_ptr<BluezDevice> BluezAdapter::get_device(std::string mac_address) {
     // TODO: How do I know which adapter I should check?
     std::shared_ptr<BluezDevice> return_value = nullptr;
 
-    for (auto& [path, device] : devices) {
+    for (auto& [path, device] : _devices) {
         if (device->get_address() == mac_address) {
             return_value = device;
         }
     }
     return return_value;
+}
+
+std::string BluezAdapter::get_identifier() {
+    std::size_t start = _path.find_last_of("/");
+    return _path.substr(start + 1);
 }

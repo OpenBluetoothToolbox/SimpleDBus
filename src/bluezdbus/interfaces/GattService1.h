@@ -4,7 +4,7 @@
 
 #include <string>
 
-class GattService1 : public SimpleDBus::Interfaces::PropertyHandler {
+class GattService1 : public SimpleDBus::Interfaces::PropertyHandler, public SimpleDBus::Properties {
   private:
     SimpleDBus::Connection* _conn;
     std::string _path;
