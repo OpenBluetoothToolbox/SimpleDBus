@@ -26,7 +26,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # OUTPUTS
 message("-- [INFO] Building SimpleDBus")
-file(GLOB_RECURSE SRC_SIMPLEDBUS_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/simpledbus/*.cpp")
+file(GLOB_RECURSE SRC_SIMPLEDBUS_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 add_library(simpledbus-static STATIC ${SRC_SIMPLEDBUS_FILES})
 add_library(simpledbus SHARED ${SRC_SIMPLEDBUS_FILES})
@@ -36,18 +36,6 @@ target_compile_options(simpledbus PRIVATE -std=c++17 -fPIC -Wfatal-errors -Wpeda
 
 target_link_libraries(simpledbus-static PUBLIC ${DBUS_LIBRARIES})
 target_link_libraries(simpledbus PUBLIC ${DBUS_LIBRARIES})
-
-message("-- [INFO] Building BlueZDBus")
-file(GLOB_RECURSE SRC_BLUEZDBUS_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/bluezdbus/*.cpp")
-
-add_library(bluezdbus-static STATIC ${SRC_BLUEZDBUS_FILES})
-add_library(bluezdbus SHARED ${SRC_BLUEZDBUS_FILES})
-
-target_compile_options(bluezdbus-static PRIVATE -std=c++17 -fPIC -Wfatal-errors -Wpedantic -O3)
-target_compile_options(bluezdbus PRIVATE -std=c++17 -fPIC -Wfatal-errors -Wpedantic -O3)
-
-target_link_libraries(bluezdbus-static PUBLIC simpledbus-static)
-target_link_libraries(bluezdbus PUBLIC simpledbus-static)
 
 # Export the variables needed by the parent project
 if(NOT ${STANDALONE})
