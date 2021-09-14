@@ -11,9 +11,7 @@ The last stable release of this library with both components together is [v1.2.0
 Say posted for further updates!
 
 ## Overview
-SimpleDBus is a C++ low-level binding around DBus designed to be easy to integrate and use with commercial projects. On top of it, there is a partial implementation of BlueZ bindings to enable the control of Bluetooth peripherals.
-
-I've also coded a (partial) implementation of the Bluez DBus bindings in order to control the Bluetooth peripherals.
+SimpleDBus is a C++ low-level binding around DBus designed to be easy to integrate and use with commercial projects. 
 
 If you want to use the library and need help. **Please reach out!**
 You can find me at: `kevin at dewald dot me`
@@ -21,12 +19,13 @@ You can find me at: `kevin at dewald dot me`
 ## Build
 SimpleDBus should work on any Linux environment using DBus. To install the necessary dependencies on Debian-based systems, use the following command: `sudo apt install libdbus-1-dev`
 
-You can find scripts for all these
+A set of helper scripts are provided to simplify the process of building the
+library, but are not required.
 
 ### Standalone build from source
 
 ```
-cd <source-root>
+cd <path-to-simpledbus>
 mkdir build && cd build
 cmake ..
 make -j
@@ -43,22 +42,14 @@ include_directories(${SIMPLEDBUS_INCLUDES})
 
 ### Build examples
 ```
-cd <source-root>
+cd <path-to-simpledbus>
 mkdir build && cd build
 cmake ../examples
 make -j
 ```
 
-## More information
-- You can find the official documentation for BlueZ in [this link](https://git.kernel.org/pub/scm/bluetooth/bluez.git/plain/doc/gatt-api.txt).
-
 ## Known issues
 - The handling of all externally exposed components with `std::shared_ptr` is not particularly safe in case the underlying object gets deleted by BlueZ, as the end user still has the capability to send requests to that deleted object. This will be addressed in a future release, but it's important for users of SimpleDBus to keep in mind.
 
-## Contributing
-If you want to help, here is what's needed:
-- The remaining functionality of the existing components.
-- Errors are currently not being caught and surfaced up.
-- More documentation.
-- More examples.
-- Logging
+## License
+All components within this project that have not been bundled from external creators, are licensed under the terms of the [MIT Licence](LICENCE.md).

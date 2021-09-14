@@ -1,7 +1,5 @@
-#include "Introspectable.h"
-
-#include "../base/Message.h"
-#include "../base/Logger.h"
+#include <simpledbus/common/Introspectable.h>
+#include <simpledbus/base/Logger.h>
 
 #include <iostream>
 

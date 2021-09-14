@@ -2,9 +2,9 @@
 #include <functional>
 #include <string>
 
-#include "../base/Connection.h"
-#include "../base/Holder.h"
-#include "../base/Message.h"
+#include <simpledbus/base/Connection.h>
+#include <simpledbus/base/Holder.h>
+#include <simpledbus/base/Message.h>
 
 namespace SimpleDBus {
 

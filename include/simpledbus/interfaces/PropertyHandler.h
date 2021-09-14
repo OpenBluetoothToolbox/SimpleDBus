@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../base/Holder.h"
-#include "../base/Message.h"
+#include <simpledbus/base/Holder.h>
+#include <simpledbus/base/Message.h>
 
 #include <functional>
 #include <string>

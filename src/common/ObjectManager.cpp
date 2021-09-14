@@ -1,6 +1,5 @@
-#include "ObjectManager.h"
-
-#include "../base/Message.h"
+#include <simpledbus/common/ObjectManager.h>
+#include <simpledbus/base/Logger.h>
 
 using namespace SimpleDBus;
 

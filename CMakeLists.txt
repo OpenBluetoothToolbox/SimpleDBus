@@ -21,8 +21,11 @@ else()
 endif()
 
 # Library includes
-include_directories(${DBUS_INCLUDE_DIRS})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(
+    SIMPLEDBUS_ALL_INCLUDE_DIRS
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${DBUS_INCLUDE_DIRS}
+)
 
 # OUTPUTS
 message("-- [INFO] Building SimpleDBus")
@@ -31,13 +34,21 @@ file(GLOB_RECURSE SRC_SIMPLEDBUS_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 add_library(simpledbus-static STATIC ${SRC_SIMPLEDBUS_FILES})
 add_library(simpledbus SHARED ${SRC_SIMPLEDBUS_FILES})
 
-target_compile_options(simpledbus-static PRIVATE -std=c++17 -fPIC -Wfatal-errors -Wpedantic -O3)
-target_compile_options(simpledbus PRIVATE -std=c++17 -fPIC -Wfatal-errors -Wpedantic -O3)
+target_include_directories(simpledbus-static PRIVATE ${SIMPLEDBUS_ALL_INCLUDE_DIRS})
+target_include_directories(simpledbus PRIVATE ${SIMPLEDBUS_ALL_INCLUDE_DIRS})
+
+set_property(TARGET simpledbus-static PROPERTY CXX_STANDARD 17)
+set_property(TARGET simpledbus PROPERTY CXX_STANDARD 17)
+set_property(TARGET simpledbus-static PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET simpledbus PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+target_compile_options(simpledbus-static PRIVATE -Wfatal-errors -Wpedantic -O3)
+target_compile_options(simpledbus PRIVATE -Wfatal-errors -Wpedantic -O3)
 
 target_link_libraries(simpledbus-static PUBLIC ${DBUS_LIBRARIES})
 target_link_libraries(simpledbus PUBLIC ${DBUS_LIBRARIES})
 
 # Export the variables needed by the parent project
 if(NOT ${STANDALONE})
-    set(SIMPLEDBUS_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src ${DBUS_INCLUDE_DIRS} PARENT_SCOPE)
+    set(SIMPLEDBUS_INCLUDES ${SIMPLEDBUS_ALL_INCLUDE_DIRS} PARENT_SCOPE)
 endif()

@@ -1,7 +1,5 @@
-#include "Properties.h"
-
-#include "../base/Message.h"
-#include "../base/Logger.h"
+#include <simpledbus/common/Properties.h>
+#include <simpledbus/base/Logger.h>
 
 #include <iostream>
 
@@ -54,4 +52,3 @@ void Properties::Set(std::string interface, std::string name, Holder value) {
 
     _conn->send_with_reply_and_block(query_msg);
 }
-

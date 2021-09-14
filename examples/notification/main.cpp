@@ -1,4 +1,4 @@
-#include "SimpleDBus.h"
+#include <simpledbus/SimpleDBus.h>
 
 int main(int argc, char* argv[]) {
     SimpleDBus::Connection conn(DBUS_BUS_SESSION);

@@ -1,4 +1,4 @@
-#include "Message.h"
+#include <simpledbus/base/Message.h>
 
 #include <iostream>
 #include <sstream>

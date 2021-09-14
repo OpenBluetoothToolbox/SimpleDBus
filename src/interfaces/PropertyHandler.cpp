@@ -1,4 +1,4 @@
-#include "PropertyHandler.h"
+#include <simpledbus/interfaces/PropertyHandler.h>
 
 using namespace SimpleDBus::Interfaces;
 

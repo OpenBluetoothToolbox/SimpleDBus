@@ -1,5 +1,5 @@
-#include "Connection.h"
-#include "Logger.h"
+#include <simpledbus/base/Connection.h>
+#include <simpledbus/base/Logger.h>
 
 #include <chrono>
 #include <iostream>
