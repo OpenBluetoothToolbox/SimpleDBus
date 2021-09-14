@@ -1,5 +1,14 @@
 # SimpleDBus
-A simple C++ wrapper around DBus with a commercially-friendly licence, plus some abstraction code and examples around Bluez as well.
+A simple C++ wrapper around DBus with a commercially-friendly licence.
+
+**IMPORTANT NOTE**
+This library is currently being split into two parts:
+- The `SimpleDBus` library for all DBus-related functionality.
+- The `SimpleBluez` library (formerly `bluezdbus`) for all Bluez-related functionality.
+
+The last stable release of this library with both components together is [v1.2.0](https://github.com/OpenBluetoothToolbox/SimpleDBus/releases/tag/v1.2.0).
+
+Say posted for further updates!
 
 ## Overview
 SimpleDBus is a C++ low-level binding around DBus designed to be easy to integrate and use with commercial projects. On top of it, there is a partial implementation of BlueZ bindings to enable the control of Bluetooth peripherals.
