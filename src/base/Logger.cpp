@@ -1,6 +1,5 @@
 #include <simpledbus/base/Logger.h>
 
-
 #include <cstdarg>
 #include <cstdlib>
 #include <iostream>
@@ -8,9 +7,13 @@
 using namespace SimpleDBus;
 
 static const char* log_level_strings[] = {"NONE",  "FATAL",   "ERROR",   "WARN",    "INFO",
-                                          "DEBUG", "VERBOSE", "VERBOSE", "VERBOSE", "VERBOSE"};
+                                          "DEBUG", "VERBOSE_0", "VERBOSE_1", "VERBOSE_2", "VERBOSE_3"};
 
-Logger::Logger() : _log_level(LogLevel::LOG_FATAL) {}
+#ifndef SIMPLEDBUS_LOG_LEVEL
+#define SIMPLEDBUS_LOG_LEVEL FATAL
+#endif
+
+Logger::Logger() : _log_level(LogLevel::SIMPLEDBUS_LOG_LEVEL) {}
 
 Logger::~Logger() {}
 
@@ -35,7 +38,7 @@ void Logger::log(LogLevel level, const char* file, const char* function, unsigne
     std::string function_signature = parse_function_signature(function);
     std::string filename = parse_file_path(file);
 
-    std::string log_message = Logger::string_format("[%7s] %s (%s:%u) %s", log_level_strings[level], filename.c_str(),
+    std::string log_message = Logger::string_format("[%9s] %s (%s:%u) %s", log_level_strings[level], filename.c_str(),
                                                     function_signature.c_str(), line, user_message.c_str());
     print_log(log_message);
 }

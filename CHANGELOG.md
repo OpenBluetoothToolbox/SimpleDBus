@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] - 2021-XX-XX
 ### Removed
-- All BluezDBus related code has been removed.
+- All BluezDBus related code.
+- `SimpleDBus::Connection::send` method.
 
+### Changed
+- Log levels use now a sane naming convention.
+- Default logging level can be set during build time.
 
 ## [1.2.0] - 2021-08-26
 ### Added

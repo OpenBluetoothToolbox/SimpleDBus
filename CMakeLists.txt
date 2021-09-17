@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.16.0)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -20,6 +20,11 @@ else()
     set(STANDALONE false)
 endif()
 
+# Load default parameters passed in through the command line.
+if(NOT SIMPLEDBUS_LOG_LEVEL)
+    set(SIMPLEDBUS_LOG_LEVEL "FATAL")
+endif()
+
 # Library includes
 set(
     SIMPLEDBUS_ALL_INCLUDE_DIRS
@@ -33,6 +38,9 @@ file(GLOB_RECURSE SRC_SIMPLEDBUS_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 add_library(simpledbus-static STATIC ${SRC_SIMPLEDBUS_FILES})
 add_library(simpledbus SHARED ${SRC_SIMPLEDBUS_FILES})
+
+target_compile_definitions(simpledbus-static PRIVATE SIMPLEDBUS_LOG_LEVEL=${SIMPLEDBUS_LOG_LEVEL})
+target_compile_definitions(simpledbus PRIVATE SIMPLEDBUS_LOG_LEVEL=${SIMPLEDBUS_LOG_LEVEL})
 
 target_include_directories(simpledbus-static PRIVATE ${SIMPLEDBUS_ALL_INCLUDE_DIRS})
 target_include_directories(simpledbus PRIVATE ${SIMPLEDBUS_ALL_INCLUDE_DIRS})

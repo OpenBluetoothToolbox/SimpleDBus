@@ -13,16 +13,19 @@ namespace SimpleDBus {
 class Logger {
   public:
     typedef enum {
-        LOG_NONE = 0,
-        LOG_FATAL,
-        LOG_ERROR,
-        LOG_WARN,
-        LOG_INFO,
-        LOG_DEBUG,
-        LOG_VERBOSE_0,
-        LOG_VERBOSE_1,
-        LOG_VERBOSE_2,
-        LOG_VERBOSE_3,  // Used for tracking the creation/destruction of BlueZ abstractions.
+        NONE = 0,
+        FATAL,
+        ERROR,
+        WARN,
+        INFO,
+#pragma push_macro("DEBUG")
+#undef DEBUG
+        DEBUG,
+#pragma pop_macro("DEBUG")
+        VERBOSE_0,
+        VERBOSE_1,
+        VERBOSE_2,
+        VERBOSE_3,  // Used for tracking the creation/destruction of BlueZ abstractions.
     } LogLevel;
 
     static Logger* get();
@@ -50,5 +53,5 @@ class Logger {
 }  // namespace SimpleDBus
 
 #define VLOG_F(level, ...) SimpleDBus::Logger::get()->log(level, __FILE__, __PRETTY_FUNCTION__, __LINE__, __VA_ARGS__)
-#define LOG_F(level, ...) VLOG_F(SimpleDBus::Logger::LogLevel::LOG_##level, __VA_ARGS__)
+#define LOG_F(level, ...) VLOG_F(SimpleDBus::Logger::LogLevel::level, __VA_ARGS__)
 #define LOG_LEVEL_SET(level) SimpleDBus::Logger::get()->set_level(level)
