@@ -6,6 +6,7 @@
 
 #include "BluezDevice.h"
 
+#include <atomic>
 #include <memory>
 #include <string>
 
@@ -31,6 +32,7 @@ class BluezAdapter : public Adapter1, public SimpleDBus::Introspectable {
     // TODO: Add support for more complex filter types.
     void discovery_filter_transport_set(std::string value);
 
+    std::atomic_bool on_device_updated_ready;
     std::function<void(std::shared_ptr<BluezDevice>)> OnDeviceFound;
     std::function<void(std::shared_ptr<BluezDevice>)> OnDeviceUpdated;
 
