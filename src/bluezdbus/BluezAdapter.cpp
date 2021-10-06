@@ -32,7 +32,7 @@ bool BluezAdapter::process_received_signal(SimpleDBus::Message& message) {
     } else {
         for (auto& [device_path, device] : _devices) {
             if (device->process_received_signal(message)) {
-                if (OnDeviceUpdated) {
+                if (on_device_updated_ready.load())
                     OnDeviceUpdated(device);
                 }
                 return true;
