@@ -24,6 +24,8 @@ BluezAdapter::BluezAdapter(SimpleDBus::Connection* conn, std::string path, Simpl
 
 BluezAdapter::~BluezAdapter() {
     // std::cout << "Destroying BluezAdapter" << std::endl;
+    on_device_updated_ready.store(false);
+    OnDeviceUpdated = nullptr;
 }
 
 bool BluezAdapter::process_received_signal(SimpleDBus::Message& message) {
