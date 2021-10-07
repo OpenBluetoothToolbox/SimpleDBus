@@ -34,7 +34,7 @@ bool BluezAdapter::process_received_signal(SimpleDBus::Message& message) {
     } else {
         for (auto& [device_path, device] : _devices) {
             if (device->process_received_signal(message)) {
-                if (on_device_updated_ready.load()) {
+                if (on_device_updated_ready.load() && OnDeviceUpdated) {
                     OnDeviceUpdated(device);
                 }
                 return true;
@@ -62,7 +62,7 @@ bool BluezAdapter::add_path(std::string path, SimpleDBus::Holder options) {
             if (OnDeviceFound) {
                 OnDeviceFound(_devices[path]);
             }
-            if (OnDeviceUpdated) {
+            if (on_device_updated_ready.load() && OnDeviceUpdated) {
                 OnDeviceUpdated(_devices[path]);
             }
             return true;
