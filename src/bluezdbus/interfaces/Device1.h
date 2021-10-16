@@ -40,7 +40,10 @@ class Device1 : public SimpleDBus::Interfaces::PropertyHandler, public SimpleDBu
 
     void Action_Connect();
     void Action_Disconnect();
+    void Action_Pair();
+    void Action_CancelPairing();
 
+    bool Property_Paired();
     bool Property_Connected();
     bool Property_ServicesResolved();
 

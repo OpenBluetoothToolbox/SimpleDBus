@@ -107,6 +107,23 @@ void Device1::Action_Disconnect() {
     _conn->send_with_reply_and_block(msg);
 }
 
+void Device1::Action_Pair() {
+    LOG_F(DEBUG, "%s -> Pair", _path.c_str());
+    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "Pair");
+    _conn->send_with_reply_and_block(msg);
+}
+
+void Device1::Action_CancelPairing() {
+    LOG_F(DEBUG, "%s -> CancelPairing", _path.c_str());
+    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "CancelPairing");
+    _conn->send_with_reply_and_block(msg);
+}
+
+bool Device1::Property_Paired() {
+    auto value = Get(_interface_name, "Paired");
+    return value.get_boolean();
+}
+
 bool Device1::Property_Connected() {
     auto value = Get(_interface_name, "Connected");
     return value.get_boolean();
