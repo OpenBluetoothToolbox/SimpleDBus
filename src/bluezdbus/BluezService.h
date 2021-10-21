@@ -29,6 +29,7 @@ class BluezService : public SimpleDBus::Introspectable {
     void init();
     void run_async();
 
+    std::shared_ptr<BluezAgent> get_agent_manager();
     std::shared_ptr<BluezAdapter> get_first_adapter();
     std::shared_ptr<BluezAdapter> get_adapter(std::string adapter_name);
     std::vector<std::shared_ptr<BluezAdapter>> get_all_adapters();
