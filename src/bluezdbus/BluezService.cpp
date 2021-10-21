@@ -50,7 +50,7 @@ void BluezService::add_path(std::string path, SimpleDBus::Holder options) {
 
     switch (path_elements) {
         case 2:
-            agent.reset(new BluezAgent(path, options));
+            agent.reset(new BluezAgent(&conn, path, options));
             break;
         case 3:
             adapters.emplace(std::make_pair(path, new BluezAdapter(&conn, path, options)));
