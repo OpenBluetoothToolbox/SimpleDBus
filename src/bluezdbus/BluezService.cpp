@@ -1,5 +1,6 @@
 #include "BluezService.h"
 
+#include "simpledbus/base/Logger.h"
 #include <algorithm>
 
 BluezService::BluezService()
@@ -26,6 +27,9 @@ void BluezService::run_async() {
         switch (message.get_type()) {
             case SimpleDBus::MessageType::SIGNAL:
                 process_received_signal(message);
+                break;
+            case SimpleDBus::MessageType::METHOD_CALL:
+                LOG_F(INFO, "Got method call: %s", message.to_string());
                 break;
             default:
                 break;

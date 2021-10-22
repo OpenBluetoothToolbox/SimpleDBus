@@ -1,7 +1,9 @@
 #include "BluezAgent.h"
 
 BluezAgent::BluezAgent(SimpleDBus::Connection* conn, std::string path, SimpleDBus::Holder options)
-    : _path(path), _conn(conn) {}
+    : _path(path), _conn(conn) {
+    RegisterAgent(_path, "DisplayYesNo");
+}
 
 BluezAgent::~BluezAgent() {}
 
