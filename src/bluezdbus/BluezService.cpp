@@ -29,7 +29,7 @@ void BluezService::run_async() {
                 process_received_signal(message);
                 break;
             case SimpleDBus::MessageType::METHOD_CALL:
-                LOG_F(INFO, "Got method call: %s", message.to_string());
+                LOG_F(INFO, "Got method call: %s", message.to_string().c_str());
                 break;
             default:
                 break;

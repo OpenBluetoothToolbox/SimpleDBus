@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     };
 
     adapter->StartDiscovery();
-    millisecond_delay(5000);
+    millisecond_delay(60000);
     adapter->StopDiscovery();
 
     async_thread_active = false;
