@@ -22,6 +22,7 @@ void BluezService::init() {
 
 void BluezService::run_async() {
     conn.read_write();
+    SimpleDBus::Message reply;
     SimpleDBus::Message message = conn.pop_message();
     while (message.is_valid()) {
         switch (message.get_type()) {
@@ -30,6 +31,8 @@ void BluezService::run_async() {
                 break;
             case SimpleDBus::MessageType::METHOD_CALL:
                 LOG_F(INFO, "Got method call: %s", message.to_string().c_str());
+                reply = message.create_method_return();
+                conn.send(reply);
                 break;
             default:
                 break;

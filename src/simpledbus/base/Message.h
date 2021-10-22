@@ -74,6 +74,8 @@ class Message {
 
     static Message create_method_call(std::string bus_name, std::string path, std::string interface,
                                       std::string method);
+
+    Message create_method_return();
 };
 
 }  // namespace SimpleDBus

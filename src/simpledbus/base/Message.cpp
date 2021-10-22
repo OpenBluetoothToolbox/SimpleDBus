@@ -539,3 +539,5 @@ Holder Message::_extract_generic(DBusMessageIter* iter) {
 Message Message::create_method_call(std::string bus_name, std::string path, std::string interface, std::string method) {
     return Message(dbus_message_new_method_call(bus_name.c_str(), path.c_str(), interface.c_str(), method.c_str()));
 }
+
+Message Message::create_method_return() { return Message(dbus_message_new_method_return(_msg)); }
