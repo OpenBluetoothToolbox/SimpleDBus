@@ -82,7 +82,7 @@ Message Connection::send_with_reply_and_block(Message& msg) {
     DBusMessage* msg_tmp = dbus_connection_send_with_reply_and_block(_conn, msg._msg, -1, &_err);
 
     if (dbus_error_is_set(&_err)) {
-        LOG_F(WARN, "Message send failed. (%s: %s)", _err.name, _err.message);
+        LOG_F(WARN, "Message send failed. (%s: %s)\nMessage was: %s", _err.name, _err.message, msg.to_string().c_str());
         dbus_error_free(&_err);
         return Message();
     } else {
