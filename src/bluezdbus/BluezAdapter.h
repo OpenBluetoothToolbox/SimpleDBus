@@ -24,6 +24,7 @@ class BluezAdapter : public Adapter1, public SimpleDBus::Introspectable {
 
     std::string get_identifier();
     std::shared_ptr<BluezDevice> get_device(std::string mac_address);
+    bool remove_device(std::string mac_address);
 
     bool add_path(std::string path, SimpleDBus::Holder options);
     bool remove_path(std::string path, SimpleDBus::Holder options);

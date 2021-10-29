@@ -80,6 +80,13 @@ void Adapter1::SetDiscoveryFilter(SimpleDBus::Holder properties) {
     _conn->send_with_reply_and_block(msg);
 }
 
+void Adapter1::RemoveDevice(std::string path) {
+    LOG_F(DEBUG, "%s -> RemoveDevice", _path.c_str());
+    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "RemoveDevice");
+    msg.append_argument(SimpleDBus::Holder::create_object_path(path.c_str()), "o");
+    _conn->send_with_reply_and_block(msg);
+}
+
 std::string Adapter1::Address() { return _address; }
 
 bool Adapter1::is_discovering() { return _discovering; }

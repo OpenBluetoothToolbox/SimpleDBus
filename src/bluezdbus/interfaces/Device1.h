@@ -31,6 +31,7 @@ class Device1 : public SimpleDBus::Interfaces::PropertyHandler, public SimpleDBu
     void Disconnect();
 
     int16_t get_rssi();
+    std::string get_path();
     std::string get_name();
     std::string get_alias();
     std::string get_address();

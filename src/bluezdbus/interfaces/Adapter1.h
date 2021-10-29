@@ -27,6 +27,7 @@ class Adapter1 : public SimpleDBus::Interfaces::PropertyHandler, public SimpleDB
     void SetDiscoveryFilter(SimpleDBus::Holder properties);
     std::string Address();
     SimpleDBus::Holder GetDiscoveryFilters();
+    void RemoveDevice(std::string path);
 
     void Action_StartDiscovery();
     void Action_StopDiscovery();

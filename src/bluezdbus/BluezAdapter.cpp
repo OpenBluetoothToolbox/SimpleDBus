@@ -9,7 +9,7 @@ BluezAdapter::BluezAdapter(SimpleDBus::Connection* conn, std::string path, Simpl
     // std::cout << "Creating BluezAdapter" << std::endl;
 
     PropertyHandler::PropertiesChanged = [&](std::string interface, SimpleDBus::Holder changed_properties,
-                                        SimpleDBus::Holder invalidated_properties) {
+                                             SimpleDBus::Holder invalidated_properties) {
         if (interface == "org.bluez.Adapter1") {
             Adapter1::set_options(changed_properties, invalidated_properties);
         } else {
@@ -130,9 +130,30 @@ std::shared_ptr<BluezDevice> BluezAdapter::get_device(std::string mac_address) {
     for (auto& [path, device] : _devices) {
         if (device->get_address() == mac_address) {
             return_value = device;
+            break;
         }
     }
     return return_value;
+}
+
+bool BluezAdapter::remove_device(std::string mac_address) {
+
+    std::shared_ptr<BluezDevice> device_ptr = nullptr;
+
+    for (auto& [path, device] : _devices) {
+        if (device->get_address() == mac_address) {
+            device_ptr = device;
+            break;
+        }
+    }
+
+    if (device_ptr == nullptr) {
+        // No device found, return false.
+        return false;
+    }
+
+    RemoveDevice(device_ptr->get_path());
+    return true;
 }
 
 std::string BluezAdapter::get_identifier() {

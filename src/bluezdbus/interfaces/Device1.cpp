@@ -148,3 +148,5 @@ std::map<uint16_t, std::vector<uint8_t>> Device1::get_manufacturer_data() { retu
 bool Device1::is_connected() { return Property_Connected(); }
 
 bool Device1::is_services_resolved() { return _services_resolved; }
+
+std::string Device1::get_path() { return _path; }
