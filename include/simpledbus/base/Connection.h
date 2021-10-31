@@ -25,6 +25,7 @@ class Connection {
     void read_write();
     Message pop_message();
 
+    void send(Message& msg);
     Message send_with_reply_and_block(Message& msg);
 };
 

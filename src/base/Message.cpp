@@ -204,29 +204,41 @@ void Message::_append_argument(DBusMessageIter* iter, Holder& argument, std::str
                 sig_next = sig_next.substr(1, sig_next.length() - 2);
                 auto key_sig = sig_next[0];
                 auto value_sig = sig_next.substr(1);
-                auto dict_contents = argument.get_dict();
-                for (auto& [key, value] : dict_contents) {
-                    DBusMessageIter entry_iter;
-                    dbus_message_iter_open_container(&sub_iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
-                    switch (key_sig) {
-                        case DBUS_TYPE_STRING: {
+
+                switch (key_sig) {
+                    case DBUS_TYPE_STRING: {
+                        auto dict_contents = argument.get_dict_string();
+                        for (auto& [key, value] : dict_contents) {
                             const char* p_value = key.c_str();
+                            DBusMessageIter entry_iter;
+                            dbus_message_iter_open_container(&sub_iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
                             dbus_message_iter_append_basic(&entry_iter, DBUS_TYPE_STRING, &p_value);
-                            break;
-                        }
-                        case DBUS_TYPE_OBJECT_PATH: {
-                            const char* p_value = key.c_str();
-                            dbus_message_iter_append_basic(&entry_iter, DBUS_TYPE_OBJECT_PATH, &p_value);
-                            break;
-                        }
-                        case DBUS_TYPE_SIGNATURE: {
-                            const char* p_value = key.c_str();
-                            dbus_message_iter_append_basic(&entry_iter, DBUS_TYPE_SIGNATURE, &p_value);
-                            break;
+                            _append_argument(&entry_iter, value, value_sig);
+                            dbus_message_iter_close_container(&sub_iter, &entry_iter);
                         }
                     }
-                    _append_argument(&entry_iter, value, value_sig);
-                    dbus_message_iter_close_container(&sub_iter, &entry_iter);
+                    case DBUS_TYPE_OBJECT_PATH: {
+                        auto dict_contents = argument.get_dict_object_path();
+                        for (auto& [key, value] : dict_contents) {
+                            const char* p_value = key.c_str();
+                            DBusMessageIter entry_iter;
+                            dbus_message_iter_open_container(&sub_iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
+                            dbus_message_iter_append_basic(&entry_iter, DBUS_TYPE_OBJECT_PATH, &p_value);
+                            _append_argument(&entry_iter, value, value_sig);
+                            dbus_message_iter_close_container(&sub_iter, &entry_iter);
+                        }
+                    }
+                    case DBUS_TYPE_SIGNATURE: {
+                        auto dict_contents = argument.get_dict_signature();
+                        for (auto& [key, value] : dict_contents) {
+                            const char* p_value = key.c_str();
+                            DBusMessageIter entry_iter;
+                            dbus_message_iter_open_container(&sub_iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
+                            dbus_message_iter_append_basic(&entry_iter, DBUS_TYPE_SIGNATURE, &p_value);
+                            _append_argument(&entry_iter, value, value_sig);
+                            dbus_message_iter_close_container(&sub_iter, &entry_iter);
+                        }
+                    }
                 }
             }
             dbus_message_iter_close_container(iter, &sub_iter);
@@ -374,7 +386,7 @@ Holder Message::_extract_array(DBusMessageIter* iter) {
     } else {
         while ((current_type = dbus_message_iter_get_arg_type(iter)) != DBUS_TYPE_INVALID) {
             Holder h = _extract_generic(iter);
-            if (h.type() != NONE) {
+            if (h.type() != Holder::NONE) {
                 holder_array.array_append(h);
             }
             dbus_message_iter_next(iter);
@@ -395,36 +407,19 @@ Holder Message::_extract_dict(DBusMessageIter* iter) {
         // Access the dictionary entry
         DBusMessageIter sub;
         dbus_message_iter_recurse(iter, &sub);
+
         // Extract the data from the dictionary entry
         Holder key = _extract_generic(&sub);
         dbus_message_iter_next(&sub);
         Holder value = _extract_generic(&sub);
 
-        bool key_is_text = key.type() == STRING || key.type() == OBJ_PATH || key.type() == SIGNATURE;
-        if (key_is_text) {
-            if (!holder_initialized) {
-                holder_dict = Holder::create_dict();
-                holder_initialized = true;
-            }
-            if (value.type() != NONE) {
-                holder_dict.dict_append(key.get_string(), value);
-            }
+        // Add the data to the dictionary
+        if (!holder_initialized) {
+            holder_dict = Holder::create_dict();
+            holder_initialized = true;
         }
 
-        bool key_is_numeric = key.type() == BYTE || key.type() == INT16 || key.type() == UINT16 ||
-                              key.type() == INT32 || key.type() == UINT32 || key.type() == INT64 ||
-                              key.type() == UINT64;
-
-        if (key_is_numeric) {
-            if (!holder_initialized) {
-                holder_dict = Holder::create_dict_numeric();
-                holder_initialized = true;
-            }
-            if (value.type() != NONE) {
-                holder_dict.dict_numeric_append(key.get_uint64(), value);
-            }
-        }
-
+        holder_dict.dict_append(key.type(), key.get_contents(), value);
         dbus_message_iter_next(iter);
     }
     indent -= 1;

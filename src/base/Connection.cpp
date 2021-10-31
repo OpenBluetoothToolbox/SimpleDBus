@@ -66,6 +66,17 @@ Message Connection::pop_message() {
     }
 }
 
+void Connection::send(Message& msg) {
+    uint32_t msg_serial = 0;
+    bool success = dbus_connection_send(_conn, msg._msg, &msg_serial);
+
+    if (!success) {
+        LOG_F(ERROR, "Message send failed.");
+    } else {
+        dbus_connection_flush(_conn);
+    }
+}
+
 Message Connection::send_with_reply_and_block(Message& msg) {
     DBusMessage* msg_tmp = dbus_connection_send_with_reply_and_block(_conn, msg._msg, -1, &_err);
 
