@@ -43,5 +43,9 @@ cmake ../examples
 make -j
 ```
 
+### Build tests
+To build and run unit and integration tests, the following packages are required:
+`sudo apt install libgtest-dev python3-dev`
+
 ## License
 All components within this project that have not been bundled from external creators, are licensed under the terms of the [MIT Licence](LICENCE.md).
