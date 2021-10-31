@@ -2,26 +2,10 @@ import signal
 import asyncio
 import dbus_next
 from dbus_next.aio import MessageBus
-from dbus_next.service import ServiceInterface, method
+from interfaces import Emulator, MessageUnit
 
 active = True
 bus = None
-
-
-class Emulator(ServiceInterface):
-    def __init__(self, bus):
-        self.bus = bus
-        super().__init__("simpledbus.tester")
-
-    def export(self):
-        self.bus.export("/", self)
-
-    @method()
-    def Exit(self):
-        """
-        Finishes the emulation session by disconnecting from dbus.
-        """
-        self.bus.disconnect()
 
 
 def handler(signum, frame):
@@ -34,8 +18,14 @@ def handler(signum, frame):
 async def setup():
     global bus
     bus = await MessageBus(bus_type=dbus_next.BusType.SESSION).connect()
+
+    # Create object instances
     emulator = Emulator(bus)
+    unit_message = MessageUnit(bus)
+
+    # Register object instances
     emulator.export()
+    unit_message.export()
     await bus.request_name("simpledbus.tester.python")
 
 

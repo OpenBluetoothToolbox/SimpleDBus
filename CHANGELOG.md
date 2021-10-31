@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Testing framework.
+- Exceptions for error detection and handling.
 
 ### Changed
 - Log levels use now a sane naming convention.

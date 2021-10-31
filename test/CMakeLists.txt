@@ -17,6 +17,7 @@ set(
   SRC_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/test_holder.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/test_message.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/helpers/PythonRunner.cpp
 )
 
@@ -25,5 +26,5 @@ target_link_libraries(simpledbus_test simpledbus-static ${GTEST_LIBRARIES} ${Pyt
 target_include_directories(simpledbus_test PRIVATE ${GTEST_INCLUDE_DIRS} ${Python3_INCLUDE_DIRS})
 
 add_custom_command (TARGET simpledbus_test POST_BUILD
-  COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/python/test_fixture.py ${CMAKE_BINARY_DIR}
+  COMMAND "${CMAKE_COMMAND}" -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/python/ ${CMAKE_BINARY_DIR}
 )
