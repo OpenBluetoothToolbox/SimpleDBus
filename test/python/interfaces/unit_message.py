@@ -74,10 +74,8 @@ class MessageUnit(ServiceInterface):
 
     @method()
     def SendReceiveDictInt32(self, value: "a{iv}") -> "a{iv}":
-        print(f"Received {value}")
         return value
 
     @method()
     def SendReceiveDictString(self, value: "a{sv}") -> "a{sv}":
-        print(f"Received {value}")
         return value

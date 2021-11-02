@@ -479,6 +479,8 @@ void Holder::dict_append(Type key_type, std::any key, Holder value) {
         key = std::string(std::any_cast<const char*>(key));
     }
 
+    // TODO : VALIDATE THAT THE SPECIFIED KEY TYPE IS CORRECT
+
     holder_dict.push_back(std::make_tuple(key_type, key, value));
 }
 

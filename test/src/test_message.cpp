@@ -199,8 +199,8 @@ TEST_F(MessageTest, SendReceiveDictInt32) {
                                               "SendReceiveDictInt32");
 
     Holder h_msg = Holder::create_dict();
-    h_msg.dict_append(Holder::INT32, 0x12345678, Holder::create_int32(0x87654321));
-    h_msg.dict_append(Holder::INT32, 0x87654321, Holder::create_string("Hello"));
+    h_msg.dict_append(Holder::INT32, static_cast<int32_t>(0x12345678), Holder::create_int32(0x87654321));
+    h_msg.dict_append(Holder::INT32, static_cast<int32_t>(0x87654321), Holder::create_string("Hello"));
     msg.append_argument(h_msg, "a{iv}");
 
     Message reply = conn->send_with_reply_and_block(msg);
