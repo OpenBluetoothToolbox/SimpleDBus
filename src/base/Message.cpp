@@ -5,6 +5,25 @@
 
 using namespace SimpleDBus;
 
+#define MESSAGE_DICT_APPEND_KEY_NUM(key_sig, dict_contents)                                   \
+    for (auto& [key, value] : dict_contents) {                                                \
+        DBusMessageIter entry_iter;                                                           \
+        dbus_message_iter_open_container(&sub_iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter); \
+        dbus_message_iter_append_basic(&entry_iter, key_sig, &key);                           \
+        _append_argument(&entry_iter, value, value_sig);                                      \
+        dbus_message_iter_close_container(&sub_iter, &entry_iter);                            \
+    }
+
+#define MESSAGE_DICT_APPEND_KEY_STR(key_sig, dict_contents)                                   \
+    for (auto& [key, value] : dict_contents) {                                                \
+        const char* p_value = key.c_str();                                                    \
+        DBusMessageIter entry_iter;                                                           \
+        dbus_message_iter_open_container(&sub_iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter); \
+        dbus_message_iter_append_basic(&entry_iter, key_sig, &p_value);                       \
+        _append_argument(&entry_iter, value, value_sig);                                      \
+        dbus_message_iter_close_container(&sub_iter, &entry_iter);                            \
+    }
+
 int Message::creation_counter = 0;
 
 Message::Message() : Message(nullptr) {}
@@ -206,38 +225,55 @@ void Message::_append_argument(DBusMessageIter* iter, Holder& argument, std::str
                 auto value_sig = sig_next.substr(1);
 
                 switch (key_sig) {
+                    case DBUS_TYPE_BYTE: {
+                        auto dict_contents = argument.get_dict_uint8();
+                        MESSAGE_DICT_APPEND_KEY_NUM(key_sig, dict_contents);
+                        break;
+                    }
+                    case DBUS_TYPE_INT16: {
+                        auto dict_contents = argument.get_dict_int16();
+                        MESSAGE_DICT_APPEND_KEY_NUM(key_sig, dict_contents);
+                        break;
+                    }
+                    case DBUS_TYPE_UINT16: {
+                        auto dict_contents = argument.get_dict_uint16();
+                        MESSAGE_DICT_APPEND_KEY_NUM(key_sig, dict_contents);
+                        break;
+                    }
+                    case DBUS_TYPE_INT32: {
+                        auto dict_contents = argument.get_dict_int32();
+                        MESSAGE_DICT_APPEND_KEY_NUM(key_sig, dict_contents);
+                        break;
+                    }
+                    case DBUS_TYPE_UINT32: {
+                        auto dict_contents = argument.get_dict_uint32();
+                        MESSAGE_DICT_APPEND_KEY_NUM(key_sig, dict_contents);
+                        break;
+                    }
+                    case DBUS_TYPE_INT64: {
+                        auto dict_contents = argument.get_dict_int64();
+                        MESSAGE_DICT_APPEND_KEY_NUM(key_sig, dict_contents);
+                        break;
+                    }
+                    case DBUS_TYPE_UINT64: {
+                        auto dict_contents = argument.get_dict_uint64();
+                        MESSAGE_DICT_APPEND_KEY_NUM(key_sig, dict_contents);
+                        break;
+                    }
                     case DBUS_TYPE_STRING: {
                         auto dict_contents = argument.get_dict_string();
-                        for (auto& [key, value] : dict_contents) {
-                            const char* p_value = key.c_str();
-                            DBusMessageIter entry_iter;
-                            dbus_message_iter_open_container(&sub_iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
-                            dbus_message_iter_append_basic(&entry_iter, DBUS_TYPE_STRING, &p_value);
-                            _append_argument(&entry_iter, value, value_sig);
-                            dbus_message_iter_close_container(&sub_iter, &entry_iter);
-                        }
+                        MESSAGE_DICT_APPEND_KEY_STR(key_sig, dict_contents);
+                        break;
                     }
                     case DBUS_TYPE_OBJECT_PATH: {
                         auto dict_contents = argument.get_dict_object_path();
-                        for (auto& [key, value] : dict_contents) {
-                            const char* p_value = key.c_str();
-                            DBusMessageIter entry_iter;
-                            dbus_message_iter_open_container(&sub_iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
-                            dbus_message_iter_append_basic(&entry_iter, DBUS_TYPE_OBJECT_PATH, &p_value);
-                            _append_argument(&entry_iter, value, value_sig);
-                            dbus_message_iter_close_container(&sub_iter, &entry_iter);
-                        }
+                        MESSAGE_DICT_APPEND_KEY_STR(key_sig, dict_contents);
+                        break;
                     }
                     case DBUS_TYPE_SIGNATURE: {
                         auto dict_contents = argument.get_dict_signature();
-                        for (auto& [key, value] : dict_contents) {
-                            const char* p_value = key.c_str();
-                            DBusMessageIter entry_iter;
-                            dbus_message_iter_open_container(&sub_iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
-                            dbus_message_iter_append_basic(&entry_iter, DBUS_TYPE_SIGNATURE, &p_value);
-                            _append_argument(&entry_iter, value, value_sig);
-                            dbus_message_iter_close_container(&sub_iter, &entry_iter);
-                        }
+                        MESSAGE_DICT_APPEND_KEY_STR(key_sig, dict_contents);
+                        break;
                     }
                 }
             }
