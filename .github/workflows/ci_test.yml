@@ -1,0 +1,34 @@
+name: CI Test
+
+on: [push, pull_request]
+
+jobs:
+  build-linux:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        os: [ubuntu-20.04]
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: |
+          sudo -H apt-get update -y
+          sudo -H apt-get install -y libdbus-1-dev python3-dev
+        env:
+          DEBIAN_FRONTEND: noninteractive
+      - name: Setup Cmake
+        uses: jwlawson/actions-setup-cmake@v1.4
+        with:
+          cmake-version: "3.16.x"
+      - name: Compile and run tests
+        run: |
+          mkdir $GITHUB_WORKSPACE/build
+          cd $GITHUB_WORKSPACE/build
+          cmake -DCMAKE_BUILD_TYPE=Release ../test
+          make -j4
+          ./simpledbus_test

@@ -1,7 +1,6 @@
 #include <simpledbus/base/Connection.h>
 #include <simpledbus/base/Exceptions.h>
 #include <simpledbus/base/Logger.h>
-
 #include <chrono>
 #include <iostream>
 #include <thread>
@@ -27,9 +26,10 @@ void Connection::init() {
     dbus_threads_init_default();
     _conn = dbus_bus_get(_dbus_bus_type, &err);
     if (dbus_error_is_set(&err)) {
-        LOG_F(ERROR, "Failed to get the DBus bus. (%s: %s)", err.name, err.message);
+        std::string err_name = err.name;
+        std::string err_message = err.message;
         dbus_error_free(&err);
-        throw Exception::ConnectionException("Failed to get the DBus bus.");
+        throw Exception::DBusException(err_name, err_message);
     }
     _initialized = true;
 }
@@ -54,7 +54,7 @@ void Connection::uninit() {
 
 void Connection::add_match(std::string rule) {
     if (!_initialized) {
-        throw Exception::ConnectionException("Connection is not initialized.");
+        throw Exception::NotInitialized();
     }
 
     ::DBusError err;
@@ -62,15 +62,16 @@ void Connection::add_match(std::string rule) {
     dbus_bus_add_match(_conn, rule.c_str(), &err);
     dbus_connection_flush(_conn);
     if (dbus_error_is_set(&err)) {
-        LOG_F(ERROR, "Failed to add match. (%s: %s)", err.name, err.message);
+        std::string err_name = err.name;
+        std::string err_message = err.message;
         dbus_error_free(&err);
-        throw Exception::ConnectionException("Failed to add match.");
+        throw Exception::DBusException(err_name, err_message);
     }
 }
 
 void Connection::remove_match(std::string rule) {
     if (!_initialized) {
-        throw Exception::ConnectionException("Connection is not initialized.");
+        throw Exception::NotInitialized();
     }
 
     ::DBusError err;
@@ -78,15 +79,16 @@ void Connection::remove_match(std::string rule) {
     dbus_bus_remove_match(_conn, rule.c_str(), &err);
     dbus_connection_flush(_conn);
     if (dbus_error_is_set(&err)) {
-        LOG_F(ERROR, "Failed to remove match. (%s: %s)", err.name, err.message);
+        std::string err_name = err.name;
+        std::string err_message = err.message;
         dbus_error_free(&err);
-        throw Exception::ConnectionException("Failed to remove match.");
+        throw Exception::DBusException(err_name, err_message);
     }
 }
 
 void Connection::read_write() {
     if (!_initialized) {
-        throw Exception::ConnectionException("Connection is not initialized.");
+        throw Exception::NotInitialized();
     }
 
     // Non blocking read of the next available message
@@ -95,7 +97,7 @@ void Connection::read_write() {
 
 Message Connection::pop_message() {
     if (!_initialized) {
-        throw Exception::ConnectionException("Connection is not initialized.");
+        throw Exception::NotInitialized();
     }
 
     DBusMessage* msg = dbus_connection_pop_message(_conn);
@@ -108,23 +110,17 @@ Message Connection::pop_message() {
 
 void Connection::send(Message& msg) {
     if (!_initialized) {
-        throw Exception::ConnectionException("Connection is not initialized.");
+        throw Exception::NotInitialized();
     }
 
     uint32_t msg_serial = 0;
-    bool success = dbus_connection_send(_conn, msg._msg, &msg_serial);
-
-    if (!success) {
-        LOG_F(ERROR, "Message send failed.");
-        throw Exception::ConnectionException("Message send failed.");
-    }
-
+    dbus_connection_send(_conn, msg._msg, &msg_serial);
     dbus_connection_flush(_conn);
 }
 
 Message Connection::send_with_reply_and_block(Message& msg) {
     if (!_initialized) {
-        throw Exception::ConnectionException("Connection is not initialized.");
+        throw Exception::NotInitialized();
     }
 
     ::DBusError err;
@@ -132,9 +128,10 @@ Message Connection::send_with_reply_and_block(Message& msg) {
     DBusMessage* msg_tmp = dbus_connection_send_with_reply_and_block(_conn, msg._msg, -1, &err);
 
     if (dbus_error_is_set(&err)) {
-        LOG_F(WARN, "Message send failed. (%s: %s)", err.name, err.message);
+        std::string err_name = err.name;
+        std::string err_message = err.message;
         dbus_error_free(&err);
-        throw Exception::ConnectionException("Message send failed.");
+        throw Exception::SendFailed(err_name, err_message, msg.to_string());
     }
 
     return Message(msg_tmp);

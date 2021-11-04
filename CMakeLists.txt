@@ -4,10 +4,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(SIMPLEDBUS)
 
-# Load dependencies
-find_package(PkgConfig REQUIRED)
-pkg_search_module(DBUS REQUIRED dbus-1)
-
 # Detect if the project is being build within a project or standalone.
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(STANDALONE true)
@@ -18,6 +14,34 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 else()
     set(STANDALONE false)
+endif()
+
+# Load dependencies
+include(FetchContent)
+find_package(PkgConfig REQUIRED)
+
+# Load libdbus-1
+pkg_search_module(DBUS REQUIRED dbus-1)
+
+# Load default parameters passed in through the command line.
+if(NOT LIBFMT_GIT_REPOSITORY)
+    set(LIBFMT_GIT_REPOSITORY "https://github.com/fmtlib/fmt.git")
+endif()
+if(NOT LIBFMT_GIT_TAG)
+    set(LIBFMT_GIT_TAG "d141cdbeb0fb422a3fb7173b285fd38e0d1772dc") # v8.0.1
+endif()
+
+if(NOT LIBFMT_LOCAL_PATH)
+    # Library includes
+    FetchContent_Declare(
+        fmt
+        GIT_REPOSITORY ${LIBFMT_GIT_REPOSITORY}
+        GIT_TAG ${LIBFMT_GIT_TAG}
+    )
+    FetchContent_MakeAvailable(fmt)
+else()
+    message("-- [INFO] Using local LibFmt")
+    add_subdirectory(${LIBFMT_LOCAL_PATH} ${CMAKE_CURRENT_BINARY_DIR}/libfmt)
 endif()
 
 # Load default parameters passed in through the command line.
@@ -55,6 +79,9 @@ target_compile_options(simpledbus PRIVATE -Wfatal-errors -Wpedantic -O3)
 
 target_link_libraries(simpledbus-static PUBLIC ${DBUS_LIBRARIES})
 target_link_libraries(simpledbus PUBLIC ${DBUS_LIBRARIES})
+
+target_link_libraries(simpledbus-static PRIVATE fmt::fmt-header-only)
+target_link_libraries(simpledbus PRIVATE fmt::fmt-header-only)
 
 # Export the variables needed by the parent project
 if(NOT ${STANDALONE})
