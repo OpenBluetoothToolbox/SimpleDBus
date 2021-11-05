@@ -66,9 +66,9 @@ Alternatively, instead of specifying the repository and tag, the user can
 specify the path to a local version of the dependencies. This is done by
 specifying the additional command line arguments to the `cmake` command:
 
-  - `LIBFMT_LOCAL_PATH`
-    Call CMake with `-DLIBFMT_LOCAL_PATH=<path>` to override the
-    default location of the LibFmt repository.
+- `LIBFMT_LOCAL_PATH`
+  Call CMake with `-DLIBFMT_LOCAL_PATH=<path>` to override the
+  default location of the LibFmt repository.
 
 ## License
 All components within this project that have not been bundled from external creators, are licensed under the terms of the [MIT Licence](LICENCE.md).
