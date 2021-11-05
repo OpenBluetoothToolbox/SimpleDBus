@@ -18,7 +18,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo -H apt-get update -y
-          sudo -H apt-get install -y libdbus-1-dev python3-dev
+          sudo -H apt-get install -y libdbus-1-dev python3-dev libgtest-dev
         env:
           DEBIAN_FRONTEND: noninteractive
       - name: Setup Cmake
