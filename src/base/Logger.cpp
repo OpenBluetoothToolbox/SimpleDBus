@@ -1,23 +1,19 @@
 #include <simpledbus/base/Logger.h>
 
-#include <fmt/core.h>
-
 #include <cstdarg>
 #include <cstdlib>
 #include <iostream>
 
 using namespace SimpleDBus;
 
-static const char* log_level_strings[] = {"NONE",  "FATAL",   "ERROR",   "WARN",    "INFO",
+static const char* log_level_strings[] = {"NONE",  "FATAL",     "ERROR",     "WARN",      "INFO",
                                           "DEBUG", "VERBOSE_0", "VERBOSE_1", "VERBOSE_2", "VERBOSE_3"};
 
 #ifndef SIMPLEDBUS_LOG_LEVEL
 #define SIMPLEDBUS_LOG_LEVEL FATAL
 #endif
 
-Logger::Logger() : _log_level(LogLevel::SIMPLEDBUS_LOG_LEVEL) {
-    fmt::print("The answer is {}.", 42);
-}
+Logger::Logger() : _log_level(LogLevel::SIMPLEDBUS_LOG_LEVEL) {}
 
 Logger::~Logger() {}
 

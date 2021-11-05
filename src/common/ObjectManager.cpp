@@ -1,5 +1,5 @@
-#include <simpledbus/common/ObjectManager.h>
 #include <simpledbus/base/Logger.h>
+#include <simpledbus/common/ObjectManager.h>
 
 using namespace SimpleDBus;
 
