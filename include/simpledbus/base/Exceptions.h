@@ -1,5 +1,6 @@
 #pragma once
 
+#include <fmt/core.h>
 #include <stdexcept>
 #include <string>
 
@@ -7,14 +8,30 @@ namespace SimpleDBus {
 
 namespace Exception {
 
-class BaseException : public std::runtime_error {
+class BaseException : public std::exception {};
+
+class NotInitialized : public BaseException {
   public:
-    BaseException(const std::string& __arg) : std::runtime_error(__arg) {}
+    NotInitialized();
+    const char* what() const noexcept override;
 };
 
-class ConnectionException : public BaseException {
+class DBusException : public BaseException {
   public:
-    ConnectionException(const std::string& __arg) : BaseException(__arg) {}
+    DBusException(const std::string& err_name, const std::string& err_message);
+    const char* what() const noexcept override;
+
+  private:
+    std::string _message;
+};
+
+class SendFailed : public BaseException {
+  public:
+    SendFailed(const std::string& err_name, const std::string& err_message, const std::string& msg_str);
+    const char* what() const noexcept override;
+
+  private:
+    std::string _message;
 };
 
 }  // namespace Exception
