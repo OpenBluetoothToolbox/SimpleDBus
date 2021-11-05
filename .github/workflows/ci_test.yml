@@ -20,7 +20,8 @@ jobs:
           sudo -H apt-get update -y
           sudo -H apt-get install -y dbus libdbus-1-dev python3-dev libgtest-dev
           sudo -H pip3 install -r $GITHUB_WORKSPACE/test/requirements.txt
-          ls /usr/share/dbus-1/
+          export DBUS_SESSION_BUS_ADDRESS=$(dbus-daemon --config-file=/usr/share/dbus-1/session.conf --print-address | cut -d, -f1)
+          echo "DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS}" >> $GITHUB_ENV
         env:
           DEBIAN_FRONTEND: noninteractive
       - name: Setup Cmake
