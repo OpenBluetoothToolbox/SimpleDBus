@@ -22,5 +22,4 @@ fi
 mkdir -p $BUILD_PATH
 cd $BUILD_PATH
 cmake -H$PROJECT_ROOT/test -DCMAKE_BUILD_TYPE=Debug
-make clean
 make -j7

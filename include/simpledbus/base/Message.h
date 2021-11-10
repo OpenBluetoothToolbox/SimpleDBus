@@ -23,28 +23,6 @@ typedef enum {
 } MessageType;
 
 class Message {
-  private:
-    friend class Connection;
-
-    static int creation_counter;
-    int indent;
-
-    int _unique_id;
-    DBusMessageIter _iter;
-    bool _iter_initialized;
-    bool _is_extracted;
-    Holder _extracted;
-    DBusMessage* _msg;
-
-    Holder _extract_bytearray(DBusMessageIter* iter);
-    Holder _extract_array(DBusMessageIter* iter);
-    Holder _extract_dict(DBusMessageIter* iter);
-    Holder _extract_generic(DBusMessageIter* iter);
-    void _append_argument(DBusMessageIter* iter, Holder& argument, std::string signature);
-
-    void _invalidate();
-    void _safe_delete();
-
   public:
     Message();
     Message(DBusMessage* msg);
@@ -74,6 +52,28 @@ class Message {
 
     static Message create_method_call(std::string bus_name, std::string path, std::string interface,
                                       std::string method);
+
+  private:
+    friend class Connection;
+
+    static int creation_counter;
+    int indent;
+
+    int _unique_id;
+    DBusMessageIter _iter;
+    bool _iter_initialized;
+    bool _is_extracted;
+    Holder _extracted;
+    DBusMessage* _msg;
+
+    Holder _extract_bytearray(DBusMessageIter* iter);
+    Holder _extract_array(DBusMessageIter* iter);
+    Holder _extract_dict(DBusMessageIter* iter);
+    Holder _extract_generic(DBusMessageIter* iter);
+    void _append_argument(DBusMessageIter* iter, Holder& argument, std::string signature);
+
+    void _invalidate();
+    void _safe_delete();
 };
 
 }  // namespace SimpleDBus

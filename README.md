@@ -45,7 +45,7 @@ make -j
 
 ### Build tests
 To build and run unit and integration tests, the following packages are required:
-`sudo apt install libgtest-dev python3-dev`
+`sudo apt install libgtest-dev libgmock-dev python3-dev`
 
 ## Security
 
