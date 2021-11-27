@@ -1,47 +1,38 @@
 #pragma once
 
-#include <simpledbus/advanced/ProxyBase.h>
-#include <simpledbus/base/Connection.h>
 #include <simpledbus/base/Interface.h>
+
 #include <memory>
 #include <string>
-#include <vector>
 
 namespace SimpleDBus {
 
-// Forward declarations
-class Proxy;
-
-class Proxy : public ProxyBase {
+class Proxy {
   public:
-    Proxy(const std::string& bus_name, const std::string& path, std::shared_ptr<SimpleDBus::Connection> conn);
-    ~Proxy();
+    Proxy(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path);
 
     std::string path() const;
 
-    void path_add(const std::string& path, SimpleDBus::Holder managed_interfaces);
-    bool path_remove(const std::string& path, SimpleDBus::Holder options);
+    virtual std::shared_ptr<Interface> interfaces_create(const std::string& name, Holder options);
+    virtual std::shared_ptr<Proxy> path_create(const std::string& path);
+
+    // ----- INTERFACE HANDLING -----
+    size_t interfaces_count() const;
+    bool interfaces_loaded() const;
+    void interfaces_load(Holder managed_interfaces);
+    void interfaces_reload(Holder managed_interfaces);
+    void interfaces_unload(Holder removed_interfaces);
+
+    // ----- CHILD HANDLING -----
+    void path_add(const std::string& path, Holder managed_interfaces);
+    bool path_remove(const std::string& path, Holder removed_interfaces);
     bool path_prune();
 
   protected:
-    virtual std::shared_ptr<Proxy> create_child(const std::string& path);
-
-    /**
-     * @brief Callback for child object creation.
-     *
-     * @param path
-     * @param options
-     */
-    virtual void on_child_created(const std::string& path, SimpleDBus::Holder options);
-
-    /**
-     * @brief Callback for child object destruction.
-     *
-     * @param path
-     * @param options
-     */
-    virtual void on_child_destroyed(const std::string& path);
-
+    std::string _path;
+    std::string _bus_name;
+    std::shared_ptr<Connection> _conn;
+    std::map<std::string, std::shared_ptr<Interface>> _interfaces;
     std::map<std::string, std::shared_ptr<Proxy>> _children;
 };
 

@@ -5,7 +5,7 @@
 using namespace SimpleDBus;
 
 TEST(Proxy, AppendChild) {
-    OpenProxy p = OpenProxy("", "/a/b", nullptr);
+    OpenProxy p = OpenProxy(nullptr, "", "/a/b");
 
     p.path_add("/a/b/c", Holder());
     EXPECT_EQ(1, p.children().size());
@@ -14,7 +14,7 @@ TEST(Proxy, AppendChild) {
 }
 
 TEST(Proxy, AppendRepeatedChild) {
-    OpenProxy p = OpenProxy("", "/a/b", nullptr);
+    OpenProxy p = OpenProxy(nullptr, "", "/a/b");
     p.path_add("/a/b/c", Holder());
 
     // Attempting to add a child with the same name should be a no-op
@@ -23,7 +23,7 @@ TEST(Proxy, AppendRepeatedChild) {
 }
 
 TEST(Proxy, AppendExtendedChild) {
-    OpenProxy p = OpenProxy("", "/", nullptr);
+    OpenProxy p = OpenProxy(nullptr, "", "/");
     p.path_add("/a/b/c/d", Holder());
 
     ASSERT_EQ(1, p.children().size());
@@ -43,7 +43,7 @@ TEST(Proxy, AppendExtendedChild) {
 }
 
 TEST(Proxy, RemoveSelf) {
-    OpenProxy p = OpenProxy("", "/", nullptr);
+    OpenProxy p = OpenProxy(nullptr, "", "/");
 
     // Should notify that the proxy can be safely deleted, as nothing worth keeping is left
     ASSERT_TRUE(p.path_remove("/", Holder::create_array()));
@@ -65,7 +65,7 @@ TEST(Proxy, RemoveSelf) {
 }
 
 TEST(Proxy, RemoveChildNoInterfaces) {
-    OpenProxy p = OpenProxy("", "/", nullptr);
+    OpenProxy p = OpenProxy(nullptr, "", "/");
     p.path_add("/a", Holder());
 
     // Attempt to remove the path while holding a local copy of the child, should be a no-op
@@ -82,7 +82,7 @@ TEST(Proxy, RemoveChildNoInterfaces) {
 }
 
 TEST(Proxy, RemoveChildWithInterfaces) {
-    OpenProxy p = OpenProxy("", "/", nullptr);
+    OpenProxy p = OpenProxy(nullptr, "", "/");
 
     Holder managed_interfaces = Holder::create_dict();
     managed_interfaces.dict_append(Holder::STRING, "i.1", Holder());

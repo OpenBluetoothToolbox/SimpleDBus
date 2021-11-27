@@ -1,18 +1,74 @@
+#include "simpledbus/advanced/Proxy.h"
+
 #include <simpledbus/base/Path.h>
-#include <simpledbus/advanced/Proxy.h>
-
 #include <algorithm>
-
-#include <iostream>
 
 using namespace SimpleDBus;
 
-Proxy::Proxy(const std::string& bus_name, const std::string& path, std::shared_ptr<SimpleDBus::Connection> conn)
-    : ProxyBase(conn, bus_name, path) {}
+Proxy::Proxy(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path)
+    : _conn(conn), _bus_name(bus_name), _path(path) {}
 
-Proxy::~Proxy() {}
+std::shared_ptr<Interface> Proxy::interfaces_create(const std::string& name, SimpleDBus::Holder options) {
+    return std::make_unique<Interface>(_conn, _bus_name, _path);
+}
+
+std::shared_ptr<Proxy> Proxy::path_create(const std::string& path) {
+    return std::make_shared<Proxy>(_conn, _bus_name, path);
+}
 
 std::string Proxy::path() const { return _path; }
+
+// ----- INTERFACE HANDLING -----
+
+size_t Proxy::interfaces_count() const {
+    size_t count = 0;
+    for (auto& [iface_name, interface] : _interfaces) {
+        if (interface->is_loaded()) {
+            count++;
+        }
+    }
+    return count;
+}
+
+void Proxy::interfaces_load(Holder managed_interfaces) {
+    auto managed_interface = managed_interfaces.get_dict_string();
+    for (auto& [iface_name, options] : managed_interface) {
+        // If the interface is already in the map, notify the object that it needs to reset itself.
+        if (_interfaces.find(iface_name) != _interfaces.end()) {
+            _interfaces[iface_name]->load(options);
+        } else {
+            _interfaces.emplace(std::make_pair(iface_name, interfaces_create(iface_name, options)));
+        }
+    }
+}
+
+void Proxy::interfaces_reload(Holder managed_interfaces) {
+    for (auto& [iface_name, interface] : _interfaces) {
+        interface->unload();
+    }
+
+    interfaces_load(managed_interfaces);
+}
+
+void Proxy::interfaces_unload(SimpleDBus::Holder removed_interfaces) {
+    for (auto& option : removed_interfaces.get_array()) {
+        std::string iface_name = option.get_string();
+        if (_interfaces.find(iface_name) != _interfaces.end()) {
+            _interfaces[iface_name]->unload();
+        }
+    }
+}
+
+bool Proxy::interfaces_loaded() const {
+    for (auto& [iface_name, interface] : _interfaces) {
+        if (interface->is_loaded()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// ----- CHILD HANDLING -----
 
 void Proxy::path_add(const std::string& path, SimpleDBus::Holder managed_interfaces) {
     // If the path is not a child of the current path, then we can't add it.
@@ -29,10 +85,9 @@ void Proxy::path_add(const std::string& path, SimpleDBus::Holder managed_interfa
 
     if (Path::is_child(_path, path)) {
         // If the path is a direct child of the proxy path, create a new proxy for it.
-        std::shared_ptr<Proxy> child = create_child(path);
+        std::shared_ptr<Proxy> child = path_create(path);
         child->interfaces_load(managed_interfaces);
         _children.emplace(std::make_pair(path, child));
-        on_child_created(path, managed_interfaces);
     } else {
         // If the new path is for a descendant of the current proxy, check if there is a child proxy for it.
         auto child_result = std::find_if(
@@ -48,8 +103,7 @@ void Proxy::path_add(const std::string& path, SimpleDBus::Holder managed_interfa
             // If there is no child proxy for the new path, create the child and forward the path to it.
             // This path will be taken if an empty proxy object needs to be created for an intermediate path.
             std::string child_path = Path::next_child(_path, path);
-            std::shared_ptr<Proxy> child = create_child(child_path);
-            on_child_created(child_path, managed_interfaces);
+            std::shared_ptr<Proxy> child = path_create(child_path);
             _children.emplace(std::make_pair(child_path, child));
             child->path_add(path, managed_interfaces);
         }
@@ -78,7 +132,6 @@ bool Proxy::path_remove(const std::string& path, SimpleDBus::Holder options) {
         // then remove it.
         if (must_erase && _children.at(child_path).use_count() == 1) {
             _children.erase(child_path);
-            on_child_destroyed(child_path);
         }
     }
 
@@ -95,7 +148,6 @@ bool Proxy::path_prune() {
     }
     for (auto& child_path : to_remove) {
         _children.erase(child_path);
-        on_child_destroyed(child_path);
     }
 
     // For self to be pruned, the following conditions must be met:
@@ -107,15 +159,3 @@ bool Proxy::path_prune() {
 
     return false;
 }
-
-/* Default implementation of virtual methods. */
-
-std::shared_ptr<Proxy> Proxy::create_child(const std::string& path) {
-    return std::make_shared<Proxy>(_bus_name, path, _conn);
-}
-
-/* Default implementation of callbacks */
-
-void Proxy::on_child_created(const std::string& path, SimpleDBus::Holder options) {}
-
-void Proxy::on_child_destroyed(const std::string& path) {}
