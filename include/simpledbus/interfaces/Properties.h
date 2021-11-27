@@ -1,26 +1,17 @@
 #pragma once
-#include <functional>
-#include <string>
 
-#include <simpledbus/base/Connection.h>
-#include <simpledbus/base/Holder.h>
-#include <simpledbus/base/Message.h>
+#include <simpledbus/base/Interface.h>
+
+#include <functional>
 
 namespace SimpleDBus {
 
 class Holder;
 class Connection;
 
-class Properties {
-  private:
-    const std::string _interface;
-
-    std::string _path;
-    std::string _service;
-    Connection* _conn;
-
+class Properties : public Interface {
   public:
-    Properties(Connection* conn, std::string service, std::string path);
+    Properties(std::shared_ptr<Connection> conn, std::string bus_name, std::string path);
     virtual ~Properties();
 
     // Names are made matching the ones from the DBus specification

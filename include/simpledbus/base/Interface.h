@@ -9,9 +9,10 @@ namespace SimpleDBus {
 
 class Interface {
   public:
-    Interface(std::shared_ptr<SimpleDBus::Connection> conn, const std::string& bus_name, const std::string& path);
+    Interface(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path,
+              const std::string& interface_name);
 
-    void load(SimpleDBus::Holder options);
+    void load(Holder options);
     void unload();
     bool is_loaded() const;
 
@@ -20,7 +21,8 @@ class Interface {
 
     std::string _path;
     std::string _bus_name;
-    std::shared_ptr<SimpleDBus::Connection> _conn;
+    std::string _interface_name;
+    std::shared_ptr<Connection> _conn;
 };
 
 }  // namespace SimpleDBus

@@ -1,19 +1,19 @@
 #include <simpledbus/base/Logger.h>
-#include <simpledbus/common/Introspectable.h>
+#include <simpledbus/interfaces/Introspectable.h>
 
 #include <iostream>
 
 using namespace SimpleDBus;
 
-Introspectable::Introspectable(Connection* conn, std::string service, std::string path)
-    : _conn(conn), _service(service), _path(path), _interface("org.freedesktop.DBus.Introspectable") {}
+Introspectable::Introspectable(std::shared_ptr<Connection> conn, std::string bus_name, std::string path)
+    : Interface(conn, bus_name, path, "org.freedesktop.DBus.Introspectable") {}
 
 Introspectable::~Introspectable() {}
 
 // Names are made matching the ones from the DBus specification
 Holder Introspectable::Introspect() {
     LOG_F(DEBUG, "%s -> Introspect()", _path.c_str());
-    Message query_msg = Message::create_method_call(_service, _path, _interface, "Introspect");
+    Message query_msg = Message::create_method_call(_bus_name, _path, _interface_name, "Introspect");
 
     Message reply_msg = _conn->send_with_reply_and_block(query_msg);
     Holder result = reply_msg.extract();

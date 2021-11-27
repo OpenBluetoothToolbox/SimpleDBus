@@ -1,15 +1,15 @@
 #include <simpledbus/base/Logger.h>
-#include <simpledbus/common/ObjectManager.h>
+#include <simpledbus/interfaces/ObjectManager.h>
 
 using namespace SimpleDBus;
 
-ObjectManager::ObjectManager(Connection* conn, std::string service, std::string path)
-    : _conn(conn), _service(service), _path(path), _interface("org.freedesktop.DBus.ObjectManager") {}
+ObjectManager::ObjectManager(std::shared_ptr<Connection> conn, std::string bus_name, std::string path)
+    : Interface(conn, bus_name, path, "org.freedesktop.DBus.ObjectManager") {}
 
 ObjectManager::~ObjectManager() {}
 
 Holder ObjectManager::GetManagedObjects(bool use_callbacks) {
-    Message query_msg = Message::create_method_call(_service, _path, _interface, "GetManagedObjects");
+    Message query_msg = Message::create_method_call(_bus_name, _path, _interface_name, "GetManagedObjects");
     Message reply_msg = _conn->send_with_reply_and_block(query_msg);
     Holder managed_objects = reply_msg.extract();
     if (use_callbacks) {
@@ -25,7 +25,7 @@ Holder ObjectManager::GetManagedObjects(bool use_callbacks) {
 
 bool ObjectManager::process_received_signal(Message& message) {
     if (message.get_path() == _path) {
-        if (message.is_signal(_interface, "InterfacesAdded")) {
+        if (message.is_signal(_interface_name, "InterfacesAdded")) {
             std::string path = message.extract().get_string();
             message.extract_next();
             Holder options = message.extract();
@@ -33,7 +33,7 @@ bool ObjectManager::process_received_signal(Message& message) {
                 InterfacesAdded(path, options);
             }
             return true;
-        } else if (message.is_signal(_interface, "InterfacesRemoved")) {
+        } else if (message.is_signal(_interface_name, "InterfacesRemoved")) {
             std::string path = message.extract().get_string();
             message.extract_next();
             Holder options = message.extract();
