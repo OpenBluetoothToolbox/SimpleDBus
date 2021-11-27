@@ -1,21 +1,9 @@
 #include <gtest/gtest.h>
 
 #include <simpledbus/base/Proxy.h>
+#include "accessors/OpenProxy.h"
 
 using namespace SimpleDBus;
-
-class OpenProxy : public Proxy {
-  public:
-    OpenProxy(const std::string& bus_name, const std::string& path, std::shared_ptr<SimpleDBus::Connection> conn)
-        : Proxy(bus_name, path, conn){};
-    ~OpenProxy() {}
-
-    std::map<std::string, std::shared_ptr<Proxy>> children() { return _children; }
-
-    std::shared_ptr<Proxy> create_child(const std::string& path, SimpleDBus::Holder options) override {
-        return std::static_pointer_cast<Proxy>(std::make_shared<OpenProxy>(_bus_name, path, _conn));
-    }
-};
 
 TEST(Proxy, AppendChild) {
     OpenProxy p = OpenProxy("", "/a/b", nullptr);
@@ -27,7 +15,6 @@ TEST(Proxy, AppendChild) {
 }
 
 TEST(Proxy, AppendRepeatedChild) {
-    // TODO: In the future this test should ensure that the Proxy actually does re-initiallize itself.
     OpenProxy p = OpenProxy("", "/a/b", nullptr);
     p.path_add("/a/b/c", Holder());
 
@@ -54,4 +41,70 @@ TEST(Proxy, AppendExtendedChild) {
     std::shared_ptr<OpenProxy> p_a_b_c = std::dynamic_pointer_cast<OpenProxy>(p_a_b->children().at("/a/b/c"));
     ASSERT_EQ(1, p_a_b_c->children().size());
     ASSERT_EQ(1, p_a_b_c->children().count("/a/b/c/d"));
+}
+
+TEST(Proxy, RemoveSelf) {
+    OpenProxy p = OpenProxy("", "/", nullptr);
+
+    // Should notify that the proxy can be safely deleted, as nothing worth keeping is left
+    ASSERT_TRUE(p.path_remove("/", Holder::create_array()));
+
+    // Add a child path without any interfaces
+    p.path_add("/a", Holder());
+
+    // Attempt to remove the path while holding a local copy of the child, should be a no-op
+    {
+        std::shared_ptr<OpenProxy> p_a = std::dynamic_pointer_cast<OpenProxy>(p.children().at("/a"));
+        // As there is another copy of the child, the proxy should not be deleted
+        ASSERT_FALSE(p.path_remove("/", Holder::create_array()));
+        ASSERT_EQ(1, p.children().size());
+    }
+
+    // Should notify that the proxy can be safely deleted, as nothing worth keeping is left
+    ASSERT_TRUE(p.path_remove("/", Holder::create_array()));
+    ASSERT_EQ(0, p.children().size());
+}
+
+TEST(Proxy, RemoveChildNoInterfaces) {
+    OpenProxy p = OpenProxy("", "/", nullptr);
+    p.path_add("/a", Holder());
+
+    // Attempt to remove the path while holding a local copy of the child, should be a no-op
+    {
+        std::shared_ptr<OpenProxy> p_a = std::dynamic_pointer_cast<OpenProxy>(p.children().at("/a"));
+        // As there is another copy of the child, the proxy should not be deleted
+        ASSERT_FALSE(p.path_remove("/a", Holder::create_array()));
+        ASSERT_EQ(1, p.children().size());
+    }
+
+    // As only the child was removed, the main proxy should not be deleted.
+    ASSERT_FALSE(p.path_remove("/a", Holder::create_array()));
+    ASSERT_EQ(0, p.children().size());
+}
+
+TEST(Proxy, RemoveChildWithInterfaces) {
+    OpenProxy p = OpenProxy("", "/", nullptr);
+
+    Holder managed_interfaces = Holder::create_dict();
+    managed_interfaces.dict_append(Holder::STRING, "i.1", Holder());
+    managed_interfaces.dict_append(Holder::STRING, "i.2", Holder());
+    p.path_add("/a", managed_interfaces);
+
+    Holder removed_interfaces = Holder::create_array();
+    removed_interfaces.array_append(Holder::create_string("i.2"));
+    p.path_remove("/a", removed_interfaces);
+
+    // Because /a has one interface still, it should still be in the children map.
+    ASSERT_EQ(1, p.children().size());
+    {
+        std::shared_ptr<OpenProxy> p_a = std::dynamic_pointer_cast<OpenProxy>(p.children().at("/a"));
+        ASSERT_EQ(1, p_a->interfaces_count());
+        ASSERT_EQ(1, p_a->interfaces().count("i.1"));
+    }
+
+    // Remove the second interface
+    removed_interfaces = Holder::create_array();
+    removed_interfaces.array_append(Holder::create_string("i.1"));
+    p.path_remove("/a", removed_interfaces);
+    ASSERT_EQ(0, p.children().size());
 }
