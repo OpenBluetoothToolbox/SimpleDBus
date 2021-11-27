@@ -1,16 +1,16 @@
 #include <gtest/gtest.h>
 
-#include <simpledbus/base/InterfaceHolder.h>
+#include <simpledbus/advanced/ProxyBase.h>
 
-#include "accessors/OpenInterfaceHolder.h"
+#include "accessors/OpenProxyBase.h"
 
 using namespace SimpleDBus;
 
-TEST(InterfaceHolder, LoadInterfaces) {
+TEST(ProxyBase, LoadInterfaces) {
     Holder managed_interfaces = Holder::create_dict();
     managed_interfaces.dict_append(Holder::STRING, "i.1", Holder());
 
-    OpenInterfaceHolder h = OpenInterfaceHolder(nullptr, "", "/");
+    OpenProxyBase h = OpenProxyBase(nullptr, "", "/");
     EXPECT_FALSE(h.interfaces_loaded());
 
     h.interfaces_load(managed_interfaces);
@@ -20,13 +20,13 @@ TEST(InterfaceHolder, LoadInterfaces) {
     EXPECT_EQ(1, h.interfaces().count("i.1"));
 }
 
-TEST(InterfaceHolder, UnloadInterfaces) {
+TEST(ProxyBase, UnloadInterfaces) {
     Holder managed_interfaces = Holder::create_dict();
     managed_interfaces.dict_append(Holder::STRING, "i.1", Holder());
     managed_interfaces.dict_append(Holder::STRING, "i.2", Holder());
     managed_interfaces.dict_append(Holder::STRING, "i.3", Holder());
 
-    OpenInterfaceHolder h = OpenInterfaceHolder(nullptr, "", "/");
+    OpenProxyBase h = OpenProxyBase(nullptr, "", "/");
     h.interfaces_load(managed_interfaces);
     EXPECT_EQ(3, h.interfaces_count());
 
@@ -55,13 +55,13 @@ TEST(InterfaceHolder, UnloadInterfaces) {
     EXPECT_FALSE(h.interfaces().at("i.1")->is_loaded());
 }
 
-TEST(InterfaceHolder, ReloadInterfaces) {
+TEST(ProxyBase, ReloadInterfaces) {
     Holder managed_interfaces = Holder::create_dict();
     managed_interfaces.dict_append(Holder::STRING, "i.1", Holder());
     managed_interfaces.dict_append(Holder::STRING, "i.2", Holder());
     managed_interfaces.dict_append(Holder::STRING, "i.3", Holder());
 
-    OpenInterfaceHolder h = OpenInterfaceHolder(nullptr, "", "/");
+    OpenProxyBase h = OpenProxyBase(nullptr, "", "/");
     h.interfaces_load(managed_interfaces);
     EXPECT_EQ(3, h.interfaces_count());
 

@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <simpledbus/base/Proxy.h>
 #include "accessors/OpenProxy.h"
 
 using namespace SimpleDBus;

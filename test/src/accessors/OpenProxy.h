@@ -1,8 +1,6 @@
 #pragma once
 
-#include <simpledbus/base/Proxy.h>
-
-#include "OpenInterface.h"
+#include <simpledbus/advanced/Proxy.h>
 
 namespace SimpleDBus {
 

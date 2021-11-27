@@ -1,5 +1,5 @@
 #include <simpledbus/base/Path.h>
-#include <simpledbus/base/Proxy.h>
+#include <simpledbus/advanced/Proxy.h>
 
 #include <algorithm>
 
@@ -8,7 +8,7 @@
 using namespace SimpleDBus;
 
 Proxy::Proxy(const std::string& bus_name, const std::string& path, std::shared_ptr<SimpleDBus::Connection> conn)
-    : InterfaceHolder(conn, bus_name, path), _bus_name(bus_name), _path(path), _conn(conn) {}
+    : ProxyBase(conn, bus_name, path) {}
 
 Proxy::~Proxy() {}
 
@@ -113,12 +113,6 @@ bool Proxy::path_prune() {
 std::shared_ptr<Proxy> Proxy::create_child(const std::string& path) {
     return std::make_shared<Proxy>(_bus_name, path, _conn);
 }
-
-std::shared_ptr<Interface> Proxy::create_interface(const std::string& name, SimpleDBus::Holder options) {
-    return std::make_unique<Interface>(_conn, _bus_name, _path);
-}
-
-void Proxy::reset(SimpleDBus::Holder options) {}
 
 /* Default implementation of callbacks */
 
