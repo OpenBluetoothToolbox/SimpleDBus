@@ -9,6 +9,11 @@ Interface::Interface(std::shared_ptr<Connection> conn, const std::string& bus_na
 Holder Interface::property_get(const std::string& property_name) {
     return _properties.Get(_interface_name, property_name);
 }
+
 void Interface::property_set(const std::string& property_name, const Holder& value) {
     _properties.Set(_interface_name, property_name, value);
+}
+
+Message Interface::create_method_call(const std::string& method_name) {
+    return Message::create_method_call(_bus_name, _path, _interface_name, method_name);
 }
