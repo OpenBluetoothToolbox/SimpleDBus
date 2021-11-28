@@ -1,12 +1,12 @@
 #pragma once
 
-#include <simpledbus/base/Interface.h>
+#include <simpledbus/base/BasicInterface.h>
 
 #include <functional>
 
 namespace SimpleDBus {
 
-class ObjectManager : public Interface {
+class ObjectManager : public BasicInterface {
   public:
     ObjectManager(std::shared_ptr<Connection> conn, std::string bus_name, std::string path);
     ~ObjectManager();

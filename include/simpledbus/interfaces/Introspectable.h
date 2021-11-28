@@ -1,13 +1,13 @@
 #pragma once
 
-#include <simpledbus/base/Interface.h>
+#include <simpledbus/base/BasicInterface.h>
 
 namespace SimpleDBus {
 
 class Holder;
 class Connection;
 
-class Introspectable : public Interface {
+class Introspectable : public BasicInterface {
   public:
     Introspectable(std::shared_ptr<Connection> conn, std::string bus_name, std::string path);
     virtual ~Introspectable();

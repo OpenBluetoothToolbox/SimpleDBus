@@ -8,8 +8,8 @@ using namespace SimpleDBus;
 Proxy::Proxy(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path)
     : _conn(conn), _bus_name(bus_name), _path(path) {}
 
-std::shared_ptr<Interface> Proxy::interfaces_create(const std::string& name, SimpleDBus::Holder options) {
-    return std::make_unique<Interface>(_conn, _bus_name, _path, name);
+std::shared_ptr<BasicInterface> Proxy::interfaces_create(const std::string& name, SimpleDBus::Holder options) {
+    return std::make_unique<BasicInterface>(_conn, _bus_name, _path, name);
 }
 
 std::shared_ptr<Proxy> Proxy::path_create(const std::string& path) {

@@ -12,7 +12,7 @@ class OpenProxy : public Proxy {
 
     const std::map<std::string, std::shared_ptr<Proxy>>& children() { return _children; }
 
-    const std::map<std::string, std::shared_ptr<Interface>>& interfaces() { return _interfaces; };
+    const std::map<std::string, std::shared_ptr<BasicInterface>>& interfaces() { return _interfaces; };
 
     std::shared_ptr<Proxy> path_create(const std::string& path) override {
         auto child = std::make_shared<OpenProxy>( _conn, _bus_name, path);
