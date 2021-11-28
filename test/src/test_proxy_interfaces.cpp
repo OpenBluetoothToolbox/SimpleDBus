@@ -6,7 +6,7 @@
 
 using namespace SimpleDBus;
 
-TEST(ProxyBase, LoadInterfaces) {
+TEST(ProxyInterfaces, LoadInterfaces) {
     Holder managed_interfaces = Holder::create_dict();
     managed_interfaces.dict_append(Holder::STRING, "i.1", Holder());
 
@@ -20,7 +20,7 @@ TEST(ProxyBase, LoadInterfaces) {
     EXPECT_EQ(1, h.interfaces().count("i.1"));
 }
 
-TEST(ProxyBase, UnloadInterfaces) {
+TEST(ProxyInterfaces, UnloadInterfaces) {
     Holder managed_interfaces = Holder::create_dict();
     managed_interfaces.dict_append(Holder::STRING, "i.1", Holder());
     managed_interfaces.dict_append(Holder::STRING, "i.2", Holder());
@@ -55,7 +55,7 @@ TEST(ProxyBase, UnloadInterfaces) {
     EXPECT_FALSE(h.interfaces().at("i.1")->is_loaded());
 }
 
-TEST(ProxyBase, ReloadInterfaces) {
+TEST(ProxyInterfaces, ReloadInterfaces) {
     Holder managed_interfaces = Holder::create_dict();
     managed_interfaces.dict_append(Holder::STRING, "i.1", Holder());
     managed_interfaces.dict_append(Holder::STRING, "i.2", Holder());

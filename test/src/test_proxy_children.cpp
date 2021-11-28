@@ -4,7 +4,7 @@
 
 using namespace SimpleDBus;
 
-TEST(Proxy, AppendChild) {
+TEST(ProxyChildren, AppendChild) {
     OpenProxy p = OpenProxy(nullptr, "", "/a/b");
 
     p.path_add("/a/b/c", Holder());
@@ -13,7 +13,7 @@ TEST(Proxy, AppendChild) {
     EXPECT_EQ("/a/b/c", p.children().at("/a/b/c")->path());
 }
 
-TEST(Proxy, AppendRepeatedChild) {
+TEST(ProxyChildren, AppendRepeatedChild) {
     OpenProxy p = OpenProxy(nullptr, "", "/a/b");
     p.path_add("/a/b/c", Holder());
 
@@ -22,7 +22,7 @@ TEST(Proxy, AppendRepeatedChild) {
     EXPECT_EQ(1, p.children().size());
 }
 
-TEST(Proxy, AppendExtendedChild) {
+TEST(ProxyChildren, AppendExtendedChild) {
     OpenProxy p = OpenProxy(nullptr, "", "/");
     p.path_add("/a/b/c/d", Holder());
 
@@ -42,7 +42,7 @@ TEST(Proxy, AppendExtendedChild) {
     ASSERT_EQ(1, p_a_b_c->children().count("/a/b/c/d"));
 }
 
-TEST(Proxy, RemoveSelf) {
+TEST(ProxyChildren, RemoveSelf) {
     OpenProxy p = OpenProxy(nullptr, "", "/");
 
     // Should notify that the proxy can be safely deleted, as nothing worth keeping is left
@@ -64,7 +64,7 @@ TEST(Proxy, RemoveSelf) {
     ASSERT_EQ(0, p.children().size());
 }
 
-TEST(Proxy, RemoveChildNoInterfaces) {
+TEST(ProxyChildren, RemoveChildNoInterfaces) {
     OpenProxy p = OpenProxy(nullptr, "", "/");
     p.path_add("/a", Holder());
 
@@ -81,7 +81,7 @@ TEST(Proxy, RemoveChildNoInterfaces) {
     ASSERT_EQ(0, p.children().size());
 }
 
-TEST(Proxy, RemoveChildWithInterfaces) {
+TEST(ProxyChildren, RemoveChildWithInterfaces) {
     OpenProxy p = OpenProxy(nullptr, "", "/");
 
     Holder managed_interfaces = Holder::create_dict();

@@ -6,8 +6,7 @@
 
 namespace SimpleDBus {
 
-class Holder;
-class Connection;
+namespace Interfaces {
 
 class Properties : public BasicInterface {
   public:
@@ -19,5 +18,7 @@ class Properties : public BasicInterface {
     Holder GetAll(std::string interface);
     void Set(std::string interface, std::string name, Holder value);
 };
+
+}  // namespace Interfaces
 
 }  // namespace SimpleDBus
