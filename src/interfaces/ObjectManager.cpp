@@ -12,6 +12,7 @@ Holder ObjectManager::GetManagedObjects(bool use_callbacks) {
     Message query_msg = Message::create_method_call(_bus_name, _path, _interface_name, "GetManagedObjects");
     Message reply_msg = _conn->send_with_reply_and_block(query_msg);
     Holder managed_objects = reply_msg.extract();
+    // TODO: Remove immediate callback support.
     if (use_callbacks) {
         auto managed_object = managed_objects.get_dict_object_path();
         for (auto& [path, options] : managed_object) {
