@@ -28,6 +28,10 @@ class Proxy {
     bool path_remove(const std::string& path, Holder removed_interfaces);
     bool path_prune();
 
+    // ----- MESSAGE HANDLING -----
+    virtual void message_handle(Message msg);
+    void message_forward(Message& msg);
+
   protected:
     std::string _path;
     std::string _bus_name;

@@ -159,3 +159,22 @@ bool Proxy::path_prune() {
 
     return false;
 }
+
+// ----- MESSAGE HANDLING -----
+void Proxy::message_handle(Message msg) {}
+
+void Proxy::message_forward(Message& msg) {
+    // If the message is for the current proxy, then forward it to the message handler.
+    if (msg.get_path() == _path) {
+        message_handle(msg);
+        return;
+    }
+
+    // If the message is for a child proxy, forward it to that child proxy.
+    for (auto& [child_path, child] : _children) {
+        if (Path::is_descendant(child_path, msg.get_path())) {
+            child->message_forward(msg);
+            return;
+        }
+    }
+}
