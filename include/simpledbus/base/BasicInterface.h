@@ -12,6 +12,8 @@ class BasicInterface {
     BasicInterface(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path,
                    const std::string& interface_name);
 
+    virtual ~BasicInterface() = default;
+
     void load(Holder options);
     void unload();
     bool is_loaded() const;
