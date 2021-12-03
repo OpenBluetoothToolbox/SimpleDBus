@@ -12,7 +12,7 @@ class Interface : public BasicInterface {
   public:
     Interface(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path,
               const std::string& interface_name);
-    virtual ~Interface();
+    virtual ~Interface() = default;
 
     Holder property_get(const std::string& property_name);
     void property_set(const std::string& property_name, const Holder& value);
