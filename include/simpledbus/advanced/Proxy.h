@@ -13,6 +13,9 @@ class Proxy {
 
     std::string path() const;
 
+    const std::map<std::string, std::shared_ptr<Proxy>>& children();
+    const std::map<std::string, std::shared_ptr<BasicInterface>>& interfaces();
+
     virtual std::shared_ptr<BasicInterface> interfaces_create(const std::string& name, Holder options);
     virtual std::shared_ptr<Proxy> path_create(const std::string& path);
 

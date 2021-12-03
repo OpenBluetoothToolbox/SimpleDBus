@@ -2,15 +2,13 @@
 
 #include <simpledbus/advanced/Proxy.h>
 
-#include "accessors/OpenProxy.h"
-
 using namespace SimpleDBus;
 
 TEST(ProxyInterfaces, LoadInterfaces) {
     Holder managed_interfaces = Holder::create_dict();
     managed_interfaces.dict_append(Holder::STRING, "i.1", Holder());
 
-    OpenProxy h = OpenProxy(nullptr, "", "/");
+    Proxy h = Proxy(nullptr, "", "/");
     EXPECT_FALSE(h.interfaces_loaded());
 
     h.interfaces_load(managed_interfaces);
@@ -26,7 +24,7 @@ TEST(ProxyInterfaces, UnloadInterfaces) {
     managed_interfaces.dict_append(Holder::STRING, "i.2", Holder());
     managed_interfaces.dict_append(Holder::STRING, "i.3", Holder());
 
-    OpenProxy h = OpenProxy(nullptr, "", "/");
+    Proxy h = Proxy(nullptr, "", "/");
     h.interfaces_load(managed_interfaces);
     EXPECT_EQ(3, h.interfaces_count());
 
@@ -61,7 +59,7 @@ TEST(ProxyInterfaces, ReloadInterfaces) {
     managed_interfaces.dict_append(Holder::STRING, "i.2", Holder());
     managed_interfaces.dict_append(Holder::STRING, "i.3", Holder());
 
-    OpenProxy h = OpenProxy(nullptr, "", "/");
+    Proxy h = Proxy(nullptr, "", "/");
     h.interfaces_load(managed_interfaces);
     EXPECT_EQ(3, h.interfaces_count());
 

@@ -18,6 +18,10 @@ std::shared_ptr<Proxy> Proxy::path_create(const std::string& path) {
 
 std::string Proxy::path() const { return _path; }
 
+const std::map<std::string, std::shared_ptr<Proxy>>& Proxy::children() { return _children; }
+
+const std::map<std::string, std::shared_ptr<BasicInterface>>& Proxy::interfaces() { return _interfaces; }
+
 // ----- INTERFACE HANDLING -----
 
 size_t Proxy::interfaces_count() const {
