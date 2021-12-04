@@ -8,8 +8,8 @@ using namespace SimpleDBus;
 Proxy::Proxy(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path)
     : _conn(conn), _bus_name(bus_name), _path(path) {}
 
-std::shared_ptr<BasicInterface> Proxy::interfaces_create(const std::string& name, SimpleDBus::Holder options) {
-    return std::make_unique<BasicInterface>(_conn, _bus_name, _path, name);
+std::shared_ptr<Interface> Proxy::interfaces_create(const std::string& name, SimpleDBus::Holder options) {
+    return std::make_unique<Interface>(_conn, _bus_name, _path, name);
 }
 
 std::shared_ptr<Proxy> Proxy::path_create(const std::string& path) {
@@ -20,7 +20,7 @@ std::string Proxy::path() const { return _path; }
 
 const std::map<std::string, std::shared_ptr<Proxy>>& Proxy::children() { return _children; }
 
-const std::map<std::string, std::shared_ptr<BasicInterface>>& Proxy::interfaces() { return _interfaces; }
+const std::map<std::string, std::shared_ptr<Interface>>& Proxy::interfaces() { return _interfaces; }
 
 // ----- INTERFACE HANDLING -----
 
@@ -170,7 +170,23 @@ void Proxy::message_handle(Message msg) {}
 void Proxy::message_forward(Message& msg) {
     // If the message is for the current proxy, then forward it to the message handler.
     if (msg.get_path() == _path) {
-        message_handle(msg);
+        // If the message is involves a property change, forward it to the correct interface.
+        if (msg.is_signal("org.freedesktop.DBus.Properties", "PropertiesChanged")) {
+            Holder interface = msg.extract();
+            msg.extract_next();
+            Holder changed_properties = msg.extract();
+            msg.extract_next();
+            Holder invalidated_properties = msg.extract();
+
+            // If the interface is not loaded, then ignore the message.
+            if (_interfaces.find(interface.get_string()) != _interfaces.end()) {
+                _interfaces[interface.get_string()]->signal_property_changed(changed_properties,
+                                                                             invalidated_properties);
+            }
+        } else {
+            message_handle(msg);
+        }
+
         return;
     }
 

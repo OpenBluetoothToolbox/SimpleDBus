@@ -1,6 +1,6 @@
 #pragma once
 
-#include <simpledbus/base/BasicInterface.h>
+#include <simpledbus/base/Interface.h>
 
 #include <memory>
 #include <string>
@@ -14,9 +14,9 @@ class Proxy {
     std::string path() const;
 
     const std::map<std::string, std::shared_ptr<Proxy>>& children();
-    const std::map<std::string, std::shared_ptr<BasicInterface>>& interfaces();
+    const std::map<std::string, std::shared_ptr<Interface>>& interfaces();
 
-    virtual std::shared_ptr<BasicInterface> interfaces_create(const std::string& name, Holder options);
+    virtual std::shared_ptr<Interface> interfaces_create(const std::string& name, Holder options);
     virtual std::shared_ptr<Proxy> path_create(const std::string& path);
 
     // ----- INTERFACE HANDLING -----
@@ -39,7 +39,7 @@ class Proxy {
     std::string _path;
     std::string _bus_name;
     std::shared_ptr<Connection> _conn;
-    std::map<std::string, std::shared_ptr<BasicInterface>> _interfaces;
+    std::map<std::string, std::shared_ptr<Interface>> _interfaces;
     std::map<std::string, std::shared_ptr<Proxy>> _children;
 };
 

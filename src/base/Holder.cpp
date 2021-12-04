@@ -363,22 +363,22 @@ Holder Holder::create_double(double value) {
     h.holder_double = value;
     return h;
 }
-Holder Holder::create_string(const char* str) {
+Holder Holder::create_string(const std::string& str) {
     Holder h;
     h._type = STRING;
-    h.holder_string = std::string(str);
+    h.holder_string = str;
     return h;
 }
-Holder Holder::create_object_path(const char* str) {
+Holder Holder::create_object_path(const std::string& str) {
     Holder h;
     h._type = OBJ_PATH;
-    h.holder_string = std::string(str);
+    h.holder_string = str;
     return h;
 }
-Holder Holder::create_signature(const char* str) {
+Holder Holder::create_signature(const std::string& str) {
     Holder h;
     h._type = SIGNATURE;
-    h.holder_string = std::string(str);
+    h.holder_string = str;
     return h;
 }
 Holder Holder::create_array() {

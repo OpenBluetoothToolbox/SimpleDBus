@@ -7,7 +7,7 @@ using namespace SimpleDBus;
 using namespace SimpleDBus::Interfaces;
 
 Properties::Properties(std::shared_ptr<Connection> conn, std::string bus_name, std::string path)
-    : BasicInterface(conn, bus_name, path, "org.freedesktop.DBus.Properties") {}
+    : Interface(conn, bus_name, path, "org.freedesktop.DBus.Properties") {}
 
 Properties::~Properties() {}
 

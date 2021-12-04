@@ -1,6 +1,6 @@
 #pragma once
 
-#include <simpledbus/base/BasicInterface.h>
+#include <simpledbus/base/Interface.h>
 
 #include <functional>
 
@@ -8,7 +8,7 @@ namespace SimpleDBus {
 
 namespace Interfaces {
 
-class Properties : public BasicInterface {
+class Properties : public Interface {
   public:
     Properties(std::shared_ptr<Connection> conn, std::string bus_name, std::string path);
     virtual ~Properties();

@@ -4,7 +4,7 @@
 using namespace SimpleDBus;
 
 ObjectManager::ObjectManager(std::shared_ptr<Connection> conn, std::string bus_name, std::string path)
-    : BasicInterface(conn, bus_name, path, "org.freedesktop.DBus.ObjectManager") {}
+    : Interface(conn, bus_name, path, "org.freedesktop.DBus.ObjectManager") {}
 
 ObjectManager::~ObjectManager() {}
 
