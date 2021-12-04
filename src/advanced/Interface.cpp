@@ -3,7 +3,7 @@
 using namespace SimpleDBus;
 
 Interface::Interface(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path,
-                               const std::string& interface_name)
+                     const std::string& interface_name)
     : _conn(conn), _bus_name(bus_name), _path(path), _interface_name(interface_name), _loaded(true) {}
 
 // ----- LIFE CYCLE -----
@@ -22,7 +22,9 @@ Message Interface::create_method_call(const std::string& method_name) {
 
 // ----- PROPERTIES -----
 
-void Interface::signal_property_changed(Holder changed_properties, Holder invalidated_properties) {}
+void Interface::property_changed(std::string option_name, Holder value) {}
+
+void Interface::property_removed(std::string option_name) {}
 
 Holder Interface::property_get_all() {
     Message query_msg = Message::create_method_call(_bus_name, _path, _interface_name, "GetAll");
@@ -61,4 +63,18 @@ void Interface::property_set(const std::string& property_name, const Holder& val
     query_msg.append_argument(value, "v");
 
     _conn->send_with_reply_and_block(query_msg);
+}
+
+// ----- SIGNALS -----
+
+void Interface::signal_property_changed(Holder changed_properties, Holder invalidated_properties) {
+    auto changed_options = changed_properties.get_dict_string();
+    for (auto& [name, value] : changed_options) {
+        this->property_changed(name, value);
+    }
+
+    auto removed_options = invalidated_properties.get_array();
+    for (auto& removed_option : removed_options) {
+        this->property_removed(removed_option.get_string());
+    }
 }
