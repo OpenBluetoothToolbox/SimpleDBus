@@ -1,6 +1,6 @@
 #pragma once
 
-#include <simpledbus/base/Interface.h>
+#include <simpledbus/advanced/Interface.h>
 
 #include <memory>
 #include <string>

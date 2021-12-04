@@ -6,7 +6,7 @@
 using namespace SimpleDBus;
 
 Introspectable::Introspectable(std::shared_ptr<Connection> conn, std::string bus_name, std::string path)
-    : Interface(conn, bus_name, path, "org.freedesktop.DBus.Introspectable") {}
+    : _conn(conn), _bus_name(bus_name), _path(path), _interface_name("org.freedesktop.DBus.Introspectable") {}
 
 Introspectable::~Introspectable() {}
 
