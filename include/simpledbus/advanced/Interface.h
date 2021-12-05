@@ -3,6 +3,7 @@
 #include <simpledbus/base/Connection.h>
 
 #include <memory>
+#include <mutex>
 #include <string>
 
 namespace SimpleDBus {
@@ -41,6 +42,8 @@ class Interface {
     std::string _bus_name;
     std::string _interface_name;
     std::shared_ptr<Connection> _conn;
+
+    std::recursive_mutex _property_update_mutex;
 };
 
 }  // namespace SimpleDBus

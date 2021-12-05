@@ -22,10 +22,6 @@ Message Interface::create_method_call(const std::string& method_name) {
 
 // ----- PROPERTIES -----
 
-void Interface::property_changed(std::string option_name, Holder value) {}
-
-void Interface::property_removed(std::string option_name) {}
-
 Holder Interface::property_get_all() {
     Message query_msg = Message::create_method_call(_bus_name, _path, _interface_name, "GetAll");
 
@@ -65,9 +61,14 @@ void Interface::property_set(const std::string& property_name, const Holder& val
     _conn->send_with_reply_and_block(query_msg);
 }
 
+void Interface::property_changed(std::string option_name, Holder value) {}
+
+void Interface::property_removed(std::string option_name) {}
+
 // ----- SIGNALS -----
 
 void Interface::signal_property_changed(Holder changed_properties, Holder invalidated_properties) {
+    _property_update_mutex.lock();
     auto changed_options = changed_properties.get_dict_string();
     for (auto& [name, value] : changed_options) {
         this->property_changed(name, value);
@@ -77,4 +78,5 @@ void Interface::signal_property_changed(Holder changed_properties, Holder invali
     for (auto& removed_option : removed_options) {
         this->property_removed(removed_option.get_string());
     }
+    _property_update_mutex.unlock();
 }
