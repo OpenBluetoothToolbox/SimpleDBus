@@ -21,7 +21,6 @@ class Interface {
     bool is_loaded() const;
 
     // ----- METHODS -----
-
     Message create_method_call(const std::string& method_name);
 
     // ----- PROPERTIES -----
