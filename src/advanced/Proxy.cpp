@@ -183,8 +183,8 @@ void Proxy::message_forward(Message& msg) {
                 _interfaces[interface.get_string()]->signal_property_changed(changed_properties,
                                                                              invalidated_properties);
             }
-        } else {
-            message_handle(msg);
+        } else if (_interfaces.find(msg.get_interface()) != _interfaces.end()) {
+            _interfaces[msg.get_interface()]->message_handle(msg);
         }
 
         return;

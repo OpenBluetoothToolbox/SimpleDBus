@@ -34,6 +34,9 @@ class Interface {
     // ----- SIGNALS -----
     void signal_property_changed(Holder changed_properties, Holder invalidated_properties);
 
+    // ----- MESSAGES -----
+    virtual void message_handle(Message msg);
+
   protected:
     bool _loaded{true};
 
