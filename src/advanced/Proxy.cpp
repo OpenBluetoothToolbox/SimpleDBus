@@ -165,8 +165,6 @@ bool Proxy::path_prune() {
 }
 
 // ----- MESSAGE HANDLING -----
-void Proxy::message_handle(Message msg) {}
-
 void Proxy::message_forward(Message& msg) {
     // If the message is for the current proxy, then forward it to the message handler.
     if (msg.get_path() == _path) {

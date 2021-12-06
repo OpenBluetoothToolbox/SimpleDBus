@@ -32,7 +32,6 @@ class Proxy {
     bool path_prune();
 
     // ----- MESSAGE HANDLING -----
-    virtual void message_handle(Message msg);
     void message_forward(Message& msg);
 
   protected:
