@@ -17,6 +17,8 @@ class ObjectManager : public Interface {
     std::function<void(std::string path, Holder options)> InterfacesRemoved;
 
     bool process_received_signal(Message& message);
+
+    void message_handle(Message msg) override;
 };
 
 }  // namespace SimpleDBus
