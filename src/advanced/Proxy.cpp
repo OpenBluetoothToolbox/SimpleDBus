@@ -190,7 +190,15 @@ void Proxy::message_forward(Message& msg) {
 
     // If the message is for a child proxy or a descendant, forward it to that child proxy.
     for (auto& [child_path, child] : _children) {
-        if (child_path == msg.get_path() || Path::is_descendant(child_path, msg.get_path())) {
+        if (child_path == msg.get_path()) {
+            child->message_forward(msg);
+
+            if (msg.get_type() == Message::Type::SIGNAL) {
+                on_child_signal_received(child_path);
+            }
+
+            return;
+        } else if (Path::is_descendant(child_path, msg.get_path())) {
             child->message_forward(msg);
             return;
         }

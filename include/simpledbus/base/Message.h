@@ -14,16 +14,16 @@ namespace SimpleDBus {
 class Connection;
 class Interface;
 
-typedef enum {
-    INVALID = DBUS_MESSAGE_TYPE_INVALID,
-    METHOD_CALL = DBUS_MESSAGE_TYPE_METHOD_CALL,
-    METHOD_RETURN = DBUS_MESSAGE_TYPE_METHOD_RETURN,
-    ERROR = DBUS_MESSAGE_TYPE_ERROR,
-    SIGNAL = DBUS_MESSAGE_TYPE_SIGNAL,
-} MessageType;
-
 class Message {
   public:
+    typedef enum {
+        INVALID = DBUS_MESSAGE_TYPE_INVALID,
+        METHOD_CALL = DBUS_MESSAGE_TYPE_METHOD_CALL,
+        METHOD_RETURN = DBUS_MESSAGE_TYPE_METHOD_RETURN,
+        ERROR = DBUS_MESSAGE_TYPE_ERROR,
+        SIGNAL = DBUS_MESSAGE_TYPE_SIGNAL,
+    } Type;
+
     Message();
     Message(DBusMessage* msg);
     Message(Message&& other);                  // Custom move constructor
@@ -46,7 +46,7 @@ class Message {
     std::string get_signature();
     std::string get_interface();
     std::string get_path();
-    MessageType get_type();
+    Type get_type();
 
     bool is_signal(std::string interface, std::string signal_name);
 

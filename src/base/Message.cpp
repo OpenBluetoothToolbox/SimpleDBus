@@ -305,16 +305,16 @@ std::string Message::get_signature() {
     }
 }
 
-MessageType Message::get_type() {
+Message::Type Message::get_type() {
     if (is_valid()) {
-        return (MessageType)dbus_message_get_type(_msg);
+        return (Message::Type)dbus_message_get_type(_msg);
     } else {
-        return MessageType::INVALID;
+        return Message::Type::INVALID;
     }
 }
 
 std::string Message::get_path() {
-    if (is_valid() && get_type() == MessageType::SIGNAL) {
+    if (is_valid() && get_type() == Message::Type::SIGNAL) {
         return dbus_message_get_path(_msg);
     } else {
         return "";

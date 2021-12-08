@@ -11,9 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Exceptions for error detection and handling.
 - Proxy object to generalize path and message handling.
 - Interface object with advanced features to generalize common functionality.
+- Generic callback class to generalize callback functionality.
 
 ### Changed
 - Log levels use now a sane naming convention.
 - Default logging level can be set during build time.
 - Holders containing dictionaries can now support any generic key type.
-- All interfaces now inherit from a base class.
+- Message types are now part of the class and not a separate enum.
+

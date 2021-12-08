@@ -1,6 +1,7 @@
 #pragma once
 
 #include <simpledbus/advanced/Interface.h>
+#include <simpledbus/advanced/Callback.h>
 
 #include <memory>
 #include <string>
@@ -33,6 +34,9 @@ class Proxy {
 
     // ----- MESSAGE HANDLING -----
     void message_forward(Message& msg);
+
+    // ----- CALLBACKS -----
+    Callback<std::function<void(std::string)>, std::string> on_child_signal_received;
 
   protected:
     std::string _path;
