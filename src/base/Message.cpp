@@ -290,6 +290,7 @@ void Message::_append_argument(DBusMessageIter* iter, Holder& argument, std::str
 void Message::append_argument(Holder argument, std::string signature) {
     dbus_message_iter_init_append(_msg, &_iter);
     _append_argument(&_iter, argument, signature);
+    _arguments.push_back(argument);
 }
 
 int32_t Message::get_unique_id() { return _unique_id; }
