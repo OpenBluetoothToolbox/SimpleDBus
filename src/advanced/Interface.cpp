@@ -62,7 +62,9 @@ void Interface::property_set(const std::string& property_name, const Holder& val
 }
 
 void Interface::property_refresh(const std::string& property_name) {
-    property_changed(property_name, property_get(property_name));
+    if (_loaded) {
+        property_changed(property_name, property_get(property_name));
+    }
 }
 
 void Interface::property_changed(std::string option_name, Holder value) {}
