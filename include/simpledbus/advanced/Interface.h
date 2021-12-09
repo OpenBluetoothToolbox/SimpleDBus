@@ -5,6 +5,7 @@
 #include <memory>
 #include <mutex>
 #include <string>
+#include <map>
 
 namespace SimpleDBus {
 
@@ -47,6 +48,7 @@ class Interface {
     std::shared_ptr<Connection> _conn;
 
     std::recursive_mutex _property_update_mutex;
+    std::map<std::string, bool> _property_valid_map;
 };
 
 }  // namespace SimpleDBus

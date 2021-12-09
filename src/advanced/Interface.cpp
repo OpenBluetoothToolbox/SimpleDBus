@@ -62,7 +62,7 @@ void Interface::property_set(const std::string& property_name, const Holder& val
 }
 
 void Interface::property_refresh(const std::string& property_name) {
-    if (_loaded) {
+    if (_loaded && _property_valid_map[property_name]) {
         property_changed(property_name, property_get(property_name));
     }
 }
@@ -77,11 +77,13 @@ void Interface::signal_property_changed(Holder changed_properties, Holder invali
     _property_update_mutex.lock();
     auto changed_options = changed_properties.get_dict_string();
     for (auto& [name, value] : changed_options) {
-        this->property_changed(name, value);
+        property_changed(name, value);
+        _property_valid_map[name] = true;
     }
 
     auto removed_options = invalidated_properties.get_array();
     for (auto& removed_option : removed_options) {
+        _property_valid_map[removed_option.get_string()] = false;
         this->property_removed(removed_option.get_string());
     }
     _property_update_mutex.unlock();
