@@ -46,7 +46,7 @@ class Message {
     std::string get_signature();
     std::string get_interface();
     std::string get_path();
-    Type get_type();
+    Type get_type() const;
 
     bool is_signal(std::string interface, std::string signal_name);
 
@@ -74,6 +74,8 @@ class Message {
 
     void _invalidate();
     void _safe_delete();
+
+    std::vector<Holder> _arguments;
 };
 
 }  // namespace SimpleDBus

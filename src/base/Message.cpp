@@ -53,6 +53,7 @@ Message::Message(Message&& other) : Message() {
     this->_extracted = other._extracted;
     this->_msg = other._msg;
     this->_iter = other._iter;
+    this->_arguments = other._arguments;
 
     // Invalidate the old message.
     other._invalidate();
@@ -68,6 +69,7 @@ Message::Message(const Message& other) : Message() {
         this->_unique_id = creation_counter++;
         this->_is_extracted = other._is_extracted;
         this->_extracted = other._extracted;
+        this->_arguments = other._arguments;
         this->_msg = dbus_message_copy(other._msg);
     }
 }
@@ -85,6 +87,7 @@ Message& Message::operator=(Message&& other) {
         this->_extracted = other._extracted;
         this->_msg = other._msg;
         this->_iter = other._iter;
+        this->_arguments = other._arguments;
 
         // Invalidate the old message.
         other._invalidate();
@@ -105,6 +108,7 @@ Message& Message::operator=(const Message& other) {
             this->_unique_id = creation_counter++;
             this->_is_extracted = other._is_extracted;
             this->_extracted = other._extracted;
+            this->_arguments = other._arguments;
             this->_msg = dbus_message_copy(other._msg);
         }
     }
@@ -125,6 +129,7 @@ void Message::_invalidate() {
     // For older versions of DBus, DBUS_MESSAGE_ITER_INIT_CLOSED is not defined.
     this->_iter = DBusMessageIter();
 #endif
+    this->_arguments.clear();
 }
 
 void Message::_safe_delete() {
@@ -305,7 +310,7 @@ std::string Message::get_signature() {
     }
 }
 
-Message::Type Message::get_type() {
+Message::Type Message::get_type() const {
     if (is_valid()) {
         return (Message::Type)dbus_message_get_type(_msg);
     } else {
@@ -366,8 +371,15 @@ std::string Message::to_string() const {
     oss << "[" << _unique_id << "] " << type_to_name(dbus_message_get_type(_msg));
     oss << "[" << sender << "->" << destination << "] ";
     oss << dbus_message_get_path(_msg) << " " << dbus_message_get_interface(_msg) << " "
-        << dbus_message_get_member(_msg) << " ";
+        << dbus_message_get_member(_msg);
 
+    if (get_type() == Message::Type::METHOD_CALL) {
+        oss << std::endl;
+        oss << "Arguments: " << std::endl;
+        for (auto arg : _arguments) {
+            oss << arg.represent() << std::endl;
+        }
+    }
     return oss.str();
 }
 
