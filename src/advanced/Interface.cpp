@@ -61,6 +61,10 @@ void Interface::property_set(const std::string& property_name, const Holder& val
     _conn->send_with_reply_and_block(query_msg);
 }
 
+void Interface::property_refresh(const std::string& property_name) {
+    property_changed(property_name, property_get(property_name));
+}
+
 void Interface::property_changed(std::string option_name, Holder value) {}
 
 void Interface::property_removed(std::string option_name) {}

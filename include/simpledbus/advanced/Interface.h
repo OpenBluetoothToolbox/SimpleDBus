@@ -30,6 +30,7 @@ class Interface {
     Holder property_get_all();
     Holder property_get(const std::string& property_name);
     void property_set(const std::string& property_name, const Holder& value);
+    void property_refresh(const std::string& property_name);
 
     // ----- SIGNALS -----
     void signal_property_changed(Holder changed_properties, Holder invalidated_properties);
