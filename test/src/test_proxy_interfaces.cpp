@@ -11,6 +11,8 @@ TEST(ProxyInterfaces, LoadInterfaces) {
     Proxy h = Proxy(nullptr, "", "/");
     EXPECT_FALSE(h.interfaces_loaded());
 
+    // TODO: Check that all properties of the interface are correctly loaded.
+
     h.interfaces_load(managed_interfaces);
 
     EXPECT_TRUE(h.interfaces_loaded());

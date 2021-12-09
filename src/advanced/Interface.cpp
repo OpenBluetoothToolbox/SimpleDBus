@@ -8,7 +8,17 @@ Interface::Interface(std::shared_ptr<Connection> conn, const std::string& bus_na
 
 // ----- LIFE CYCLE -----
 
-void Interface::load(Holder options) { _loaded = true; }
+void Interface::load(Holder options) {
+    _loaded = true;
+    
+    _property_update_mutex.lock();
+    auto changed_options = options.get_dict_string();
+    for (auto& [name, value] : changed_options) {
+        property_changed(name, value);
+        _property_valid_map[name] = true;
+    }
+    _property_update_mutex.unlock();
+}
 
 void Interface::unload() { _loaded = false; }
 

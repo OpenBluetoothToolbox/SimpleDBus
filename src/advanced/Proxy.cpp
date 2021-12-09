@@ -37,12 +37,12 @@ size_t Proxy::interfaces_count() const {
 void Proxy::interfaces_load(Holder managed_interfaces) {
     auto managed_interface = managed_interfaces.get_dict_string();
     for (auto& [iface_name, options] : managed_interface) {
-        // If the interface is already in the map, notify the object that it needs to reset itself.
-        if (_interfaces.find(iface_name) != _interfaces.end()) {
-            _interfaces[iface_name]->load(options);
-        } else {
+        // If the interface has not been loaded, load it
+        if (_interfaces.find(iface_name) == _interfaces.end()) {
             _interfaces.emplace(std::make_pair(iface_name, interfaces_create(iface_name, options)));
         }
+
+        _interfaces[iface_name]->load(options);
     }
 }
 
