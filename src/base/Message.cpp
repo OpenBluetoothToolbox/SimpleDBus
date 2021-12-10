@@ -149,7 +149,7 @@ void Message::_append_argument(DBusMessageIter* iter, Holder& argument, std::str
             break;
         }
         case DBUS_TYPE_BOOLEAN: {
-            bool value = argument.get_boolean();
+            uint32_t value = static_cast<uint32_t>(argument.get_boolean());
             dbus_message_iter_append_basic(iter, DBUS_TYPE_BOOLEAN, &value);
             break;
         }

@@ -2,10 +2,10 @@
 
 #include <simpledbus/base/Connection.h>
 
+#include <map>
 #include <memory>
 #include <mutex>
 #include <string>
-#include <map>
 
 namespace SimpleDBus {
 
@@ -25,8 +25,7 @@ class Interface {
     Message create_method_call(const std::string& method_name);
 
     // ----- PROPERTIES -----
-    virtual void property_changed(std::string option_name, Holder value);
-    virtual void property_removed(std::string option_name);
+    virtual void property_changed(std::string option_name);
 
     Holder property_get_all();
     Holder property_get(const std::string& property_name);
@@ -49,6 +48,7 @@ class Interface {
 
     std::recursive_mutex _property_update_mutex;
     std::map<std::string, bool> _property_valid_map;
+    std::map<std::string, Holder> _properties;
 };
 
 }  // namespace SimpleDBus

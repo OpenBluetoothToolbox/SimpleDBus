@@ -70,6 +70,13 @@ class Message {
     Holder _extract_array(DBusMessageIter* iter);
     Holder _extract_dict(DBusMessageIter* iter);
     Holder _extract_generic(DBusMessageIter* iter);
+
+    /**
+     * @brief Append argument to the DBus message iterator.
+     * @param iter      DBus message iterator.
+     * @param argument  Argument to append.
+     * @param signature Signature of the argument.
+     */
     void _append_argument(DBusMessageIter* iter, Holder& argument, std::string signature);
 
     void _invalidate();

@@ -52,6 +52,7 @@ class Holder {
     static Holder create_array();
     static Holder create_dict();
 
+    // TODO: These should all be const
     std::any get_contents();
     bool get_boolean();
     uint8_t get_byte();

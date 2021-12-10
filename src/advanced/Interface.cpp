@@ -1,4 +1,5 @@
 #include <simpledbus/advanced/Interface.h>
+#include <simpledbus/base/Exceptions.h>
 
 using namespace SimpleDBus;
 
@@ -10,11 +11,11 @@ Interface::Interface(std::shared_ptr<Connection> conn, const std::string& bus_na
 
 void Interface::load(Holder options) {
     _loaded = true;
-    
+
     _property_update_mutex.lock();
     auto changed_options = options.get_dict_string();
     for (auto& [name, value] : changed_options) {
-        property_changed(name, value);
+        _properties[name] = value;
         _property_valid_map[name] = true;
     }
     _property_update_mutex.unlock();
@@ -73,13 +74,20 @@ void Interface::property_set(const std::string& property_name, const Holder& val
 
 void Interface::property_refresh(const std::string& property_name) {
     if (_loaded && _property_valid_map[property_name]) {
-        property_changed(property_name, property_get(property_name));
+        // NOTE: Due to the way Bluez handles underlying devices and the fact that
+        //       they can be removed before the callback reaches back (race condition),
+        //       `property_get` can sometimes fail. Because of this, the update
+        //       statement is surrounded by a try-catch statement.
+        try {
+            _properties[property_name] = property_get(property_name);
+            _property_valid_map[property_name] = true;
+        } catch (const Exception::SendFailed& e) {
+            _property_valid_map[property_name] = true;
+        }
     }
 }
 
-void Interface::property_changed(std::string option_name, Holder value) {}
-
-void Interface::property_removed(std::string option_name) {}
+void Interface::property_changed(std::string option_name) {}
 
 // ----- SIGNALS -----
 
@@ -87,16 +95,21 @@ void Interface::signal_property_changed(Holder changed_properties, Holder invali
     _property_update_mutex.lock();
     auto changed_options = changed_properties.get_dict_string();
     for (auto& [name, value] : changed_options) {
-        property_changed(name, value);
+        _properties[name] = value;
         _property_valid_map[name] = true;
+        property_changed(name);
     }
 
     auto removed_options = invalidated_properties.get_array();
     for (auto& removed_option : removed_options) {
         _property_valid_map[removed_option.get_string()] = false;
-        this->property_removed(removed_option.get_string());
     }
     _property_update_mutex.unlock();
+
+    // Once all properties have been updated, launch all notifications.
+    for (auto& [name, value] : changed_options) {
+        property_changed(name);
+    }
 }
 
 // ----- MESSAGES -----
