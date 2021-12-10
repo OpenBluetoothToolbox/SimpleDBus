@@ -378,7 +378,7 @@ std::string Message::to_string() const {
         oss << std::endl;
         oss << "Arguments: " << std::endl;
         for (auto arg : _arguments) {
-            oss << arg.represent() << std::endl;
+            oss << arg.represent();
         }
     }
     return oss.str();
