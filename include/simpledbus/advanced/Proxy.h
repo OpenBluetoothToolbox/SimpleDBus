@@ -36,6 +36,7 @@ class Proxy {
     void message_forward(Message& msg);
 
     // ----- CALLBACKS -----
+    Callback<std::function<void(std::string)>, std::string> on_child_created;
     Callback<std::function<void(std::string)>, std::string> on_child_signal_received;
 
   protected:

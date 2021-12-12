@@ -3,7 +3,7 @@
 #include <functional>
 #include <memory>
 #include <mutex>
-#include <string>
+#include <atomic>
 
 namespace SimpleDBus {
 
@@ -15,8 +15,9 @@ class Callback {
     void operator()(params... args);
 
   protected:
-    std::recursive_mutex _mutex;
     T _callback;
+    std::recursive_mutex _mutex;
+    std::atomic_bool _is_running;
 };
 
 }  // namespace SimpleDBus

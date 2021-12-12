@@ -92,6 +92,7 @@ void Proxy::path_add(const std::string& path, SimpleDBus::Holder managed_interfa
         std::shared_ptr<Proxy> child = path_create(path);
         child->interfaces_load(managed_interfaces);
         _children.emplace(std::make_pair(path, child));
+        on_child_created(path);
     } else {
         // If the new path is for a descendant of the current proxy, check if there is a child proxy for it.
         auto child_result = std::find_if(
@@ -110,6 +111,7 @@ void Proxy::path_add(const std::string& path, SimpleDBus::Holder managed_interfa
             std::shared_ptr<Proxy> child = path_create(child_path);
             _children.emplace(std::make_pair(child_path, child));
             child->path_add(path, managed_interfaces);
+            on_child_created(child_path);
         }
     }
 }

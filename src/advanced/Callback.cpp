@@ -2,6 +2,8 @@
 
 using namespace SimpleDBus;
 
+// TODO: Make a complete implementation that allows callback changes to be scheduled to prevent lockups.
+
 template <typename T, typename... params>
 void Callback<T, params...>::load(T callback) {
     _mutex.lock();
@@ -20,7 +22,9 @@ template <typename T, typename... params>
 void Callback<T, params...>::operator()(params... args) {
     _mutex.lock();
     if (_callback) {
+        _is_running = true;
         _callback(args...);
+        _is_running = false;
     }
     _mutex.unlock();
 }
