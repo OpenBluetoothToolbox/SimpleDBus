@@ -19,6 +19,11 @@ void Interface::load(Holder options) {
         _property_valid_map[name] = true;
     }
     _property_update_mutex.unlock();
+
+    // Notify the user of all properties that have been created.
+    for (auto& [name, value] : changed_options) {
+        property_changed(name);
+    }
 }
 
 void Interface::unload() { _loaded = false; }
@@ -73,17 +78,27 @@ void Interface::property_set(const std::string& property_name, const Holder& val
 }
 
 void Interface::property_refresh(const std::string& property_name) {
-    if (_loaded && _property_valid_map[property_name]) {
+    if (!_loaded || !_property_valid_map[property_name]) {
+        return;
+    }
+
+    bool update_successfull = false;
+    _property_update_mutex.lock();
+    try {
         // NOTE: Due to the way Bluez handles underlying devices and the fact that
         //       they can be removed before the callback reaches back (race condition),
         //       `property_get` can sometimes fail. Because of this, the update
         //       statement is surrounded by a try-catch statement.
-        try {
-            _properties[property_name] = property_get(property_name);
-            _property_valid_map[property_name] = true;
-        } catch (const Exception::SendFailed& e) {
-            _property_valid_map[property_name] = true;
-        }
+        _properties[property_name] = property_get(property_name);
+        _property_valid_map[property_name] = true;
+        update_successfull = true;
+    } catch (const Exception::SendFailed& e) {
+        _property_valid_map[property_name] = true;
+    }
+    _property_update_mutex.unlock();
+
+    if (update_successfull) {
+        property_changed(property_name);
     }
 }
 
@@ -106,7 +121,7 @@ void Interface::signal_property_changed(Holder changed_properties, Holder invali
     }
     _property_update_mutex.unlock();
 
-    // Once all properties have been updated, launch all notifications.
+    // Once all properties have been updated, notify the user.
     for (auto& [name, value] : changed_options) {
         property_changed(name);
     }
