@@ -8,7 +8,7 @@ using namespace SimpleDBus;
 Proxy::Proxy(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path)
     : _conn(conn), _bus_name(bus_name), _path(path) {}
 
-std::shared_ptr<Interface> Proxy::interfaces_create(const std::string& name, SimpleDBus::Holder options) {
+std::shared_ptr<Interface> Proxy::interfaces_create(const std::string& name) {
     return std::make_unique<Interface>(_conn, _bus_name, _path, name);
 }
 
@@ -39,7 +39,7 @@ void Proxy::interfaces_load(Holder managed_interfaces) {
     for (auto& [iface_name, options] : managed_interface) {
         // If the interface has not been loaded, load it
         if (_interfaces.find(iface_name) == _interfaces.end()) {
-            _interfaces.emplace(std::make_pair(iface_name, interfaces_create(iface_name, options)));
+            _interfaces.emplace(std::make_pair(iface_name, interfaces_create(iface_name)));
         }
 
         _interfaces[iface_name]->load(options);
