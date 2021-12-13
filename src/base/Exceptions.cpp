@@ -1,5 +1,7 @@
 #include <simpledbus/base/Exceptions.h>
 
+#include <fmt/core.h>
+
 namespace SimpleDBus {
 
 namespace Exception {
