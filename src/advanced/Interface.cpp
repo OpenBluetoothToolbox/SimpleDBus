@@ -112,7 +112,6 @@ void Interface::signal_property_changed(Holder changed_properties, Holder invali
     for (auto& [name, value] : changed_options) {
         _properties[name] = value;
         _property_valid_map[name] = true;
-        property_changed(name);
     }
 
     auto removed_options = invalidated_properties.get_array();
