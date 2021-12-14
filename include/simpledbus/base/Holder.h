@@ -46,12 +46,13 @@ class Holder {
     static Holder create_int64(int64_t value);
     static Holder create_uint64(uint64_t value);
     static Holder create_double(double value);
-    static Holder create_string(const char* str);
-    static Holder create_object_path(const char* str);
-    static Holder create_signature(const char* str);
+    static Holder create_string(const std::string& str);
+    static Holder create_object_path(const std::string& str);
+    static Holder create_signature(const std::string& str);
     static Holder create_array();
     static Holder create_dict();
 
+    // TODO: These should all be const
     std::any get_contents();
     bool get_boolean();
     uint8_t get_byte();

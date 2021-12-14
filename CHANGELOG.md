@@ -9,8 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Testing framework.
 - Exceptions for error detection and handling.
+- Proxy object to generalize path and message handling.
+- Interface object with advanced features to generalize common functionality.
+- Generic callback class to generalize callback functionality.
 
 ### Changed
 - Log levels use now a sane naming convention.
 - Default logging level can be set during build time.
 - Holders containing dictionaries can now support any generic key type.
+- Message types are now part of the class and not a separate enum.
+
+### Removed
+- Legacy implementations of Property and Introspection.

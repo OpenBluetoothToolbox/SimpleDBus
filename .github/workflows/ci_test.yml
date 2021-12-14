@@ -21,7 +21,7 @@ jobs:
             DEBIAN_FRONTEND: noninteractive  
         run: |
           sudo -H apt-get update -y
-          sudo -H apt-get install -y dbus libdbus-1-dev python3-dev libgtest-dev
+          sudo -H apt-get install -y dbus libdbus-1-dev python3-dev libgtest-dev libgmock-dev
           sudo -H pip3 install -r $GITHUB_WORKSPACE/test/requirements.txt
       - name: Start DBus
         run: |

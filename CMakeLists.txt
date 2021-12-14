@@ -74,8 +74,8 @@ set_property(TARGET simpledbus PROPERTY CXX_STANDARD 17)
 set_property(TARGET simpledbus-static PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET simpledbus PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-target_compile_options(simpledbus-static PRIVATE -Wfatal-errors -Wpedantic -O3)
-target_compile_options(simpledbus PRIVATE -Wfatal-errors -Wpedantic -O3)
+target_compile_options(simpledbus-static PRIVATE -Wfatal-errors -Wpedantic -O3 -Og)
+target_compile_options(simpledbus PRIVATE -Wfatal-errors -Wpedantic -O3 -Og)
 
 target_link_libraries(simpledbus-static PUBLIC ${DBUS_LIBRARIES})
 target_link_libraries(simpledbus PUBLIC ${DBUS_LIBRARIES})
