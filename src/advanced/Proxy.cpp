@@ -22,6 +22,13 @@ const std::map<std::string, std::shared_ptr<Proxy>>& Proxy::children() { return 
 
 const std::map<std::string, std::shared_ptr<Interface>>& Proxy::interfaces() { return _interfaces; }
 
+// ----- INTROSPECTION -----
+std::string Proxy::introspect() {
+    auto query_msg = Message::create_method_call(_bus_name, _path, "org.freedesktop.DBus.Introspectable", "Introspect");
+    auto reply_msg = _conn->send_with_reply_and_block(query_msg);
+    return reply_msg.extract().get_string();
+}
+
 // ----- INTERFACE HANDLING -----
 
 size_t Proxy::interfaces_count() const {

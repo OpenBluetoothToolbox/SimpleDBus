@@ -20,6 +20,9 @@ class Proxy {
     virtual std::shared_ptr<Interface> interfaces_create(const std::string& name);
     virtual std::shared_ptr<Proxy> path_create(const std::string& path);
 
+    // ----- INTROSPECTION -----
+    std::string introspect();
+
     // ----- INTERFACE HANDLING -----
     size_t interfaces_count() const;
     bool interfaces_loaded() const;

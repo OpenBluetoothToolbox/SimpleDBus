@@ -19,3 +19,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Holders containing dictionaries can now support any generic key type.
 - Message types are now part of the class and not a separate enum.
 
+### Removed
+- Legacy implementations of Property and Introspection.
