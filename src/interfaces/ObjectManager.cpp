@@ -6,8 +6,6 @@ using namespace SimpleDBus;
 ObjectManager::ObjectManager(std::shared_ptr<Connection> conn, std::string bus_name, std::string path)
     : Interface(conn, bus_name, path, "org.freedesktop.DBus.ObjectManager") {}
 
-ObjectManager::~ObjectManager() {}
-
 Holder ObjectManager::GetManagedObjects(bool use_callbacks) {
     Message query_msg = Message::create_method_call(_bus_name, _path, _interface_name, "GetManagedObjects");
     Message reply_msg = _conn->send_with_reply_and_block(query_msg);
