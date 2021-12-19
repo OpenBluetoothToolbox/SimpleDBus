@@ -1,6 +1,5 @@
 #include <simpledbus/base/Message.h>
 
-#include <iostream>
 #include <sstream>
 
 using namespace SimpleDBus;

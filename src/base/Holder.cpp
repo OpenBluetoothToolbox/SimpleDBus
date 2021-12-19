@@ -1,6 +1,5 @@
 #include <simpledbus/base/Holder.h>
 #include <iomanip>
-#include <iostream>
 #include <sstream>
 
 #include "dbus/dbus-protocol.h"

@@ -3,7 +3,6 @@
 #include <mutex>
 
 #include <csignal>
-#include <iostream>
 
 PythonRunner::PythonRunner(const std::string& script_path) : _script_path(script_path) {
     // In order to get Python to properly find relative imports, the current location
