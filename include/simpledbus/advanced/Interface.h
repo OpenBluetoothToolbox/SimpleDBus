@@ -48,6 +48,12 @@ class Interface {
 
     std::recursive_mutex _property_update_mutex;
     std::map<std::string, bool> _property_valid_map;
+
+    /**
+     * @brief Dictionary containing all properties.
+     * 
+     * @note: When accessing this object, the _property_update_mutex must be locked.
+     */
     std::map<std::string, Holder> _properties;
 };
 
