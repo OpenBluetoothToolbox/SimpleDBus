@@ -10,6 +10,8 @@ Holder::Holder() {}
 
 Holder::~Holder() {}
 
+bool Holder::operator!=(const Holder& other) const { return !(*this == other); }
+
 bool Holder::operator==(const Holder& other) const {
     if (type() != other.type()) {
         return false;

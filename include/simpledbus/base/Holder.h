@@ -15,6 +15,7 @@ class Holder {
     Holder();
     ~Holder();
 
+    bool operator!=(const Holder& rhs) const;
     bool operator==(const Holder& rhs) const;
 
     typedef enum {

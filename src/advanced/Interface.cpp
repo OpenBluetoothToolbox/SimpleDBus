@@ -82,22 +82,20 @@ void Interface::property_refresh(const std::string& property_name) {
         return;
     }
 
-    bool update_successfull = false;
     _property_update_mutex.lock();
     try {
         // NOTE: Due to the way Bluez handles underlying devices and the fact that
         //       they can be removed before the callback reaches back (race condition),
         //       `property_get` can sometimes fail. Because of this, the update
         //       statement is surrounded by a try-catch statement.
-        _properties[property_name] = property_get(property_name);
+        Holder property_latest = property_get(property_name);
         _property_valid_map[property_name] = true;
-        update_successfull = true;
+        if (_properties[property_name] != property_latest) {
+            _properties[property_name] = property_latest;
+            property_changed(property_name);
+        }
     } catch (const Exception::SendFailed& e) {
         _property_valid_map[property_name] = true;
-    }
-
-    if (update_successfull) {
-        property_changed(property_name);
     }
     _property_update_mutex.unlock();
 }
