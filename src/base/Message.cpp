@@ -23,7 +23,7 @@ using namespace SimpleDBus;
         dbus_message_iter_close_container(&sub_iter, &entry_iter);                            \
     }
 
-int Message::creation_counter = 0;
+std::atomic_int32_t Message::creation_counter = 0;
 
 Message::Message() : Message(nullptr) {}
 

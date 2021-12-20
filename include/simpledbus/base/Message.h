@@ -2,6 +2,7 @@
 
 #include <dbus/dbus.h>
 
+#include <atomic>
 #include <stack>
 #include <string>
 #include <vector>
@@ -56,7 +57,7 @@ class Message {
   private:
     friend class Connection;
 
-    static int creation_counter;
+    static std::atomic_int32_t creation_counter;
     int indent;
 
     int _unique_id;
