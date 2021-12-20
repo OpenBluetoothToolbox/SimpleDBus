@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
 
-  test-linux:
+  test-all:
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -30,13 +30,36 @@ jobs:
         uses: jwlawson/actions-setup-cmake@v1.4
         with:
           cmake-version: "3.16.x"
-      - name: Compile tests
+      - name: Compile Unit Tests
         run: |
-          mkdir $GITHUB_WORKSPACE/build
+          mkdir -p $GITHUB_WORKSPACE/build
           cd $GITHUB_WORKSPACE/build
+          rm -rf ./*
           cmake -DCMAKE_BUILD_TYPE=Release ../test
           make -j4
-      - name: Run tests
+      - name: Run Unit Tests
+        run: |
+          cd $GITHUB_WORKSPACE/build
+          ./simpledbus_test
+      - name: Compile Unit Tests with Address Sanitizer
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/build
+          cd $GITHUB_WORKSPACE/build
+          rm -rf ./*
+          cmake -DCMAKE_BUILD_TYPE=Debug -DSIMPLEDBUS_SANITIZE=Address ../test 
+          make -j4
+      - name: Run Unit Tests with Address Sanitizer
+        run: |
+          cd $GITHUB_WORKSPACE/build
+          PYTHONMALLOC=malloc ./simpledbus_test
+      - name: Compile Unit Tests with Thread Sanitizer
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/build
+          cd $GITHUB_WORKSPACE/build
+          rm -rf ./*
+          cmake -DCMAKE_BUILD_TYPE=Debug -DSIMPLEDBUS_SANITIZE=Thread ../test
+          make -j4
+      - name: Run Unit Tests with Thread Sanitizer
         run: |
           cd $GITHUB_WORKSPACE/build
           ./simpledbus_test

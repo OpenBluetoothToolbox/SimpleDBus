@@ -87,3 +87,26 @@ target_link_libraries(simpledbus PRIVATE fmt::fmt-header-only)
 if(NOT ${STANDALONE})
     set(SIMPLEDBUS_INCLUDES ${SIMPLEDBUS_ALL_INCLUDE_DIRS} PARENT_SCOPE)
 endif()
+
+# Append additional flags for address and thread sanitization
+if(SIMPLEDBUS_SANITIZE MATCHES "Address")
+    set(SANITIZE_ADDRESS_COMPILE_OPTIONS -fsanitize=address -fsanitize-recover=address -fno-omit-frame-pointer -fno-common -g)
+    set(SANITIZE_ADDRESS_LINK_OPTIONS -fsanitize=address)
+
+    target_compile_options(simpledbus-static PUBLIC ${SANITIZE_ADDRESS_COMPILE_OPTIONS})
+    target_compile_options(simpledbus PUBLIC ${SANITIZE_ADDRESS_COMPILE_OPTIONS})
+
+    target_link_libraries(simpledbus-static PUBLIC ${SANITIZE_ADDRESS_LINK_OPTIONS})
+    target_link_libraries(simpledbus PUBLIC ${SANITIZE_ADDRESS_LINK_OPTIONS})
+endif()
+
+if(SIMPLEDBUS_SANITIZE MATCHES "Thread")
+    set(SANITIZE_THREAD_COMPILE_OPTIONS -fsanitize=thread -fno-omit-frame-pointer -fno-common -g)
+    set(SANITIZE_THREAD_LINK_OPTIONS -fsanitize=thread)
+
+    target_compile_options(simpledbus-static PUBLIC ${SANITIZE_THREAD_COMPILE_OPTIONS})
+    target_compile_options(simpledbus PUBLIC ${SANITIZE_THREAD_COMPILE_OPTIONS})
+
+    target_link_libraries(simpledbus-static PUBLIC ${SANITIZE_THREAD_LINK_OPTIONS})
+    target_link_libraries(simpledbus PUBLIC ${SANITIZE_THREAD_LINK_OPTIONS})
+endif()
