@@ -90,6 +90,7 @@ endif()
 
 # Append additional flags for address and thread sanitization
 if(SIMPLEDBUS_SANITIZE MATCHES "Address")
+    message("-- [INFO] Appending address sanitization flags")
     set(SANITIZE_ADDRESS_COMPILE_OPTIONS -fsanitize=address -fsanitize-recover=address -fno-omit-frame-pointer -fno-common -g)
     set(SANITIZE_ADDRESS_LINK_OPTIONS -fsanitize=address)
 
@@ -101,6 +102,7 @@ if(SIMPLEDBUS_SANITIZE MATCHES "Address")
 endif()
 
 if(SIMPLEDBUS_SANITIZE MATCHES "Thread")
+    message("-- [INFO] Appending thread sanitization flags")
     set(SANITIZE_THREAD_COMPILE_OPTIONS -fsanitize=thread -fno-omit-frame-pointer -fno-common -g)
     set(SANITIZE_THREAD_LINK_OPTIONS -fsanitize=thread)
 
