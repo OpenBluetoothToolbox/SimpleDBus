@@ -15,7 +15,7 @@ class Proxy {
     virtual ~Proxy() = default;
 
     std::string path() const;
-    bool interface_exists(const std::string& name) const;
+    bool interface_exists(const std::string& name);
     std::shared_ptr<Interface> interface_get(const std::string& name);
 
     const std::map<std::string, std::shared_ptr<Proxy>>& children();
@@ -28,8 +28,8 @@ class Proxy {
     std::string introspect();
 
     // ----- INTERFACE HANDLING -----
-    size_t interfaces_count() const;
-    bool interfaces_loaded() const;
+    size_t interfaces_count();
+    bool interfaces_loaded();
     void interfaces_load(Holder managed_interfaces);
     void interfaces_reload(Holder managed_interfaces);
     void interfaces_unload(Holder removed_interfaces);

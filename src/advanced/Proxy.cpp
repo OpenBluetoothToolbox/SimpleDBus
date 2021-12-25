@@ -32,7 +32,7 @@ std::string Proxy::introspect() {
 
 // ----- INTERFACE HANDLING -----
 
-bool Proxy::interface_exists(const std::string& name) const {
+bool Proxy::interface_exists(const std::string& name) {
     std::scoped_lock lock(_interface_access_mutex);
     return _interfaces.find(name) != _interfaces.end();
 }
@@ -45,7 +45,7 @@ std::shared_ptr<Interface> Proxy::interface_get(const std::string& name) {
     return _interfaces[name];
 }
 
-size_t Proxy::interfaces_count() const {
+size_t Proxy::interfaces_count() {
     size_t count = 0;
     std::scoped_lock lock(_interface_access_mutex);
     for (auto& [iface_name, interface] : _interfaces) {
@@ -89,7 +89,7 @@ void Proxy::interfaces_unload(SimpleDBus::Holder removed_interfaces) {
     }
 }
 
-bool Proxy::interfaces_loaded() const {
+bool Proxy::interfaces_loaded() {
     std::scoped_lock lock(_interface_access_mutex);
     for (auto& [iface_name, interface] : _interfaces) {
         if (interface->is_loaded()) {
