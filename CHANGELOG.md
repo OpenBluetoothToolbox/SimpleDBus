@@ -21,3 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Legacy implementations of Property and Introspection.
+
+### Fixed
+- Interface access is now thread-safe.

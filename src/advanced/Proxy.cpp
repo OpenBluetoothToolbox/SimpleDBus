@@ -1,5 +1,6 @@
 #include "simpledbus/advanced/Proxy.h"
 
+#include <simpledbus/base/Exceptions.h>
 #include <simpledbus/base/Path.h>
 #include <algorithm>
 
@@ -31,8 +32,22 @@ std::string Proxy::introspect() {
 
 // ----- INTERFACE HANDLING -----
 
+bool Proxy::interface_exists(const std::string& name) const {
+    std::scoped_lock lock(_interface_access_mutex);
+    return _interfaces.find(name) != _interfaces.end();
+}
+
+std::shared_ptr<Interface> Proxy::interface_get(const std::string& name) {
+    std::scoped_lock lock(_interface_access_mutex);
+    if (!interface_exists(name)) {
+        throw Exception::InterfaceNotFoundException(_path, name);
+    }
+    return _interfaces[name];
+}
+
 size_t Proxy::interfaces_count() const {
     size_t count = 0;
+    std::scoped_lock lock(_interface_access_mutex);
     for (auto& [iface_name, interface] : _interfaces) {
         if (interface->is_loaded()) {
             count++;
@@ -43,9 +58,11 @@ size_t Proxy::interfaces_count() const {
 
 void Proxy::interfaces_load(Holder managed_interfaces) {
     auto managed_interface = managed_interfaces.get_dict_string();
+
+    std::scoped_lock lock(_interface_access_mutex);
     for (auto& [iface_name, options] : managed_interface) {
         // If the interface has not been loaded, load it
-        if (_interfaces.find(iface_name) == _interfaces.end()) {
+        if (!interface_exists(iface_name)) {
             _interfaces.emplace(std::make_pair(iface_name, interfaces_create(iface_name)));
         }
 
@@ -54,6 +71,7 @@ void Proxy::interfaces_load(Holder managed_interfaces) {
 }
 
 void Proxy::interfaces_reload(Holder managed_interfaces) {
+    std::scoped_lock lock(_interface_access_mutex);
     for (auto& [iface_name, interface] : _interfaces) {
         interface->unload();
     }
@@ -62,15 +80,17 @@ void Proxy::interfaces_reload(Holder managed_interfaces) {
 }
 
 void Proxy::interfaces_unload(SimpleDBus::Holder removed_interfaces) {
+    std::scoped_lock lock(_interface_access_mutex);
     for (auto& option : removed_interfaces.get_array()) {
         std::string iface_name = option.get_string();
-        if (_interfaces.find(iface_name) != _interfaces.end()) {
+        if (interface_exists(iface_name)) {
             _interfaces[iface_name]->unload();
         }
     }
 }
 
 bool Proxy::interfaces_loaded() const {
+    std::scoped_lock lock(_interface_access_mutex);
     for (auto& [iface_name, interface] : _interfaces) {
         if (interface->is_loaded()) {
             return true;
@@ -179,19 +199,22 @@ void Proxy::message_forward(Message& msg) {
     if (msg.get_path() == _path) {
         // If the message is involves a property change, forward it to the correct interface.
         if (msg.is_signal("org.freedesktop.DBus.Properties", "PropertiesChanged")) {
-            Holder interface = msg.extract();
+            Holder interface_h = msg.extract();
+            std::string iface_name = interface_h.get_string();
             msg.extract_next();
             Holder changed_properties = msg.extract();
             msg.extract_next();
             Holder invalidated_properties = msg.extract();
 
             // If the interface is not loaded, then ignore the message.
-            if (_interfaces.find(interface.get_string()) != _interfaces.end()) {
-                _interfaces[interface.get_string()]->signal_property_changed(changed_properties,
-                                                                             invalidated_properties);
+            if (!interface_exists(iface_name)) {
+                return;
             }
-        } else if (_interfaces.find(msg.get_interface()) != _interfaces.end()) {
-            _interfaces[msg.get_interface()]->message_handle(msg);
+
+            interface_get(iface_name)->signal_property_changed(changed_properties, invalidated_properties);
+
+        } else if (interface_exists(msg.get_interface())) {
+            interface_get(msg.get_interface())->message_handle(msg);
         }
 
         return;

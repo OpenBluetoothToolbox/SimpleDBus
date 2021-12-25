@@ -1,9 +1,10 @@
 #pragma once
 
-#include <simpledbus/advanced/Interface.h>
 #include <simpledbus/advanced/Callback.h>
+#include <simpledbus/advanced/Interface.h>
 
 #include <memory>
+#include <mutex>
 #include <string>
 
 namespace SimpleDBus {
@@ -14,6 +15,8 @@ class Proxy {
     virtual ~Proxy() = default;
 
     std::string path() const;
+    bool interface_exists(const std::string& name) const;
+    std::shared_ptr<Interface> interface_get(const std::string& name);
 
     const std::map<std::string, std::shared_ptr<Proxy>>& children();
     const std::map<std::string, std::shared_ptr<Interface>>& interfaces();
@@ -46,9 +49,13 @@ class Proxy {
   protected:
     std::string _path;
     std::string _bus_name;
+
     std::shared_ptr<Connection> _conn;
+
     std::map<std::string, std::shared_ptr<Interface>> _interfaces;
     std::map<std::string, std::shared_ptr<Proxy>> _children;
+
+    std::recursive_mutex _interface_access_mutex;
 };
 
 }  // namespace SimpleDBus
