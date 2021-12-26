@@ -2,8 +2,6 @@
 
 using namespace SimpleDBus;
 
-// TODO: Make a complete implementation that allows callback changes to be scheduled to prevent lockups.
-
 template <typename T, typename... params>
 void Callback<T, params...>::load(T callback) {
     _mutex.lock();
@@ -13,20 +11,48 @@ void Callback<T, params...>::load(T callback) {
 
 template <typename T, typename... params>
 void Callback<T, params...>::unload() {
-    _mutex.lock();
-    _callback = nullptr;
-    _mutex.unlock();
+    if (_is_running) {
+        _delete_requested = true;
+    } else {
+        _mutex.lock();
+        _callback = nullptr;
+        _delete_requested = false;
+        _mutex.unlock();
+    }
 }
 
 template <typename T, typename... params>
 void Callback<T, params...>::operator()(params... args) {
+    _is_running = true;
     _mutex.lock();
-    if (_callback) {
-        _is_running = true;
+    if (_callback && !_delete_requested) {
         _callback(args...);
-        _is_running = false;
+    }
+    if (_delete_requested) {
+        _callback = nullptr;
+        _delete_requested = false;
     }
     _mutex.unlock();
+    _is_running = false;
+}
+
+template <typename T, typename... params>
+bool Callback<T, params...>::is_loaded() {
+    bool loaded = false;
+    _mutex.lock();
+    loaded = _callback != nullptr;
+    _mutex.unlock();
+    return loaded;
+}
+
+template <typename T, typename... params>
+bool Callback<T, params...>::is_running() {
+    return _is_running;
+}
+
+template <typename T, typename... params>
+bool Callback<T, params...>::is_delete_requested() {
+    return _delete_requested;
 }
 
 // Instantiations
