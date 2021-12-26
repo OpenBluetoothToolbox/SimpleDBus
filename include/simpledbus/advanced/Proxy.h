@@ -15,6 +15,10 @@ class Proxy {
     virtual ~Proxy() = default;
 
     std::string path() const;
+
+    bool path_exists(const std::string& path);
+    std::shared_ptr<Proxy> path_get(const std::string& path);
+
     bool interface_exists(const std::string& name);
     std::shared_ptr<Interface> interface_get(const std::string& name);
 
@@ -56,6 +60,7 @@ class Proxy {
     std::map<std::string, std::shared_ptr<Proxy>> _children;
 
     std::recursive_mutex _interface_access_mutex;
+    std::recursive_mutex _child_access_mutex;
 };
 
 }  // namespace SimpleDBus

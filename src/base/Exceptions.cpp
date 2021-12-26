@@ -28,6 +28,12 @@ InterfaceNotFoundException::InterfaceNotFoundException(const std::string& path, 
 
 const char* InterfaceNotFoundException::what() const noexcept { return _message.c_str(); }
 
+PathNotFoundException::PathNotFoundException(const std::string& path, const std::string& subpath) {
+    _message = fmt::format("Path {} does not contain sub-path {}", path, subpath);
+}
+
+const char* PathNotFoundException::what() const noexcept { return _message.c_str(); }
+
 }  // namespace Exception
 
 }  // namespace SimpleDBus

@@ -101,6 +101,19 @@ bool Proxy::interfaces_loaded() {
 
 // ----- CHILD HANDLING -----
 
+bool Proxy::path_exists(const std::string& path) {
+    std::scoped_lock lock(_child_access_mutex);
+    return _children.find(path) != _children.end();
+}
+
+std::shared_ptr<Proxy> Proxy::path_get(const std::string& path) {
+    std::scoped_lock lock(_child_access_mutex);
+    if (!path_exists(path)) {
+        throw Exception::PathNotFoundException(_path, path);
+    }
+    return _children[path];
+}
+
 void Proxy::path_add(const std::string& path, SimpleDBus::Holder managed_interfaces) {
     // If the path is not a child of the current path, then we can't add it.
     if (!Path::is_descendant(_path, path)) {
@@ -109,10 +122,13 @@ void Proxy::path_add(const std::string& path, SimpleDBus::Holder managed_interfa
     }
 
     // If the path is already in the map, perform a reload of all interfaces.
-    if (_children.find(path) != _children.end()) {
-        _children[path]->interfaces_load(managed_interfaces);
+    if (path_exists(path)) {
+        path_get(path)->interfaces_load(managed_interfaces);
         return;
     }
+
+    // As children will be extensively accessed, we need to lock the child access mutex.
+    std::scoped_lock lock(_child_access_mutex);
 
     if (Path::is_child(_path, path)) {
         // If the path is a direct child of the proxy path, create a new proxy for it.
@@ -156,9 +172,12 @@ bool Proxy::path_remove(const std::string& path, SimpleDBus::Holder options) {
         return false;
     }
 
+    // As children will be extensively accessed, we need to lock the child access mutex.
+    std::scoped_lock lock(_child_access_mutex);
+
     // If the path is a direct child of the proxy path, forward the request to the child proxy.
     std::string child_path = Path::next_child(_path, path);
-    if (_children.find(child_path) != _children.end()) {
+    if (path_exists(child_path)) {
         bool must_erase = _children.at(child_path)->path_remove(path, options);
 
         // if the child proxy is no longer needed and there is only one active instance of the child proxy,
@@ -172,6 +191,9 @@ bool Proxy::path_remove(const std::string& path, SimpleDBus::Holder options) {
 }
 
 bool Proxy::path_prune() {
+    // As children will be extensively accessed, we need to lock the child access mutex.
+    std::scoped_lock lock(_child_access_mutex);
+
     // For each child proxy, check if it can be pruned.
     std::vector<std::string> to_remove;
     for (auto& [child_path, child] : _children) {

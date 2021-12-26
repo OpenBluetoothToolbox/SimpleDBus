@@ -24,3 +24,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Interface access is now thread-safe.
+- Proxy access is now thread-safe.
