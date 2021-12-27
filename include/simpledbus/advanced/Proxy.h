@@ -22,6 +22,8 @@ class Proxy {
     bool interface_exists(const std::string& name);
     std::shared_ptr<Interface> interface_get(const std::string& name);
 
+    template <typename T>
+    std::vector<std::shared_ptr<T>> children_casted();
     const std::map<std::string, std::shared_ptr<Proxy>>& children();
     const std::map<std::string, std::shared_ptr<Interface>>& interfaces();
 
@@ -42,9 +44,6 @@ class Proxy {
     void path_add(const std::string& path, Holder managed_interfaces);
     bool path_remove(const std::string& path, Holder removed_interfaces);
     bool path_prune();
-
-    template <typename T>
-    std::vector<std::shared_ptr<T>> path_get_casted();
 
     // ----- MESSAGE HANDLING -----
     void message_forward(Message& msg);
