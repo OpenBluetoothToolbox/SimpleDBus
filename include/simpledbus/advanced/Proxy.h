@@ -43,6 +43,9 @@ class Proxy {
     bool path_remove(const std::string& path, Holder removed_interfaces);
     bool path_prune();
 
+    template <typename T>
+    std::vector<std::shared_ptr<T>> path_get_casted();
+
     // ----- MESSAGE HANDLING -----
     void message_forward(Message& msg);
 

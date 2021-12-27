@@ -215,6 +215,16 @@ bool Proxy::path_prune() {
     return false;
 }
 
+template <typename T>
+std::vector<std::shared_ptr<T>> Proxy::path_get_casted() {
+    std::vector<std::shared_ptr<T>> result;
+    std::scoped_lock lock(_child_access_mutex);
+    for (auto& [path, child] : _children) {
+        result.push_back(std::dynamic_pointer_cast<T>(child));
+    }
+    return result;
+}
+
 // ----- MESSAGE HANDLING -----
 void Proxy::message_forward(Message& msg) {
     // If the message is for the current proxy, then forward it to the message handler.
