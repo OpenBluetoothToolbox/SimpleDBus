@@ -23,16 +23,6 @@ const std::map<std::string, std::shared_ptr<Proxy>>& Proxy::children() { return 
 
 const std::map<std::string, std::shared_ptr<Interface>>& Proxy::interfaces() { return _interfaces; }
 
-template <typename T>
-std::vector<std::shared_ptr<T>> Proxy::children_casted() {
-    std::vector<std::shared_ptr<T>> result;
-    std::scoped_lock lock(_child_access_mutex);
-    for (auto& [path, child] : _children) {
-        result.push_back(std::dynamic_pointer_cast<T>(child));
-    }
-    return result;
-}
-
 // ----- INTROSPECTION -----
 std::string Proxy::introspect() {
     auto query_msg = Message::create_method_call(_bus_name, _path, "org.freedesktop.DBus.Introspectable", "Introspect");

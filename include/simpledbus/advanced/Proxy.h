@@ -22,8 +22,6 @@ class Proxy {
     bool interface_exists(const std::string& name);
     std::shared_ptr<Interface> interface_get(const std::string& name);
 
-    template <typename T>
-    std::vector<std::shared_ptr<T>> children_casted();
     const std::map<std::string, std::shared_ptr<Proxy>>& children();
     const std::map<std::string, std::shared_ptr<Interface>>& interfaces();
 
@@ -51,6 +49,17 @@ class Proxy {
     // ----- CALLBACKS -----
     Callback<std::function<void(std::string)>, std::string> on_child_created;
     Callback<std::function<void(std::string)>, std::string> on_child_signal_received;
+
+    // ----- TEMPLATE METHODS -----
+    template <typename T>
+    std::vector<std::shared_ptr<T>> children_casted() {
+        std::vector<std::shared_ptr<T>> result;
+        std::scoped_lock lock(_child_access_mutex);
+        for (auto& [path, child] : _children) {
+            result.push_back(std::dynamic_pointer_cast<T>(child));
+        }
+        return result;
+    }
 
   protected:
     std::string _path;
