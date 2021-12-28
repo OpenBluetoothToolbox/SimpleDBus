@@ -12,7 +12,7 @@ namespace SimpleDBus {
 class Proxy {
   public:
     Proxy(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path);
-    virtual ~Proxy() = default;
+    virtual ~Proxy();
 
     std::string path() const;
 

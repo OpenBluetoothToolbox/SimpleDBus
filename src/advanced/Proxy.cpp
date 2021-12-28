@@ -9,6 +9,11 @@ using namespace SimpleDBus;
 Proxy::Proxy(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path)
     : _conn(conn), _bus_name(bus_name), _path(path) {}
 
+Proxy::~Proxy() {
+    on_child_created.unload();
+    on_child_signal_received.unload();
+}
+
 std::shared_ptr<Interface> Proxy::interfaces_create(const std::string& name) {
     return std::make_unique<Interface>(_conn, _bus_name, _path, name);
 }
