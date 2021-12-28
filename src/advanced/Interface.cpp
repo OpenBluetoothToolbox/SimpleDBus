@@ -10,8 +10,6 @@ Interface::Interface(std::shared_ptr<Connection> conn, const std::string& bus_na
 // ----- LIFE CYCLE -----
 
 void Interface::load(Holder options) {
-    _loaded = true;
-
     _property_update_mutex.lock();
     auto changed_options = options.get_dict_string();
     for (auto& [name, value] : changed_options) {
@@ -24,6 +22,7 @@ void Interface::load(Holder options) {
         property_changed(name);
     }
     _property_update_mutex.unlock();
+    _loaded = true;
 }
 
 void Interface::unload() { _loaded = false; }

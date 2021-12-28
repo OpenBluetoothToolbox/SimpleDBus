@@ -2,6 +2,7 @@
 
 #include <simpledbus/base/Connection.h>
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -39,7 +40,7 @@ class Interface {
     virtual void message_handle(Message msg);
 
   protected:
-    bool _loaded{true};
+    std::atomic_bool _loaded{true};
 
     std::string _path;
     std::string _bus_name;
@@ -51,7 +52,7 @@ class Interface {
 
     /**
      * @brief Dictionary containing all properties.
-     * 
+     *
      * @note: When accessing this object, the _property_update_mutex must be locked.
      */
     std::map<std::string, Holder> _properties;

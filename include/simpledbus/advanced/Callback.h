@@ -22,7 +22,8 @@ class Callback {
   protected:
     T _callback;
     std::recursive_mutex _mutex;
-
+    
+    std::atomic_bool _is_loaded;
     std::atomic_bool _is_running{false};
     std::atomic_bool _delete_requested{false};
 };

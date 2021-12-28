@@ -7,10 +7,12 @@ void Callback<T, params...>::load(T callback) {
     _mutex.lock();
     _callback = callback;
     _mutex.unlock();
+    _is_loaded = true;
 }
 
 template <typename T, typename... params>
 void Callback<T, params...>::unload() {
+    _is_loaded = false;
     if (_is_running) {
         _delete_requested = true;
     } else {
@@ -25,7 +27,7 @@ template <typename T, typename... params>
 void Callback<T, params...>::operator()(params... args) {
     _is_running = true;
     _mutex.lock();
-    if (_callback && !_delete_requested) {
+    if (_is_loaded && !_delete_requested) {
         _callback(args...);
     }
     if (_delete_requested) {
@@ -38,11 +40,7 @@ void Callback<T, params...>::operator()(params... args) {
 
 template <typename T, typename... params>
 bool Callback<T, params...>::is_loaded() {
-    bool loaded = false;
-    _mutex.lock();
-    loaded = _callback != nullptr;
-    _mutex.unlock();
-    return loaded;
+    return _is_loaded;
 }
 
 template <typename T, typename... params>
