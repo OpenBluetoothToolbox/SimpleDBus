@@ -16,12 +16,13 @@ void Interface::load(Holder options) {
         _properties[name] = value;
         _property_valid_map[name] = true;
     }
+    _property_update_mutex.unlock();
 
     // Notify the user of all properties that have been created.
     for (auto& [name, value] : changed_options) {
         property_changed(name);
     }
-    _property_update_mutex.unlock();
+
     _loaded = true;
 }
 
@@ -81,6 +82,7 @@ void Interface::property_refresh(const std::string& property_name) {
         return;
     }
 
+    bool cb_property_changed_required = false;
     _property_update_mutex.lock();
     try {
         // NOTE: Due to the way Bluez handles underlying devices and the fact that
@@ -91,12 +93,16 @@ void Interface::property_refresh(const std::string& property_name) {
         _property_valid_map[property_name] = true;
         if (_properties[property_name] != property_latest) {
             _properties[property_name] = property_latest;
-            property_changed(property_name);
+            cb_property_changed_required = true;
         }
     } catch (const Exception::SendFailed& e) {
         _property_valid_map[property_name] = true;
     }
     _property_update_mutex.unlock();
+
+    if (cb_property_changed_required) {
+        property_changed(property_name);
+    }
 }
 
 void Interface::property_changed(std::string option_name) {}
@@ -115,12 +121,12 @@ void Interface::signal_property_changed(Holder changed_properties, Holder invali
     for (auto& removed_option : removed_options) {
         _property_valid_map[removed_option.get_string()] = false;
     }
+    _property_update_mutex.unlock();
 
     // Once all properties have been updated, notify the user.
     for (auto& [name, value] : changed_options) {
         property_changed(name);
     }
-    _property_update_mutex.unlock();
 }
 
 // ----- MESSAGES -----
