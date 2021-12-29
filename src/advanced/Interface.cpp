@@ -10,8 +10,6 @@ Interface::Interface(std::shared_ptr<Connection> conn, const std::string& bus_na
 // ----- LIFE CYCLE -----
 
 void Interface::load(Holder options) {
-    _loaded = true;
-
     _property_update_mutex.lock();
     auto changed_options = options.get_dict_string();
     for (auto& [name, value] : changed_options) {
@@ -24,6 +22,8 @@ void Interface::load(Holder options) {
     for (auto& [name, value] : changed_options) {
         property_changed(name);
     }
+
+    _loaded = true;
 }
 
 void Interface::unload() { _loaded = false; }
@@ -82,22 +82,25 @@ void Interface::property_refresh(const std::string& property_name) {
         return;
     }
 
-    bool update_successfull = false;
+    bool cb_property_changed_required = false;
     _property_update_mutex.lock();
     try {
         // NOTE: Due to the way Bluez handles underlying devices and the fact that
         //       they can be removed before the callback reaches back (race condition),
         //       `property_get` can sometimes fail. Because of this, the update
         //       statement is surrounded by a try-catch statement.
-        _properties[property_name] = property_get(property_name);
+        Holder property_latest = property_get(property_name);
         _property_valid_map[property_name] = true;
-        update_successfull = true;
+        if (_properties[property_name] != property_latest) {
+            _properties[property_name] = property_latest;
+            cb_property_changed_required = true;
+        }
     } catch (const Exception::SendFailed& e) {
         _property_valid_map[property_name] = true;
     }
     _property_update_mutex.unlock();
 
-    if (update_successfull) {
+    if (cb_property_changed_required) {
         property_changed(property_name);
     }
 }

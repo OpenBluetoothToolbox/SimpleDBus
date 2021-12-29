@@ -1,9 +1,10 @@
 #pragma once
 
-#include <simpledbus/advanced/Interface.h>
 #include <simpledbus/advanced/Callback.h>
+#include <simpledbus/advanced/Interface.h>
 
 #include <memory>
+#include <mutex>
 #include <string>
 
 namespace SimpleDBus {
@@ -11,8 +12,15 @@ namespace SimpleDBus {
 class Proxy {
   public:
     Proxy(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path);
+    virtual ~Proxy();
 
     std::string path() const;
+
+    bool path_exists(const std::string& path);
+    std::shared_ptr<Proxy> path_get(const std::string& path);
+
+    bool interface_exists(const std::string& name);
+    std::shared_ptr<Interface> interface_get(const std::string& name);
 
     const std::map<std::string, std::shared_ptr<Proxy>>& children();
     const std::map<std::string, std::shared_ptr<Interface>>& interfaces();
@@ -24,8 +32,8 @@ class Proxy {
     std::string introspect();
 
     // ----- INTERFACE HANDLING -----
-    size_t interfaces_count() const;
-    bool interfaces_loaded() const;
+    size_t interfaces_count();
+    bool interfaces_loaded();
     void interfaces_load(Holder managed_interfaces);
     void interfaces_reload(Holder managed_interfaces);
     void interfaces_unload(Holder removed_interfaces);
@@ -42,12 +50,28 @@ class Proxy {
     Callback<std::function<void(std::string)>, std::string> on_child_created;
     Callback<std::function<void(std::string)>, std::string> on_child_signal_received;
 
+    // ----- TEMPLATE METHODS -----
+    template <typename T>
+    std::vector<std::shared_ptr<T>> children_casted() {
+        std::vector<std::shared_ptr<T>> result;
+        std::scoped_lock lock(_child_access_mutex);
+        for (auto& [path, child] : _children) {
+            result.push_back(std::dynamic_pointer_cast<T>(child));
+        }
+        return result;
+    }
+
   protected:
     std::string _path;
     std::string _bus_name;
+
     std::shared_ptr<Connection> _conn;
+
     std::map<std::string, std::shared_ptr<Interface>> _interfaces;
     std::map<std::string, std::shared_ptr<Proxy>> _children;
+
+    std::recursive_mutex _interface_access_mutex;
+    std::recursive_mutex _child_access_mutex;
 };
 
 }  // namespace SimpleDBus

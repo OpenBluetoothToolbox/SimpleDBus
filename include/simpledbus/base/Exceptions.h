@@ -33,6 +33,24 @@ class SendFailed : public BaseException {
     std::string _message;
 };
 
+class InterfaceNotFoundException : public BaseException {
+  public:
+    InterfaceNotFoundException(const std::string& path, const std::string& interface);
+    const char* what() const noexcept override;
+
+  private:
+    std::string _message;
+};
+
+class PathNotFoundException : public BaseException {
+  public:
+    PathNotFoundException(const std::string& path, const std::string& subpath);
+    const char* what() const noexcept override;
+
+  private:
+    std::string _message;
+};
+
 }  // namespace Exception
 
 }  // namespace SimpleDBus
