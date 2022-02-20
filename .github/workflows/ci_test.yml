@@ -46,7 +46,7 @@ jobs:
       - name: Code Coverage Push
         uses: codecov/codecov-action@v1
         with:
-          files: $GITHUB_WORKSPACE/build/cov.xml
+          files: ${{github.workspace}}/build/cov.xml
       - name: Compile Unit Tests with Address Sanitizer
         run: |
           mkdir -p $GITHUB_WORKSPACE/build
