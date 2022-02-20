@@ -38,9 +38,8 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=Release ../test
           make -j4
       - name: Run Unit Tests with Coverage
-        run: |
-          cd $GITHUB_WORKSPACE
-          make gcov
+        working-directory: build
+        run: make gcov
       - name: Code Coverage Push
         uses: codecov/codecov-action@v1
         with:
