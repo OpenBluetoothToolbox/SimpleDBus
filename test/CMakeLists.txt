@@ -4,7 +4,6 @@ project(simpledbus_test)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 
 # Include SimpleDBus
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/.. ${CMAKE_BINARY_DIR}/simpledbus)
@@ -36,6 +35,7 @@ add_custom_command (TARGET simpledbus_test POST_BUILD
 )
 
 if(CMAKE_COVERAGE MATCHES "On")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
   find_program(GCOVR_PATH gcovr)
   if(NOT GCOVR_PATH)
     message(FATAL_ERROR "gcovr not found! Aborting...")
