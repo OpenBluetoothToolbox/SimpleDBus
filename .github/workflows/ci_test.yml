@@ -37,10 +37,14 @@ jobs:
           rm -rf ./*
           cmake -DCMAKE_BUILD_TYPE=Release ../test
           make -j4
-      - name: Run Unit Tests
+      - name: Run Unit Tests with Coverage
         run: |
-          cd $GITHUB_WORKSPACE/build
-          ./simpledbus_test
+          cd $GITHUB_WORKSPACE
+          make gcov
+      - name: Code Coverage Push
+        uses: codecov/codecov-action@v1
+        with:
+          files: $GITHUB_WORKSPACE/build/cov.xml 
       - name: Compile Unit Tests with Address Sanitizer
         run: |
           mkdir -p $GITHUB_WORKSPACE/build
