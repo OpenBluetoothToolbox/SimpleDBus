@@ -6,10 +6,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 
-# coverage
-set(OBJECT_DIR ${CMAKE_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}.dir/src)
-message(STATUS "Object files will be output to: ${OBJECT_DIR}")
-
 # Include SimpleDBus
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/.. ${CMAKE_BINARY_DIR}/simpledbus)
 include_directories(${SIMPLEDBUS_INCLUDES})
@@ -39,32 +35,24 @@ add_custom_command (TARGET simpledbus_test POST_BUILD
   COMMAND "${CMAKE_COMMAND}" -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/python/ ${CMAKE_BINARY_DIR}
 )
 
-find_program(GCOVR_PATH gcovr)
-if(NOT GCOVR_PATH)
-  message(FATAL_ERROR "gcovr not found! Aborting...")
-endif() # NOT GCOVR_PATH
-
-# Create the gcov target. Run coverage tests with 'make gcov'
-add_custom_target(gcov
-  COMMAND mkdir -p gcoverage
-  COMMAND GTEST_OUTPUT=xml:results/ GTEST_COLOR=1 ctest -V
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
-
-add_custom_command(TARGET gcov
-  # cli report for local testing
-  COMMAND gcovr -r .. . -e ${CMAKE_BINARY_DIR}/_deps -e ${CMAKE_CURRENT_LIST_DIR}/..
-  # xml report for ci
-  COMMAND gcovr --xml -r .. . -e ${CMAKE_BINARY_DIR}/_deps -e ${CMAKE_CURRENT_LIST_DIR}/.. -o cov.xml
-)
-
-# Create the gcov-clean target. This cleans the build as well as generated .gcda and .gcno files.
-add_custom_target(init
-  COMMAND ${CMAKE_MAKE_PROGRAM} clean
-  COMMAND rm -f ${OBJECT_DIR}/*.gcno
-  COMMAND rm -f ${OBJECT_DIR}/*.gcda
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
-add_dependencies(gcov simpledbus_test)
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES gcoverage)
-add_test(output_test ${CMAKE_BINARY_DIR}/simpledbus_test)
+if(CMAKE_COVERAGE MATCHES "On")
+  find_program(GCOVR_PATH gcovr)
+  if(NOT GCOVR_PATH)
+    message(FATAL_ERROR "gcovr not found! Aborting...")
+  endif() # NOT GCOVR_PATH
+  # Create the gcov target. Run coverage tests with 'make gcov'
+  add_custom_target(gcov
+    COMMAND GTEST_OUTPUT=xml:results/ GTEST_COLOR=1 ctest -V
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+  )
+  add_custom_command(TARGET gcov
+    # cli report for local testing
+    COMMAND echo "Generating cli coverage report"
+    COMMAND gcovr -r .. . -e ${CMAKE_BINARY_DIR}/_deps -e ${CMAKE_CURRENT_LIST_DIR}/..
+    # xml report for ci
+    COMMAND echo "Generating xml coverage report"
+    COMMAND gcovr --xml -r .. . -e ${CMAKE_BINARY_DIR}/_deps -e ${CMAKE_CURRENT_LIST_DIR}/.. -o cov.xml
+  )
+  add_dependencies(gcov simpledbus_test)
+  add_test(output_test ${CMAKE_BINARY_DIR}/simpledbus_test)
+endif() # CMAKE_BUILD_TYPE MATCHES "Coverage" 
