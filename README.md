@@ -47,9 +47,10 @@ make -j
 To build and run unit and integration tests, the following packages are required:
 `sudo apt install libgtest-dev libgmock-dev python3-dev`
 
-To build with test coverage set the `CMAKE_COVERAGE` flag:
+### Coverage
+To build with test coverage set the `SIMPLEDBUS_COVERAGE` flag:
 ```bash
-cmake -DCMAKE_COVERAGE=On -DCMAKE_BUILD_TYPE=Debug ../test
+cmake -DSIMPLEDBUS_COVERAGE=On -DCMAKE_BUILD_TYPE=Debug ../test
 ```
 
 Then run the `gcov` target to run the tests and generate an inline coverage report:
