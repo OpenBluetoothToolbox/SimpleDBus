@@ -40,9 +40,6 @@ jobs:
       - name: Run Unit Tests with Coverage
         working-directory: build
         run: make gcov
-      - name: ============Debug
-        working-directory: build
-        run: tree
       - name: Code Coverage Push
         uses: codecov/codecov-action@v1
         with:
