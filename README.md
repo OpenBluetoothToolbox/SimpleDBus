@@ -47,6 +47,16 @@ make -j
 To build and run unit and integration tests, the following packages are required:
 `sudo apt install libgtest-dev libgmock-dev python3-dev`
 
+To build with test coverage set the `CMAKE_COVERAGE` flag:
+```bash
+cmake -DCMAKE_COVERAGE=On -DCMAKE_BUILD_TYPE=Debug ../test
+```
+
+Then run the `gcov` target to run the tests and generate an inline coverage report:
+```bash
+make gcov
+```
+
 #### Address Sanitizer
 In order to run tests with Address Sanitizer, CMake needs to be called with
 the following option: `-DSIMPLEDBUS_SANITIZE=Address`. It is also important to
