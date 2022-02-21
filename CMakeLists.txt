@@ -40,7 +40,7 @@ if(NOT LIBFMT_LOCAL_PATH)
     )
     FetchContent_MakeAvailable(fmt)
 else()
-    message("-- [INFO] Using local LibFmt")
+    message(STATUS "[INFO] Using local LibFmt")
     add_subdirectory(${LIBFMT_LOCAL_PATH} ${CMAKE_CURRENT_BINARY_DIR}/libfmt)
 endif()
 
@@ -57,7 +57,7 @@ set(
 )
 
 # OUTPUTS
-message("-- [INFO] Building SimpleDBus")
+message(STATUS "[INFO] Building SimpleDBus")
 file(GLOB_RECURSE SRC_SIMPLEDBUS_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 add_library(simpledbus-static STATIC ${SRC_SIMPLEDBUS_FILES})
@@ -90,7 +90,7 @@ endif()
 
 # Append additional flags for address and thread sanitization
 if(SIMPLEDBUS_SANITIZE MATCHES "Address")
-    message("-- [INFO] Appending address sanitization flags")
+    message(STATUS "[INFO] Appending address sanitization flags")
     set(SANITIZE_ADDRESS_COMPILE_OPTIONS -fsanitize=address -fsanitize-recover=address -fno-omit-frame-pointer -fno-common -g)
     set(SANITIZE_ADDRESS_LINK_OPTIONS -fsanitize=address)
 
@@ -102,7 +102,7 @@ if(SIMPLEDBUS_SANITIZE MATCHES "Address")
 endif()
 
 if(SIMPLEDBUS_SANITIZE MATCHES "Thread")
-    message("-- [INFO] Appending thread sanitization flags")
+    message(STATUS "[INFO] Appending thread sanitization flags")
     set(SANITIZE_THREAD_COMPILE_OPTIONS -fsanitize=thread -fno-omit-frame-pointer -fno-common -g)
     set(SANITIZE_THREAD_LINK_OPTIONS -fsanitize=thread)
 
@@ -111,4 +111,15 @@ if(SIMPLEDBUS_SANITIZE MATCHES "Thread")
 
     target_link_libraries(simpledbus-static PUBLIC ${SANITIZE_THREAD_LINK_OPTIONS})
     target_link_libraries(simpledbus PUBLIC ${SANITIZE_THREAD_LINK_OPTIONS})
+endif()
+
+if(SIMPLEDBUS_COVERAGE MATCHES "On")
+    message(STATUS "[INFO] Appending coverage flags")
+    set(COVERAGE_COMPILE_OPTIONS -g -O0 -fprofile-arcs -ftest-coverage)
+
+    target_compile_options(simpledbus-static PUBLIC ${COVERAGE_COMPILE_OPTIONS})
+    target_compile_options(simpledbus PUBLIC ${COVERAGE_COMPILE_OPTIONS})
+
+    target_link_libraries(simpledbus-static PUBLIC gcov)
+    target_link_libraries(simpledbus PUBLIC gcov)
 endif()
