@@ -35,7 +35,7 @@ jobs:
           mkdir -p $GITHUB_WORKSPACE/build
           cd $GITHUB_WORKSPACE/build
           rm -rf ./*
-          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_COVERAGE=On ../test
+          cmake -DCMAKE_BUILD_TYPE=Release -DSIMPLEDBUS_COVERAGE=On ../test
           make -j4
       - name: Run Unit Tests with Coverage
         working-directory: build
