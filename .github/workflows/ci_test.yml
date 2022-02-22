@@ -39,7 +39,7 @@ jobs:
           make -j4
       - name: Run Unit Tests with Coverage
         working-directory: build
-        run: make gcov
+        run: make simpledbus_test_coverage -j4
       - name: Code Coverage Push
         uses: codecov/codecov-action@v1
         with:
