@@ -3,6 +3,8 @@ SimpleDBus
 
 A simple C++ wrapper around DBus with a commercially-friendly licence.
 
+|Latest Documentation Status|
+
 Overview
 --------
 
@@ -111,7 +113,5 @@ One key security feature of the library is it allows the user to specify
 the URLs and tags of all internal depe
 
 .. _SimpleBluez: https://github.com/OpenBluetoothToolbox/SimpleBluez
-
-
 .. |Latest Documentation Status| image:: https://readthedocs.org/projects/simpledbus/badge?version=latest
    :target: http://simpledbus.readthedocs.org/en/latest
