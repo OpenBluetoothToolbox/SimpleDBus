@@ -69,18 +69,9 @@ required: ``sudo apt install libgtest-dev libgmock-dev python3-dev``
 Coverage
 ^^^^^^^^
 
-To build with test coverage set the ``SIMPLEDBUS_COVERAGE`` flag:
-::
-   
-   cmake -DSIMPLEDBUS_COVERAGE=On -DCMAKE_BUILD_TYPE=Debug ../test
-
-
-Then run the ``simpledbus_test_coverage`` target to run the tests and generate an inline coverage report:
-::
-
-   make simpledbus_test_coverage -j
-
-
+In order to run tests with coverage analysis, CMake needs to be called 
+with the following option: ``-DSIMPLEDBUS_COVERAGE=On``. The coverage 
+analysis target is called ``simpledbus_test_coverage``
 
 Address Sanitizer
 ^^^^^^^^^^^^^^^^^
