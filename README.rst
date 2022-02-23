@@ -66,8 +66,8 @@ Build tests
 To build and run unit and integration tests, the following packages are
 required: ``sudo apt install libgtest-dev libgmock-dev python3-dev``
 
-Build Coverage
-~~~~~~~~~~~~~~
+Coverage
+^^^^^^^^
 
 To build with test coverage set the ``SIMPLEDBUS_COVERAGE`` flag:
 ::
