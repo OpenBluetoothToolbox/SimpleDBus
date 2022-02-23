@@ -43,11 +43,11 @@ if(SIMPLEDBUS_COVERAGE MATCHES "On")
   add_custom_target(${PROJECT_NAME}_coverage
     COMMAND echo "Executing test suite"
     COMMAND GTEST_OUTPUT=xml:results/ GTEST_COLOR=1 ./simpledbus_test
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     COMMAND echo "Generating CLI coverage report"
-    COMMAND gcovr -r .. . -e ${CMAKE_BINARY_DIR}/_deps -e ${CMAKE_CURRENT_LIST_DIR}/..
+    COMMAND gcovr --root ${CMAKE_CURRENT_LIST_DIR}/.. --exclude ${CMAKE_BINARY_DIR}/_deps --exclude ${CMAKE_CURRENT_LIST_DIR}/src
     COMMAND echo "Generating XML coverage report"
-    COMMAND gcovr --xml -r .. . -e ${CMAKE_BINARY_DIR}/_deps -e ${CMAKE_CURRENT_LIST_DIR}/.. -o cov.xml
+    COMMAND gcovr --xml --root ${CMAKE_CURRENT_LIST_DIR}/.. --exclude ${CMAKE_BINARY_DIR}/_deps  --exclude ${CMAKE_CURRENT_LIST_DIR}/src --output cov.xml
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   )
   add_dependencies(${PROJECT_NAME}_coverage simpledbus_test)
 endif()
