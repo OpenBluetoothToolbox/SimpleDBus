@@ -68,6 +68,13 @@ Build tests
 To build and run unit and integration tests, the following packages are
 required: ``sudo apt install libgtest-dev libgmock-dev python3-dev``
 
+Coverage
+^^^^^^^^
+
+In order to run tests with coverage analysis, CMake needs to be called 
+with the following option: ``-DSIMPLEDBUS_COVERAGE=On``. The coverage 
+analysis target is called ``simpledbus_test_coverage``
+
 Address Sanitizer
 ^^^^^^^^^^^^^^^^^
 
