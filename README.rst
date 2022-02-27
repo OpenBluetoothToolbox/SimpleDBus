@@ -30,7 +30,7 @@ there is currently first-class support for vendorization of all 3rd-party
 dependencies. Currently, the following libraries are included as part of
 SimpleDBus:
 
-   * `fmtlib`_
+* `fmtlib`_
 
 Please visit our **Security** page for more information on how to vendorize
 3rd-party libraries for SimpleDBus.
