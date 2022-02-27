@@ -8,117 +8,50 @@ A simple C++ wrapper around DBus with a commercially-friendly licence.
 Overview
 --------
 
-SimpleDBus is a C++ low-level binding around DBus designed to be easy to
-integrate and use with commercial projects.
+SimpleDBus is a C++ low-level binding around libdbus conceived to be easy
+to integrate with a licence friendly for use with commercial projects.
 
 This library is designed to be an extremely minimalistic high-level
-wrapper around DBus, with most of the focus placed on proper
-packing/unpacking of DBus data structures. It's primary intended use
-case is by `SimpleBluez`_.
+wrapper around libdbus, with most of the focus placed on proper
+packing/unpacking of DBus data structures. It's primary intended
+use case is by `SimpleBluez`_, a project to provide easy access to
+the Bluez subsystem on Linux.
 
-If you want to use the library and need help. **Please reach out!** You
-can find me at: ``kevin at dewald dot me``
+If you want to use SimpleDBus and need help. **Please do not hesitate to reach out!**
 
-Build
------
+* Visit our `ReadTheDocs`_ page. 
+* Join our `Discord`_ server.
+* Contact me: ``kevin at dewald dot me``
 
-SimpleDBus should work on any Linux environment using DBus. To install
-the necessary dependencies on Debian-based systems, use the following
-command: ``sudo apt install libdbus-1-dev``
+Vendorization
+-------------
+If you are interested in using SimpleDBus as a dependency in your project,
+there is currently first-class support for vendorization of all 3rd-party
+dependencies. Currently, the following libraries are included as part of
+SimpleDBus:
 
-A set of helper scripts are provided to simplify the process of building
-the library, but are not required.
+   * `fmtlib`_
 
-Standalone build from source
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Please visit our **Security** page for more information on how to vendorize
+3rd-party libraries for SimpleDBus.
 
-::
+License
+-------
 
-   cd <path-to-simpledbus>
-   mkdir build && cd build
-   cmake .. -DSIMPLEDBUS_LOG_LEVEL=[VERBOSE_3|VERBOSE_2|VERBOSE_1|VERBOSE_0|DEBUG|INFO|WARNING|ERROR|FATAL]
-   make -j
-   sudo make install # Not available yet.
+All components within this project that have not been bundled from
+external creators, are licensed under the terms of the `MIT Licence`_.
 
-Build as part of another project
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. Links
 
-If you want to add SimpleDBus to your project without any external
-dependencies, just clone the repository and link to it on your
-``CMakeLists.txt`` file.
+.. _MIT Licence: LICENCE.md
 
-::
+.. _fmtlib: https://github.com/fmtlib/fmt
 
-   add_subdirectory(<path-to-simpledbus> ${CMAKE_BINARY_DIR}/simpledbus)
-   include_directories(${SIMPLEDBUS_INCLUDES})
+.. _Discord: https://discord.gg/N9HqNEcvP3
 
-Build examples
-~~~~~~~~~~~~~~
-
-::
-
-   cd <path-to-simpledbus>
-   mkdir build && cd build
-   cmake ../examples
-   make -j
-
-Build tests
-~~~~~~~~~~~
-
-To build and run unit and integration tests, the following packages are
-required: ``sudo apt install libgtest-dev libgmock-dev python3-dev``
-
-Coverage
-^^^^^^^^
-
-In order to run tests with coverage analysis, CMake needs to be called 
-with the following option: ``-DSIMPLEDBUS_COVERAGE=On``. The coverage 
-analysis target is called ``simpledbus_test_coverage``
-
-Address Sanitizer
-^^^^^^^^^^^^^^^^^
-
-In order to run tests with Address Sanitizer, CMake needs to be called
-with the following option: ``-DSIMPLEDBUS_SANITIZE=Address``. It is also
-important to set the environment variable ``PYTHONMALLOC=malloc`` to
-prevent Python's memory allocator from triggering false positives.
-
-Thread Sanitizer
-^^^^^^^^^^^^^^^^
-
-In order to run tests with Thread Sanitizer, CMake needs to be called
-with the following option: ``-DSIMPLEDBUS_SANITIZE=Thread``.
-
-Architecture
-------------
-
-The following notes provide an overview of the architecture of some of
-the higher-level classes in the library, as to facilitate their
-understanding.
-
-Interface
-~~~~~~~~~
-
--  In order to simplify the routing of messages, all interfaces are
-   assumed to have properties, thus skipping the need to have a special
-   implementation of org.freedesktop.DBus.Properties.
--  All properties are stored in the holder in which they came from. This
-   is not the most efficient way of handling properties, but it is the
-   one that minimizes the necessary code for children of the Interface
-   class.
-
-Proxy
-~~~~~
-
--  Messages for org.freedesktop.DBus.Properties are automatically
-   handled by the Proxy class.
-
-Security
---------
-
-One key security feature of the library is it allows the user to specify
-the URLs and tags of all internal depe
+.. _ReadTheDocs: https://simpledbus.readthedocs.io/en/latest/
 
 .. _SimpleBluez: https://github.com/OpenBluetoothToolbox/SimpleBluez
+
 .. |Latest Documentation Status| image:: https://readthedocs.org/projects/simpledbus/badge?version=latest
    :target: http://simpledbus.readthedocs.org/en/latest
