@@ -1,4 +1,6 @@
 from dbus_next.service import ServiceInterface, method
+from dbus_next.message import Message
+import asyncio
 
 
 class MessageUnit(ServiceInterface):
@@ -79,3 +81,13 @@ class MessageUnit(ServiceInterface):
     @method()
     def SendReceiveDictString(self, value: "a{sv}") -> "a{sv}":
         return value
+
+    @method()
+    def TriggerMethodCall(self, destination: "s", path: "s", interface: "s", method: "s", value: "s"):
+        asyncio.ensure_future(self._call_external_method(destination, path, interface, method, value))
+
+    async def _call_external_method(self, destination, path, interface, method, value):
+        msg = Message(
+            destination=destination, path=path, interface=interface, member=method, signature="s", body=[value]
+        )
+        await self.bus.call(msg)

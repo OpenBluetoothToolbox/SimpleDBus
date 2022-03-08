@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog`_, and this project adheres to
 `Semantic Versioning`_.
 
+[2.0.1] - XXXX-XX-XX
+--------------------
+
+**Changed**
+
+*  (Message) Added function to create responses to method calls.
+*  (Connection) Added function to query the unique name.
+
 .. _200---2021-12-28:
 
 [2.0.0] - 2021-12-28

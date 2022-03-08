@@ -47,12 +47,15 @@ class Message {
     std::string get_signature();
     std::string get_interface();
     std::string get_path();
+    std::string get_member();
     Type get_type() const;
 
     bool is_signal(std::string interface, std::string signal_name);
 
     static Message create_method_call(std::string bus_name, std::string path, std::string interface,
                                       std::string method);
+
+    static Message create_method_return(const Message& msg);
 
   private:
     friend class Connection;
