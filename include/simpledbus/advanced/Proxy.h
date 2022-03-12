@@ -42,6 +42,7 @@ class Proxy {
     void path_add(const std::string& path, Holder managed_interfaces);
     bool path_remove(const std::string& path, Holder removed_interfaces);
     bool path_prune();
+    void path_append_child(const std::string& path, std::shared_ptr<Proxy> child);
 
     // ----- MESSAGE HANDLING -----
     void message_forward(Message& msg);

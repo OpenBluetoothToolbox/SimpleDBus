@@ -6,13 +6,14 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog`_, and this project adheres to
 `Semantic Versioning`_.
 
-[2.0.1] - XXXX-XX-XX
+[2.1.0] - XXXX-XX-XX
 --------------------
 
-**Changed**
+**Added**
 
-*  (Message) Added function to create responses to method calls.
-*  (Connection) Added function to query the unique name.
+*  (Message) Allow the creation of response messages to method calls.
+*  (Connection) Provide interface to query the unique name of the connection.
+*  (Proxy) Provide interface to directly append a child.
 
 .. _200---2021-12-28:
 
