@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Kevin Dewald <kevin@dewald.me>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #pragma once
 
 #include <atomic>
@@ -35,7 +41,9 @@ class safe_callback<_Res(_ArgTypes...)> {
         _is_loaded = false;
     }
 
-    bool is_loaded() { return _is_loaded; }
+    bool is_loaded() const { return _is_loaded; }
+
+    explicit operator bool() const { return is_loaded(); }
 
     _Res operator()(_ArgTypes... arguments) {
         if (_is_loaded) {
