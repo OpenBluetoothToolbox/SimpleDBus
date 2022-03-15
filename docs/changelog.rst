@@ -15,6 +15,10 @@ The format is based on `Keep a Changelog`_, and this project adheres to
 *  (Connection) Provide interface to query the unique name of the connection.
 *  (Proxy) Provide interface to directly append a child.
 
+**Changed**
+
+*  Migrated to using safe callbacks from external vendor (kvn::safe_callback).
+
 .. _200---2021-12-28:
 
 [2.0.0] - 2021-12-28
