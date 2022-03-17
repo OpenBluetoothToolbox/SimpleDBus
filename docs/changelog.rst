@@ -11,7 +11,8 @@ The format is based on `Keep a Changelog`_, and this project adheres to
 
 **Added**
 
-*  (Message) Allow the creation of response messages to method calls.
+*  (Message) Enable the creation of response messages to method calls.
+*  (Message) Enable the creation of error messages. 
 *  (Connection) Provide interface to query the unique name of the connection.
 *  (Proxy) Provide interface to directly append a child.
 

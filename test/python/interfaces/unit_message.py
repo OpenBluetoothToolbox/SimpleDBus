@@ -90,4 +90,5 @@ class MessageUnit(ServiceInterface):
         msg = Message(
             destination=destination, path=path, interface=interface, member=method, signature="s", body=[value]
         )
-        await self.bus.call(msg)
+        reply = await self.bus.call(msg)
+        # print(reply.message_type)

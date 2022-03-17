@@ -57,6 +57,8 @@ class Message {
 
     static Message create_method_return(const Message& msg);
 
+    static Message create_error(const Message& msg, std::string error_name, std::string error_message);
+
   private:
     friend class Connection;
 
