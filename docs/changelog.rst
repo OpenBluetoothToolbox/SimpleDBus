@@ -20,6 +20,10 @@ The format is based on `Keep a Changelog`_, and this project adheres to
 
 *  Migrated to using safe callbacks from external vendor (kvn::safe_callback).
 
+**Fixed**
+
+* (Interface) Messages are now passed by reference.
+
 .. _200---2021-12-28:
 
 [2.0.0] - 2021-12-28
