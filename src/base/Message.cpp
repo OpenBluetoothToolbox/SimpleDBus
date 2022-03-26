@@ -591,9 +591,7 @@ Message Message::create_method_call(std::string bus_name, std::string path, std:
     return Message(dbus_message_new_method_call(bus_name.c_str(), path.c_str(), interface.c_str(), method.c_str()));
 }
 
-Message Message::create_method_return(const Message& msg) {
-    return Message(dbus_message_new_method_return(msg._msg));
-}
+Message Message::create_method_return(const Message& msg) { return Message(dbus_message_new_method_return(msg._msg)); }
 
 Message Message::create_error(const Message& msg, std::string error_name, std::string error_message) {
     return Message(dbus_message_new_error(msg._msg, error_name.c_str(), error_message.c_str()));
