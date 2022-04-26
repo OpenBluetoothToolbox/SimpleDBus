@@ -1,21 +1,25 @@
 Security
---------
+========
 
 One key security feature of the library is it allows the user to specify
-the URLs and tags of all internal dependencies, thus allowing
-compilation from internal or secure sources without the risk of those
-getting compromised. This is done by specifying the additional command
-line arguments to the ``cmake`` command:
+the URLs and tags of all internal dependencies, thus allowing compilation
+from internal or secure sources without the risk of those getting compromised.
 
--  ``LIBFMT_GIT_REPOSITORY`` Call CMake with ``-DLIBFMT_GIT_REPOSITORY=<path>``
-   to override the default location of the LibFmt repository.
--  ``LIBFMT_GIT_TAG`` Call CMake with ``-DLIBFMT_GIT_TAG=<tag>`` to
-   override the default tag of the LibFmt repository.
+Vendorization
+-------------
+Currently, the following libraries are included as part of SimpleDBus, with 
+the following CMake options available:
 
-Alternatively, instead of specifying the repository and tag, the user
-can specify the path to a local version of the dependencies. This is
-done by specifying the additional command line arguments to the
-``cmake`` command:
+* `fmtlib`_
 
--  ``LIBFMT_LOCAL_PATH`` Call CMake with ``-DLIBFMT_LOCAL_PATH=<path>``
-   to override the default location of the LibFmt repository.
+  * ``LIBFMT_VENDORIZE``: Enable vendorization of fmtlib. *(Default: True)*
+
+  * ``LIBFMT_GIT_REPOSITORY``: The git repository to use for fmtlib.
+
+  * ``LIBFMT_GIT_TAG``: The git tag to use for fmtlib. *(Default: v8.1.1)*
+
+  * ``LIBFMT_LOCAL_PATH``: The local path to use for fmtlib. *(Default: None)*
+
+.. Links
+
+.. _fmtlib: https://github.com/fmtlib/fmt

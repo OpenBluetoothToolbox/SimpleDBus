@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.16.0)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/find")
 
 project(SIMPLEDBUS)
+
+option(LIBFMT_VENDORIZE "Enable vendorized libfmt" ON)
 
 # Detect if the project is being build within a project or standalone.
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -24,25 +27,7 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(DBUS REQUIRED dbus-1)
 
 # Load default parameters passed in through the command line.
-if(NOT LIBFMT_GIT_REPOSITORY)
-    set(LIBFMT_GIT_REPOSITORY "https://github.com/fmtlib/fmt.git")
-endif()
-if(NOT LIBFMT_GIT_TAG)
-    set(LIBFMT_GIT_TAG "d141cdbeb0fb422a3fb7173b285fd38e0d1772dc") # v8.0.1
-endif()
-
-if(NOT LIBFMT_LOCAL_PATH)
-    # Library includes
-    FetchContent_Declare(
-        fmt
-        GIT_REPOSITORY ${LIBFMT_GIT_REPOSITORY}
-        GIT_TAG ${LIBFMT_GIT_TAG}
-    )
-    FetchContent_MakeAvailable(fmt)
-else()
-    message(STATUS "[INFO] Using local LibFmt")
-    add_subdirectory(${LIBFMT_LOCAL_PATH} ${CMAKE_CURRENT_BINARY_DIR}/libfmt)
-endif()
+find_package(fmt REQUIRED)
 
 # Load default parameters passed in through the command line.
 if(NOT SIMPLEDBUS_LOG_LEVEL)

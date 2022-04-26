@@ -27,13 +27,8 @@ Vendorization
 -------------
 If you are interested in using SimpleDBus as a dependency in your project,
 there is currently first-class support for vendorization of all 3rd-party
-dependencies. Currently, the following libraries are included as part of
-SimpleDBus:
-
-* `fmtlib`_
-
-Please visit our **Security** page for more information on how to vendorize
-3rd-party libraries for SimpleDBus.
+dependencies. Please visit our **Security** page for more information on
+how to vendorize 3rd-party libraries for SimpleDBus.
 
 License
 -------
@@ -44,8 +39,6 @@ external creators, are licensed under the terms of the `MIT Licence`_.
 .. Links
 
 .. _MIT Licence: LICENCE.md
-
-.. _fmtlib: https://github.com/fmtlib/fmt
 
 .. _Discord: https://discord.gg/N9HqNEcvP3
 
