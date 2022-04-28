@@ -1,4 +1,3 @@
-#include <simpledbus/base/Logger.h>
 #include <simpledbus/interfaces/ObjectManager.h>
 
 using namespace SimpleDBus;

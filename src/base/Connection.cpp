@@ -1,6 +1,6 @@
 #include <simpledbus/base/Connection.h>
 #include <simpledbus/base/Exceptions.h>
-#include <simpledbus/base/Logger.h>
+#include <simpledbus/base/Logging.h>
 #include <chrono>
 #include <thread>
 

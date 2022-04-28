@@ -40,7 +40,7 @@ class Message {
     void extract_reset();
     bool extract_has_next();
     void extract_next();
-    std::string to_string() const;
+    std::string to_string(bool append_arguments = false) const;
 
     int32_t get_unique_id();
     uint32_t get_serial();

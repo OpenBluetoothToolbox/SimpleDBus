@@ -1,6 +1,6 @@
 #pragma once
 
-#include <external/kvn_safe_callback.hpp>
+#include <simpledbus/external/kvn_safe_callback.hpp>
 #include <simpledbus/advanced/Interface.h>
 
 #include <memory>

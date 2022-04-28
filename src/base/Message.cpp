@@ -361,7 +361,7 @@ static const char* type_to_name(int message_type) {
     }
 }
 
-std::string Message::to_string() const {
+std::string Message::to_string(bool append_arguments) const {
     if (!is_valid()) {
         return "INVALID";
     }
@@ -381,7 +381,7 @@ std::string Message::to_string() const {
     oss << dbus_message_get_path(_msg) << " " << dbus_message_get_interface(_msg) << " "
         << dbus_message_get_member(_msg);
 
-    if (get_type() == Message::Type::METHOD_CALL) {
+    if (get_type() == Message::Type::METHOD_CALL && append_arguments) {
         oss << std::endl;
         oss << "Arguments: " << std::endl;
         for (auto arg : _arguments) {

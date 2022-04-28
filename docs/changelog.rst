@@ -6,15 +6,19 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog`_, and this project adheres to
 `Semantic Versioning`_.
 
+
 [2.2.0] - 2022-XX-XX
 --------------------
 
 **Added**
 
+* Log forwarding based on ``logfwd``.
+
 **Changed**
 
 * Updated libfmt to version 8.1.1. 
 * Cleaned up dependency management for libfmt.
+* Moved ``kvn::safe_callback`` into the ``simpledbus`` include directory.
 
 
 [2.1.0] - 2022-03-25
@@ -35,7 +39,6 @@ The format is based on `Keep a Changelog`_, and this project adheres to
 
 * (Interface) Messages are now passed by reference.
 
-.. _200---2021-12-28:
 
 [2.0.0] - 2021-12-28
 --------------------
