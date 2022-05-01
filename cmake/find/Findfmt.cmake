@@ -14,7 +14,6 @@ if (LIBFMT_VENDORIZE)
     endif()
 
     if(NOT LIBFMT_LOCAL_PATH)
-        message(STATUS "Using remote libfmt")
         # Library includes
         FetchContent_Declare(
             fmt
@@ -23,7 +22,6 @@ if (LIBFMT_VENDORIZE)
         )
         FetchContent_MakeAvailable(fmt)
     else()
-        message(STATUS "Using local libfmt")
         add_subdirectory(${LIBFMT_LOCAL_PATH} ${CMAKE_CURRENT_BINARY_DIR}/libfmt)
     endif()
 
