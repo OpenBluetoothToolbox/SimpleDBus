@@ -42,7 +42,7 @@ set(
 )
 
 # OUTPUTS
-message(STATUS "[INFO] Building SimpleDBus")
+message(STATUS "Configuring SimpleDBus")
 file(GLOB_RECURSE SRC_SIMPLEDBUS_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 add_library(simpledbus-static STATIC ${SRC_SIMPLEDBUS_FILES})
