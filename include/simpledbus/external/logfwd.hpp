@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LOGFWD_HPP
+#define LOGFWD_HPP
 
 #include <string>
 
@@ -30,3 +31,5 @@ void receive(
 // clang-format on
 
 }  // namespace logfwd
+
+#endif  // LOGFWD_HPP
