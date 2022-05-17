@@ -5,6 +5,11 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/find")
 
 project(SIMPLEDBUS)
 
+if (CONAN_BUILD)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup()
+endif()
+
 option(LIBFMT_VENDORIZE "Enable vendorized libfmt" ON)
 
 # Detect if the project is being build within a project or standalone.
@@ -24,7 +29,12 @@ include(FetchContent)
 find_package(PkgConfig REQUIRED)
 
 # Load libdbus-1
-pkg_search_module(DBUS REQUIRED dbus-1)
+if (CONAN_BUILD)
+	# conan packages this differently than a normall install, see https://github.com/conan-io/conan-center-index/blob/master/recipes/dbus/1.x.x/conanfile.py
+    find_package(DBus1 REQUIRED)
+else()
+    pkg_search_module(DBUS REQUIRED dbus-1)
+endif()
 
 # Load default parameters passed in through the command line.
 find_package(fmt REQUIRED)
@@ -72,6 +82,10 @@ target_link_libraries(simpledbus PRIVATE fmt::fmt-header-only)
 if(NOT ${STANDALONE})
     set(SIMPLEDBUS_INCLUDES ${SIMPLEDBUS_ALL_INCLUDE_DIRS} PARENT_SCOPE)
 endif()
+
+if (CONAN_BUILD)
+    add_subdirectory(examples)
+endif()    
 
 # Append additional flags for address and thread sanitization
 if(SIMPLEDBUS_SANITIZE MATCHES "Address")
