@@ -20,6 +20,10 @@ The format is based on `Keep a Changelog`_, and this project adheres to
 * Cleaned up dependency management for libfmt.
 * Moved ``kvn::safe_callback`` into the ``simpledbus`` include directory.
 
+**Fixed**
+
+* Made the manipulation of ``SimpleDBus::Connection`` thread-safe.
+
 
 [2.1.0] - 2022-03-25
 --------------------
