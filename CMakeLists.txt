@@ -23,10 +23,7 @@ endif()
 include(FetchContent)
 find_package(PkgConfig REQUIRED)
 
-# Load libdbus-1
 pkg_search_module(DBUS REQUIRED dbus-1)
-
-# Load default parameters passed in through the command line.
 find_package(fmt REQUIRED)
 
 # Load default parameters passed in through the command line.
