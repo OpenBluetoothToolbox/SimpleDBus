@@ -7,6 +7,30 @@ The format is based on `Keep a Changelog`_, and this project adheres to
 `Semantic Versioning`_.
 
 
+[2.3.0] - 2022-XX-XX
+--------------------
+
+**Important:** From this version onwards, the CMake target that should be consumed
+               by downstream projects is ``simpledbus::simpledbus``.
+
+**Added**
+
+*
+
+**Changed**
+
+*  Selection of build type is now based on the  ``BUILD_SHARED_LIBS`` setting.
+*  Consumable CMake target is now ``simpledbus::simpledbus``.
+
+**Fixed**
+
+*
+
+**Removed**
+
+*  CMake target ``simpledbus-static`` was removed in favour of ``BUILD_SHARED_LIBS``.
+
+
 [2.2.0] - 2022-06-12
 --------------------
 
@@ -16,7 +40,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to
 
 **Changed**
 
-*  Updated libfmt to version 8.1.1. 
+*  Updated libfmt to version 8.1.1.
 *  Cleaned up dependency management for libfmt.
 *  Moved ``kvn::safe_callback`` into the ``simpledbus`` include directory.
 
@@ -31,7 +55,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to
 **Added**
 
 *  (Message) Enable the creation of response messages to method calls.
-*  (Message) Enable the creation of error messages. 
+*  (Message) Enable the creation of error messages.
 *  (Connection) Provide interface to query the unique name of the connection.
 *  (Proxy) Provide interface to directly append a child.
 
