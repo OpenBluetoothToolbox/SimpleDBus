@@ -52,6 +52,8 @@ set_target_properties(
     simpledbus PROPERTIES
     CXX_VISIBILITY_PRESET hidden
     VISIBILITY_INLINES_HIDDEN YES
+    CXX_STANDARD 17
+    POSITION_INDEPENDENT_CODE ON
     VERSION "${PROJECT_VERSION}"
     SOVERSION "${PROJECT_VERSION_MAJOR}"
     EXPORT_NAME simpledbus
@@ -60,9 +62,6 @@ set_target_properties(
 
 target_compile_definitions(simpledbus PRIVATE SIMPLEDBUS_LOG_LEVEL=${SIMPLEDBUS_LOG_LEVEL})
 target_include_directories(simpledbus PRIVATE ${SIMPLEDBUS_ALL_INCLUDE_DIRS})
-
-set_property(TARGET simpledbus PROPERTY CXX_STANDARD 17)
-set_property(TARGET simpledbus PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_compile_options(simpledbus PRIVATE -Wfatal-errors -Wpedantic -O3 -Og)
 
@@ -76,7 +75,7 @@ endif()
 
 # Append additional flags for address and thread sanitization
 if(SIMPLEDBUS_SANITIZE MATCHES "Address")
-    message(STATUS "[INFO] Appending address sanitization flags")
+    message(STATUS "Appending address sanitization flags")
     set(SANITIZE_ADDRESS_COMPILE_OPTIONS -fsanitize=address -fsanitize-recover=address -fno-omit-frame-pointer -fno-common -g)
     set(SANITIZE_ADDRESS_LINK_OPTIONS -fsanitize=address)
 
@@ -85,7 +84,7 @@ if(SIMPLEDBUS_SANITIZE MATCHES "Address")
 endif()
 
 if(SIMPLEDBUS_SANITIZE MATCHES "Thread")
-    message(STATUS "[INFO] Appending thread sanitization flags")
+    message(STATUS "Appending thread sanitization flags")
     set(SANITIZE_THREAD_COMPILE_OPTIONS -fsanitize=thread -fno-omit-frame-pointer -fno-common -g)
     set(SANITIZE_THREAD_LINK_OPTIONS -fsanitize=thread)
 
@@ -94,7 +93,7 @@ if(SIMPLEDBUS_SANITIZE MATCHES "Thread")
 endif()
 
 if(SIMPLEDBUS_COVERAGE MATCHES "On")
-    message(STATUS "[INFO] Appending coverage flags")
+    message(STATUS "Appending coverage flags")
     set(COVERAGE_COMPILE_OPTIONS -g -O0 -fprofile-arcs -ftest-coverage)
 
     target_compile_options(simpledbus PUBLIC ${COVERAGE_COMPILE_OPTIONS})

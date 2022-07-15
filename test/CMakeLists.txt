@@ -36,7 +36,7 @@ if(SIMPLEDBUS_COVERAGE MATCHES "On")
   if(NOT GCOVR_PATH)
     message(FATAL_ERROR "gcovr not found! Aborting...")
   endif()
-  add_custom_target(${PROJECT_NAME}_coverage
+  add_custom_target(simpledbus_test_coverage
     COMMAND echo "Executing test suite"
     COMMAND GTEST_OUTPUT=xml:results/ GTEST_COLOR=1 ./simpledbus_test
     COMMAND echo "Generating CLI coverage report"
@@ -45,5 +45,5 @@ if(SIMPLEDBUS_COVERAGE MATCHES "On")
     COMMAND gcovr --xml --root ${CMAKE_CURRENT_LIST_DIR}/.. --exclude ${CMAKE_BINARY_DIR}/_deps  --exclude ${CMAKE_CURRENT_LIST_DIR}/src --output cov.xml
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   )
-  add_dependencies(${PROJECT_NAME}_coverage simpledbus_test)
+  add_dependencies(simpledbus_test_coverage simpledbus_test)
 endif()
