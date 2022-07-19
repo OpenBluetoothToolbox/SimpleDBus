@@ -26,8 +26,7 @@ else()
 endif()
 
 find_package(fmt REQUIRED)
-find_package(PkgConfig REQUIRED)
-pkg_search_module(DBUS REQUIRED dbus-1)
+find_package(DBus1 REQUIRED)
 
 # Load default parameters passed in through the command line.
 if(NOT SIMPLEDBUS_LOG_LEVEL)
@@ -38,7 +37,7 @@ endif()
 set(
     SIMPLEDBUS_ALL_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${DBUS_INCLUDE_DIRS}
+    ${DBus1_INCLUDE_DIRS}
 )
 
 # OUTPUTS
@@ -65,7 +64,7 @@ target_include_directories(simpledbus PRIVATE ${SIMPLEDBUS_ALL_INCLUDE_DIRS})
 
 target_compile_options(simpledbus PRIVATE -Wfatal-errors -Wpedantic -O3 -Og)
 
-target_link_libraries(simpledbus PUBLIC ${DBUS_LIBRARIES})
+target_link_libraries(simpledbus PUBLIC ${DBus1_LIBRARIES})
 target_link_libraries(simpledbus PRIVATE fmt::fmt-header-only)
 
 # Export the variables needed by the parent project

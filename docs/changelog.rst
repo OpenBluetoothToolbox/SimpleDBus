@@ -29,6 +29,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to
 **Removed**
 
 *  CMake target ``simpledbus-static`` was removed in favour of ``BUILD_SHARED_LIBS``.
+*  The dependency of ``pkg-config`` for installation has been removed.
 
 
 [2.2.0] - 2022-06-12
