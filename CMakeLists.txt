@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.16)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/find")
@@ -34,9 +34,11 @@ if(NOT SIMPLEDBUS_LOG_LEVEL)
 endif()
 
 # Library includes
+set(SIMPLEDBUS_USER_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 set(
     SIMPLEDBUS_ALL_INCLUDE_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${SIMPLEDBUS_USER_INCLUDE_DIRS}
     ${DBus1_INCLUDE_DIRS}
 )
 
@@ -68,9 +70,7 @@ target_link_libraries(simpledbus PUBLIC ${DBus1_LIBRARIES})
 target_link_libraries(simpledbus PRIVATE fmt::fmt-header-only)
 
 # Export the variables needed by the parent project
-if(NOT ${STANDALONE})
-    set(SIMPLEDBUS_INCLUDES ${SIMPLEDBUS_ALL_INCLUDE_DIRS} PARENT_SCOPE)
-endif()
+target_include_directories(simpledbus INTERFACE ${SIMPLEDBUS_USER_INCLUDE_DIRS})
 
 # Append additional flags for address and thread sanitization
 if(SIMPLEDBUS_SANITIZE MATCHES "Address")

@@ -29,7 +29,6 @@ dependencies, just clone the repository and link to it on your
 ::
 
    add_subdirectory(<path-to-simpledbus> ${CMAKE_BINARY_DIR}/simpledbus)
-   include_directories(${SIMPLEDBUS_INCLUDES})
 
 Build examples
 ~~~~~~~~~~~~~~

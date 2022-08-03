@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.16)
 
 project(simpledbus_examples)
 
@@ -12,6 +12,5 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Include simpledbus
 # Build artifacts in a separate folder
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/.. ${CMAKE_BINARY_DIR}/simpledbus)
-include_directories(${SIMPLEDBUS_INCLUDES})
 
 add_subdirectory(notification)
