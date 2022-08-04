@@ -15,7 +15,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to
 
 **Added**
 
--
+-  Installation interface for the ``simpledbus`` library.
 
 **Changed**
 

@@ -2,11 +2,12 @@
 
 PROJECT_ROOT=$(realpath $(dirname `realpath $0`)/..)
 BUILD_PATH=$PROJECT_ROOT/build
+INSTALL_PATH=$BUILD_PATH/install
 
 # Parse the received commands
 while :; do
     case $1 in
-        -c|--clean) FLAG_CLEAN="SET"            
+        -c|--clean) FLAG_CLEAN="SET"
         ;;
         *) break
     esac
@@ -22,4 +23,7 @@ fi
 mkdir -p $BUILD_PATH
 cd $BUILD_PATH
 cmake -H$PROJECT_ROOT
-make -j
+cmake --build . -j7
+
+mkdir -p $INSTALL_PATH
+cmake --install . --prefix $INSTALL_PATH

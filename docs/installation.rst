@@ -17,7 +17,7 @@ Standalone build from source
    mkdir build && cd build
    cmake .. -DSIMPLEDBUS_LOG_LEVEL=[VERBOSE_3|VERBOSE_2|VERBOSE_1|VERBOSE_0|DEBUG|INFO|WARNING|ERROR|FATAL]
    make -j
-   sudo make install # Not available yet.
+   sudo make install
 
 Build as part of another project
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

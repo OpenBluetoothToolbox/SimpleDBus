@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/find")
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/find)
 
 project(
     simpledbus
@@ -67,10 +67,12 @@ target_include_directories(simpledbus PRIVATE ${SIMPLEDBUS_ALL_INCLUDE_DIRS})
 target_compile_options(simpledbus PRIVATE -Wfatal-errors -Wpedantic -O3 -Og)
 
 target_link_libraries(simpledbus PUBLIC ${DBus1_LIBRARIES})
-target_link_libraries(simpledbus PRIVATE fmt::fmt-header-only)
+target_link_libraries(simpledbus PRIVATE $<BUILD_INTERFACE:fmt::fmt-header-only>)
 
 # Export the variables needed by the parent project
-target_include_directories(simpledbus INTERFACE ${SIMPLEDBUS_USER_INCLUDE_DIRS})
+target_include_directories(simpledbus INTERFACE
+    $<BUILD_INTERFACE:${${SIMPLEDBUS_USER_INCLUDE_DIRS}}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 # Append additional flags for address and thread sanitization
 if(SIMPLEDBUS_SANITIZE MATCHES "Address")
@@ -98,3 +100,29 @@ if(SIMPLEDBUS_COVERAGE MATCHES "On")
     target_compile_options(simpledbus PUBLIC ${COVERAGE_COMPILE_OPTIONS})
     target_link_libraries(simpledbus PUBLIC gcov)
 endif()
+
+
+include(GNUInstallDirs)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/simpledbus.pc.in
+               ${CMAKE_CURRENT_BINARY_DIR}/simpledbus.pc @ONLY)
+
+install(
+    TARGETS simpledbus
+    EXPORT simpledbus-config
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+install(
+    EXPORT simpledbus-config
+    NAMESPACE simpledbus::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/simpledbus)
+
+install(
+    DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/simpledbus/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpledbus)
+
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/simpledbus.pc
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
