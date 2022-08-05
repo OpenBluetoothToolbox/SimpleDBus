@@ -59,9 +59,9 @@ target_link_libraries(simpledbus PUBLIC ${DBus1_LIBRARIES})
 target_link_libraries(simpledbus PRIVATE $<BUILD_INTERFACE:fmt::fmt-header-only>)
 
 target_include_directories(simpledbus INTERFACE
-    ${DBus1_INCLUDE_DIRS}
-    $<BUILD_INTERFACE:${${CMAKE_CURRENT_SOURCE_DIR}/include}>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    ${DBus1_INCLUDE_DIRS})
 
 # Append additional flags for address and thread sanitization
 if(SIMPLEDBUS_SANITIZE MATCHES "Address")
