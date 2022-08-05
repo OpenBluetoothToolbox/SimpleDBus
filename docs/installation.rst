@@ -16,7 +16,7 @@ Standalone build from source
    cd <path-to-simpledbus>
    mkdir build && cd build
    cmake .. -DSIMPLEDBUS_LOG_LEVEL=[VERBOSE_3|VERBOSE_2|VERBOSE_1|VERBOSE_0|DEBUG|INFO|WARNING|ERROR|FATAL]
-   make -j
+   cmake --build . -j7
    sudo make install
 
 Build as part of another project
@@ -37,7 +37,7 @@ Build examples
 
    cd <path-to-simpledbus>
    mkdir build && cd build
-   cmake ../examples
+   cmake -D SIMPLEDBUS_LOCAL=ON ../examples
    make -j
 
 Build tests

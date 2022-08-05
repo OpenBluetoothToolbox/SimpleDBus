@@ -1,7 +1,6 @@
 #!/bin/bash
 
 PROJECT_ROOT=$(realpath $(dirname `realpath $0`)/..)
-SOURCE_ROOT=$PROJECT_ROOT/examples
 BUILD_PATH=$PROJECT_ROOT/build
 
 # Parse the received commands
@@ -22,5 +21,6 @@ fi
 # Compile!
 mkdir -p $BUILD_PATH
 cd $BUILD_PATH
-cmake -H$SOURCE_ROOT
-make -j
+cmake -H$PROJECT_ROOT
+cmake --build . -j7
+sudo make install

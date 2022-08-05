@@ -33,15 +33,6 @@ if(NOT SIMPLEDBUS_LOG_LEVEL)
     set(SIMPLEDBUS_LOG_LEVEL "FATAL")
 endif()
 
-# Library includes
-set(SIMPLEDBUS_USER_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-set(
-    SIMPLEDBUS_ALL_INCLUDE_DIRS
-    ${SIMPLEDBUS_USER_INCLUDE_DIRS}
-    ${DBus1_INCLUDE_DIRS}
-)
-
 # OUTPUTS
 message(STATUS "Configuring SimpleDBus")
 file(GLOB_RECURSE SRC_SIMPLEDBUS_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
@@ -62,16 +53,14 @@ set_target_properties(
 )
 
 target_compile_definitions(simpledbus PRIVATE SIMPLEDBUS_LOG_LEVEL=${SIMPLEDBUS_LOG_LEVEL})
-target_include_directories(simpledbus PRIVATE ${SIMPLEDBUS_ALL_INCLUDE_DIRS})
-
 target_compile_options(simpledbus PRIVATE -Wfatal-errors -Wpedantic -O3 -Og)
 
 target_link_libraries(simpledbus PUBLIC ${DBus1_LIBRARIES})
 target_link_libraries(simpledbus PRIVATE $<BUILD_INTERFACE:fmt::fmt-header-only>)
 
-# Export the variables needed by the parent project
 target_include_directories(simpledbus INTERFACE
-    $<BUILD_INTERFACE:${${SIMPLEDBUS_USER_INCLUDE_DIRS}}>
+    ${DBus1_INCLUDE_DIRS}
+    $<BUILD_INTERFACE:${${CMAKE_CURRENT_SOURCE_DIR}/include}>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 # Append additional flags for address and thread sanitization
