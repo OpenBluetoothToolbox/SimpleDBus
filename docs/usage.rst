@@ -45,7 +45,7 @@ Usage with CMake (Local)
 You can add the ``simpledbus`` library directory into your project and include it in
 your ``CMakeLists.txt`` file ::
 
-   add_subdirectory(simpledbus)
+   add_subdirectory(<path-to-simpledbus> ${CMAKE_BINARY_DIR}/simpledbus)
    target_link_libraries(<your-target> simpledbus::simpledbus)
 
 
