@@ -7,7 +7,7 @@ BUILD_PATH=$PROJECT_ROOT/build
 # Parse the received commands
 while :; do
     case $1 in
-        -c|--clean) FLAG_CLEAN="SET"            
+        -c|--clean) FLAG_CLEAN="SET"
         ;;
         *) break
     esac

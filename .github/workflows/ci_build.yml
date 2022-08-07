@@ -30,10 +30,17 @@ jobs:
           mkdir $GITHUB_WORKSPACE/build
           cd $GITHUB_WORKSPACE/build
           cmake -DCMAKE_BUILD_TYPE=Release ..
-          make -j2
-      - name: Compile Examples for Ubuntu
+          make -j4
+          sudo make install
+      - name: Compile Examples for Ubuntu with local lib
         run: |
-          mkdir $GITHUB_WORKSPACE/build_examples
-          cd $GITHUB_WORKSPACE/build_examples
-          cmake -DCMAKE_BUILD_TYPE=Release ../examples
-          make -j2
+          mkdir $GITHUB_WORKSPACE/build_examples_local
+          cd $GITHUB_WORKSPACE/build_examples_local
+          cmake -DCMAKE_BUILD_TYPE=Release -DSIMPLEDBUS_LOCAL=ON ../examples
+          make -j4
+      - name: Compile Examples for Ubuntu with system lib
+        run: |
+          mkdir $GITHUB_WORKSPACE/build_examples_system
+          cd $GITHUB_WORKSPACE/build_examples_system
+          cmake -DCMAKE_BUILD_TYPE=Release -DSIMPLEDBUS_LOCAL=OFF ../examples
+          make -j4

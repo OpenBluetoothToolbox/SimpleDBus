@@ -1,7 +1,6 @@
 Installation
 ------------
 
-
 SimpleDBus should work on any Linux environment using DBus. To install
 the necessary dependencies on Debian-based systems, use the following
 command: ``sudo apt install libdbus-1-dev``
@@ -17,8 +16,8 @@ Standalone build from source
    cd <path-to-simpledbus>
    mkdir build && cd build
    cmake .. -DSIMPLEDBUS_LOG_LEVEL=[VERBOSE_3|VERBOSE_2|VERBOSE_1|VERBOSE_0|DEBUG|INFO|WARNING|ERROR|FATAL]
-   make -j
-   sudo make install # Not available yet.
+   cmake --build . -j7
+   sudo make install
 
 Build as part of another project
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -30,7 +29,6 @@ dependencies, just clone the repository and link to it on your
 ::
 
    add_subdirectory(<path-to-simpledbus> ${CMAKE_BINARY_DIR}/simpledbus)
-   include_directories(${SIMPLEDBUS_INCLUDES})
 
 Build examples
 ~~~~~~~~~~~~~~
@@ -39,7 +37,7 @@ Build examples
 
    cd <path-to-simpledbus>
    mkdir build && cd build
-   cmake ../examples
+   cmake -D SIMPLEDBUS_LOCAL=ON ../examples
    make -j
 
 Build tests
@@ -51,8 +49,8 @@ required: ``sudo apt install libgtest-dev libgmock-dev python3-dev``
 Coverage
 ^^^^^^^^
 
-In order to run tests with coverage analysis, CMake needs to be called 
-with the following option: ``-DSIMPLEDBUS_COVERAGE=On``. The coverage 
+In order to run tests with coverage analysis, CMake needs to be called
+with the following option: ``-DSIMPLEDBUS_COVERAGE=On``. The coverage
 analysis target is called ``simpledbus_test_coverage``
 
 Address Sanitizer
