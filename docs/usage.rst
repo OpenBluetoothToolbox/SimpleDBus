@@ -58,8 +58,8 @@ and specifying the location from where SimpleDBus should be consumed from. ::
    include(FetchContent)
    FetchContent_Declare(
        simpledbus
-       GIT_REPOSITORY ${SIMPLEDBUS_GIT_REPOSITORY}
-       GIT_TAG ${SIMPLEDBUS_GIT_TAG}
+       GIT_REPOSITORY <simpledbus-git-repository>
+       GIT_TAG <simpledbus-git-tag>
        GIT_SHALLOW YES
    )
 
