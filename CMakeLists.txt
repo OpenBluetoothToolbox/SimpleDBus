@@ -58,6 +58,7 @@ target_compile_options(simpledbus PRIVATE -Wfatal-errors -Wpedantic -O3 -Og)
 target_link_libraries(simpledbus PUBLIC ${DBus1_LIBRARIES})
 target_link_libraries(simpledbus PRIVATE $<BUILD_INTERFACE:fmt::fmt-header-only>)
 
+target_include_directories(simpledbus PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(simpledbus INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
