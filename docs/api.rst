@@ -1,3 +1,14 @@
+=============
+API Reference
+=============
+
+Examples
+========
+
+To learn how to use SimpleDBus, please refer to the `examples`_ provided
+in the repository.
+
+
 Architecture
 ============
 
@@ -21,3 +32,8 @@ Proxy
 
 -  Messages for org.freedesktop.DBus.Properties are automatically
    handled by the Proxy class.
+
+
+.. Links
+
+.. _examples: https://github.com/OpenBluetoothToolbox/SimpleDBus/tree/main/examples
