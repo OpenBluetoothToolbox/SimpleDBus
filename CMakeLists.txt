@@ -92,7 +92,7 @@ if(SIMPLEDBUS_COVERAGE MATCHES "On")
 endif()
 
 
-if(STANDALONE)
+if(STANDALONE OR NOT ${BUILD_SHARED_LIBS})
 
     include(GNUInstallDirs)
 
