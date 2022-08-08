@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Install Dependencies
         env:
-            DEBIAN_FRONTEND: noninteractive  
+            DEBIAN_FRONTEND: noninteractive
         run: |
           sudo -H apt-get update -y
           sudo -H apt-get install -y dbus libdbus-1-dev python3-dev libgtest-dev libgmock-dev
@@ -30,39 +30,33 @@ jobs:
         uses: jwlawson/actions-setup-cmake@v1.4
         with:
           cmake-version: "3.16.x"
-      - name: Compile Unit Tests with Coverage
+      - name: Unit Tests with Coverage
         run: |
-          mkdir -p $GITHUB_WORKSPACE/build
-          cd $GITHUB_WORKSPACE/build
-          rm -rf ./*
+          mkdir -p $GITHUB_WORKSPACE/build_coverage
+          cd $GITHUB_WORKSPACE/build_coverage
           cmake -DCMAKE_BUILD_TYPE=Release -DSIMPLEDBUS_COVERAGE=On ../test
-          make -j4
-      - name: Run Unit Tests with Coverage
-        working-directory: build
-        run: make simpledbus_test_coverage -j4
+          make simpledbus_test_coverage -j4
       - name: Code Coverage Push
         uses: codecov/codecov-action@v1
         with:
-          files: ${{github.workspace}}/build/cov.xml
-      - name: Compile Unit Tests with Address Sanitizer
+          files: ${{github.workspace}}/build_coverage/cov.xml
+      - name: Unit Tests with Address Sanitizer
         run: |
-          mkdir -p $GITHUB_WORKSPACE/build
-          cd $GITHUB_WORKSPACE/build
-          rm -rf ./*
-          cmake -DCMAKE_BUILD_TYPE=Debug -DSIMPLEDBUS_SANITIZE=Address ../test 
+          mkdir -p $GITHUB_WORKSPACE/build_asan
+          cd $GITHUB_WORKSPACE/build_asan
+          cmake -DCMAKE_BUILD_TYPE=Debug -DSIMPLEDBUS_SANITIZE=Address ../test
           make -j4
-      - name: Run Unit Tests with Address Sanitizer
-        run: |
-          cd $GITHUB_WORKSPACE/build
           PYTHONMALLOC=malloc ./simpledbus_test
-      - name: Compile Unit Tests with Thread Sanitizer
+          cp "$(ls asan_log.txt.* | head -1)" asan_log.txt || true
+          (test ! -f asan_log.txt && echo "No ASAN log found") || (cat asan_log.txt && exit 1)
+      - name: Unit Tests with Thread Sanitizer
         run: |
-          mkdir -p $GITHUB_WORKSPACE/build
-          cd $GITHUB_WORKSPACE/build
-          rm -rf ./*
+          mkdir -p $GITHUB_WORKSPACE/build_tsan
+          cd $GITHUB_WORKSPACE/build_tsan
           cmake -DCMAKE_BUILD_TYPE=Debug -DSIMPLEDBUS_SANITIZE=Thread ../test
           make -j4
-      - name: Run Unit Tests with Thread Sanitizer
-        run: |
-          cd $GITHUB_WORKSPACE/build
           ./simpledbus_test
+          cp "$(ls tsan_log.txt.* | head -1)" tsan_log.txt || true
+          (test ! -f tsan_log.txt && echo "No TSAN log found") || (cat tsan_log.txt && exit 1)
+
+
