@@ -95,7 +95,7 @@ endif()
 include(GNUInstallDirs)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/simpledbus.pc.in
-               ${CMAKE_CURRENT_BINARY_DIR}/simpledbus.pc @ONLY)
+            ${CMAKE_CURRENT_BINARY_DIR}/simpledbus.pc @ONLY)
 
 install(
     TARGETS simpledbus
@@ -116,3 +116,4 @@ install(
 install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/simpledbus.pc
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+
