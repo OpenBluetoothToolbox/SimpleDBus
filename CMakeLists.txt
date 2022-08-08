@@ -92,7 +92,6 @@ if(SIMPLEDBUS_COVERAGE MATCHES "On")
 endif()
 
 
-# If the project is being built standalone, then copy the library and headers to the install directory.
 if(STANDALONE)
 
     include(GNUInstallDirs)
