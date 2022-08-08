@@ -92,27 +92,32 @@ if(SIMPLEDBUS_COVERAGE MATCHES "On")
 endif()
 
 
-include(GNUInstallDirs)
+# If the project is being built standalone, then copy the library and headers to the install directory.
+if(STANDALONE)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/simpledbus.pc.in
-               ${CMAKE_CURRENT_BINARY_DIR}/simpledbus.pc @ONLY)
+    include(GNUInstallDirs)
 
-install(
-    TARGETS simpledbus
-    EXPORT simpledbus-config
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/simpledbus.pc.in
+                ${CMAKE_CURRENT_BINARY_DIR}/simpledbus.pc @ONLY)
 
-install(
-    EXPORT simpledbus-config
-    NAMESPACE simpledbus::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/simpledbus)
+    install(
+        TARGETS simpledbus
+        EXPORT simpledbus-config
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-install(
-    DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/simpledbus/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpledbus)
+    install(
+        EXPORT simpledbus-config
+        NAMESPACE simpledbus::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/simpledbus)
 
-install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/simpledbus.pc
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+    install(
+        DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/simpledbus/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpledbus)
+
+    install(
+        FILES ${CMAKE_CURRENT_BINARY_DIR}/simpledbus.pc
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+
+endif()
