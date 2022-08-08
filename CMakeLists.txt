@@ -92,7 +92,8 @@ if(SIMPLEDBUS_COVERAGE MATCHES "On")
 endif()
 
 
-if(STANDALONE OR NOT ${BUILD_SHARED_LIBS})
+#if(STANDALONE)
+    message(STATUS "Generating install interface for SimpleDBus")
 
     include(GNUInstallDirs)
 
@@ -119,4 +120,4 @@ if(STANDALONE OR NOT ${BUILD_SHARED_LIBS})
         FILES ${CMAKE_CURRENT_BINARY_DIR}/simpledbus.pc
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
-endif()
+#endif()
