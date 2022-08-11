@@ -10,7 +10,7 @@ using namespace SimpleDBus;
 class MessageTest : public ::testing::Test {
   protected:
     void SetUp() override {
-        conn = new Connection(Connection::BusType::Session);
+        conn = new Connection(DBUS_BUS_SESSION);
         conn->init();
     }
 
@@ -27,7 +27,7 @@ TEST_F(MessageTest, SendReceiveBooleanTrue) {
     Message msg = Message::create_method_call("simpledbus.tester.python", "/", "simpledbus.tester.message",
                                               "SendReceiveBoolean");
 
-    msg.append_argument(Holder::create_boolean(true), "b");
+    msg.append_argument(Holder::create_boolean(true), DBUS_TYPE_BOOLEAN_AS_STRING);
 
     Message reply = conn->send_with_reply_and_block(msg);
     Holder h_reply = reply.extract();
@@ -40,7 +40,7 @@ TEST_F(MessageTest, SendReceiveBooleanFalse) {
     Message msg = Message::create_method_call("simpledbus.tester.python", "/", "simpledbus.tester.message",
                                               "SendReceiveBoolean");
 
-    msg.append_argument(Holder::create_boolean(false), "b");
+    msg.append_argument(Holder::create_boolean(false), DBUS_TYPE_BOOLEAN_AS_STRING);
 
     Message reply = conn->send_with_reply_and_block(msg);
     Holder h_reply = reply.extract();
@@ -54,7 +54,7 @@ TEST_F(MessageTest, SendReceiveByte) {
                                               "SendReceiveByte");
 
     uint8_t value = 0x42;
-    msg.append_argument(Holder::create_byte(value), "y");
+    msg.append_argument(Holder::create_byte(value), DBUS_TYPE_BYTE_AS_STRING);
 
     Message reply = conn->send_with_reply_and_block(msg);
     Holder h_reply = reply.extract();
@@ -68,7 +68,7 @@ TEST_F(MessageTest, SendReceiveInt16) {
                                               "SendReceiveInt16");
 
     int16_t value = 0x1234;
-    msg.append_argument(Holder::create_int16(value), "n");
+    msg.append_argument(Holder::create_int16(value), DBUS_TYPE_INT16_AS_STRING);
 
     Message reply = conn->send_with_reply_and_block(msg);
     Holder h_reply = reply.extract();
@@ -82,7 +82,7 @@ TEST_F(MessageTest, SendReceiveUint16) {
                                               "SendReceiveUint16");
 
     uint16_t value = 0x1234;
-    msg.append_argument(Holder::create_uint16(value), "q");
+    msg.append_argument(Holder::create_uint16(value), DBUS_TYPE_UINT16_AS_STRING);
 
     Message reply = conn->send_with_reply_and_block(msg);
     Holder h_reply = reply.extract();
@@ -96,7 +96,7 @@ TEST_F(MessageTest, SendReceiveInt32) {
                                               "SendReceiveInt32");
 
     int32_t value = 0x12345678;
-    msg.append_argument(Holder::create_int32(value), "i");
+    msg.append_argument(Holder::create_int32(value), DBUS_TYPE_INT32_AS_STRING);
 
     Message reply = conn->send_with_reply_and_block(msg);
     Holder h_reply = reply.extract();
@@ -110,7 +110,7 @@ TEST_F(MessageTest, SendReceiveUint32) {
                                               "SendReceiveUint32");
 
     uint32_t value = 0x12345678;
-    msg.append_argument(Holder::create_uint32(value), "u");
+    msg.append_argument(Holder::create_uint32(value), DBUS_TYPE_UINT32_AS_STRING);
 
     Message reply = conn->send_with_reply_and_block(msg);
     Holder h_reply = reply.extract();
@@ -124,7 +124,7 @@ TEST_F(MessageTest, SendReceiveInt64) {
                                               "SendReceiveInt64");
 
     int64_t value = 0x1234567812345678;
-    msg.append_argument(Holder::create_int64(value), "x");
+    msg.append_argument(Holder::create_int64(value), DBUS_TYPE_INT64_AS_STRING);
 
     Message reply = conn->send_with_reply_and_block(msg);
     Holder h_reply = reply.extract();
@@ -138,7 +138,7 @@ TEST_F(MessageTest, SendReceiveUint64) {
                                               "SendReceiveUint64");
 
     uint64_t value = 0x1234567812345678;
-    msg.append_argument(Holder::create_uint64(value), "t");
+    msg.append_argument(Holder::create_uint64(value), DBUS_TYPE_UINT64_AS_STRING);
 
     Message reply = conn->send_with_reply_and_block(msg);
     Holder h_reply = reply.extract();
@@ -255,11 +255,11 @@ TEST_F(MessageTest, ReceiveMethodCallSuccess) {
     Message msg = Message::create_method_call("simpledbus.tester.python", "/", "simpledbus.tester.message",
                                               "TriggerMethodCall");
 
-    msg.append_argument(Holder::create_string(conn->unique_name()), "s");
-    msg.append_argument(Holder::create_string("/my/custom/path"), "s");
-    msg.append_argument(Holder::create_string("my.interface"), "s");
-    msg.append_argument(Holder::create_string("MyMethod"), "s");
-    msg.append_argument(Holder::create_string("Hello World"), "s");
+    msg.append_argument(Holder::create_string(conn->unique_name()), DBUS_TYPE_STRING_AS_STRING);
+    msg.append_argument(Holder::create_string("/my/custom/path"), DBUS_TYPE_STRING_AS_STRING);
+    msg.append_argument(Holder::create_string("my.interface"), DBUS_TYPE_STRING_AS_STRING);
+    msg.append_argument(Holder::create_string("MyMethod"), DBUS_TYPE_STRING_AS_STRING);
+    msg.append_argument(Holder::create_string("Hello World"), DBUS_TYPE_STRING_AS_STRING);
     conn->send_with_reply_and_block(msg);
 
     // Wait for the method call to be received
@@ -278,7 +278,7 @@ TEST_F(MessageTest, ReceiveMethodCallSuccess) {
             EXPECT_EQ(arguments.get_string(), "Hello World");
 
             Message reply = Message::create_method_return(method_call);
-            reply.append_argument(Holder::create_string("Nice to meet you"), "s");
+            reply.append_argument(Holder::create_string("Nice to meet you"), DBUS_TYPE_STRING_AS_STRING);
             conn->send(reply);
             method_called = true;
             break;
@@ -291,11 +291,11 @@ TEST_F(MessageTest, ReceiveMethodCallFailure) {
     Message msg = Message::create_method_call("simpledbus.tester.python", "/", "simpledbus.tester.message",
                                               "TriggerMethodCall");
 
-    msg.append_argument(Holder::create_string(conn->unique_name()), "s");
-    msg.append_argument(Holder::create_string("/my/custom/path"), "s");
-    msg.append_argument(Holder::create_string("my.interface"), "s");
-    msg.append_argument(Holder::create_string("MyMethod"), "s");
-    msg.append_argument(Holder::create_string("Hello World"), "s");
+    msg.append_argument(Holder::create_string(conn->unique_name()), DBUS_TYPE_STRING_AS_STRING);
+    msg.append_argument(Holder::create_string("/my/custom/path"), DBUS_TYPE_STRING_AS_STRING);
+    msg.append_argument(Holder::create_string("my.interface"), DBUS_TYPE_STRING_AS_STRING);
+    msg.append_argument(Holder::create_string("MyMethod"), DBUS_TYPE_STRING_AS_STRING);
+    msg.append_argument(Holder::create_string("Hello World"), DBUS_TYPE_STRING_AS_STRING);
     conn->send_with_reply_and_block(msg);
 
     // Wait for the method call to be received

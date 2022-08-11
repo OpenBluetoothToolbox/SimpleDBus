@@ -1,4 +1,3 @@
-#include <dbus/dbus.h>
 #include <simpledbus/base/Connection.h>
 #include <simpledbus/base/Exceptions.h>
 #include <simpledbus/base/Logging.h>
@@ -7,7 +6,7 @@
 
 using namespace SimpleDBus;
 
-Connection::Connection(BusType dbus_bus_type) : _dbus_bus_type(dbus_bus_type) {}
+Connection::Connection(DBusBusType dbus_bus_type) : _dbus_bus_type(dbus_bus_type) {}
 
 Connection::~Connection() {
     if (_initialized) {
@@ -25,20 +24,8 @@ void Connection::init() {
     ::DBusError err;
     dbus_error_init(&err);
 
-    ::DBusBusType dbus_bus_type;
-    switch (_dbus_bus_type) {
-        case BusType::Session:
-            dbus_bus_type = DBUS_BUS_SESSION;
-            break;
-        case BusType::System:
-            dbus_bus_type = DBUS_BUS_SYSTEM;
-            break;
-        default:
-            throw Exception::DBusException("Invalid bus type", "Invalid bus type");
-    }
-
     dbus_threads_init_default();
-    _conn = dbus_bus_get(dbus_bus_type, &err);
+    _conn = dbus_bus_get(_dbus_bus_type, &err);
     if (dbus_error_is_set(&err)) {
         std::string err_name = err.name;
         std::string err_message = err.message;

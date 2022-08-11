@@ -1,10 +1,8 @@
 #pragma once
 
+#include <dbus/dbus.h>
 #include "Message.h"
 #include <mutex>
-
-// Forward declaration
-typedef struct DBusConnection DBusConnection;
 
 namespace SimpleDBus {
 
@@ -12,12 +10,7 @@ class Message;
 
 class Connection {
   public:
-    enum class BusType {
-        Session,
-        System
-    };
-
-    Connection(BusType dbus_bus_type);
+    Connection(::DBusBusType dbus_bus_type);
     ~Connection();
 
     void init();
@@ -38,7 +31,7 @@ class Connection {
   private:
     bool _initialized = false;
 
-    BusType _dbus_bus_type;
+    ::DBusBusType _dbus_bus_type;
     ::DBusConnection* _conn;
 
     std::recursive_mutex _mutex;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <dbus/dbus.h>
+
 #include <atomic>
 #include <stack>
 #include <string>
@@ -7,10 +9,6 @@
 
 #include "Connection.h"
 #include "Holder.h"
-
-// Forward declarations
-typedef struct DBusMessage DBusMessage;
-typedef struct DBusMessageIter DBusMessageIter;
 
 namespace SimpleDBus {
 
@@ -20,11 +18,11 @@ class Interface;
 class Message {
   public:
     typedef enum {
-        INVALID = 0,
-        METHOD_CALL = 1,
-        METHOD_RETURN = 2,
-        ERROR = 3,
-        SIGNAL = 4,
+        INVALID = DBUS_MESSAGE_TYPE_INVALID,
+        METHOD_CALL = DBUS_MESSAGE_TYPE_METHOD_CALL,
+        METHOD_RETURN = DBUS_MESSAGE_TYPE_METHOD_RETURN,
+        ERROR = DBUS_MESSAGE_TYPE_ERROR,
+        SIGNAL = DBUS_MESSAGE_TYPE_SIGNAL,
     } Type;
 
     Message();
@@ -68,10 +66,11 @@ class Message {
     int indent;
 
     int _unique_id;
-    DBusMessageIter* _iter_ptr{nullptr};
-    bool _is_extracted{false};
-    DBusMessage* _msg{nullptr};
+    DBusMessageIter _iter;
+    bool _iter_initialized;
+    bool _is_extracted;
     Holder _extracted;
+    DBusMessage* _msg;
 
     Holder _extract_bytearray(DBusMessageIter* iter);
     Holder _extract_array(DBusMessageIter* iter);

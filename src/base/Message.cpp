@@ -1,16 +1,8 @@
 #include <simpledbus/base/Message.h>
 
-#include <dbus/dbus.h>
-#include <cassert>
 #include <sstream>
 
 using namespace SimpleDBus;
-
-static_assert(Message::Type::INVALID == DBUS_MESSAGE_TYPE_INVALID, "Invalid message type");
-static_assert(Message::Type::METHOD_CALL == DBUS_MESSAGE_TYPE_METHOD_CALL, "Invalid message type");
-static_assert(Message::Type::METHOD_RETURN == DBUS_MESSAGE_TYPE_METHOD_RETURN, "Invalid message type");
-static_assert(Message::Type::ERROR == DBUS_MESSAGE_TYPE_ERROR, "Invalid message type");
-static_assert(Message::Type::SIGNAL == DBUS_MESSAGE_TYPE_SIGNAL, "Invalid message type");
 
 #define MESSAGE_DICT_APPEND_KEY_NUM(key_sig, dict_contents)                                   \
     for (auto& [key, value] : dict_contents) {                                                \
@@ -35,7 +27,7 @@ std::atomic_int32_t Message::creation_counter = 0;
 
 Message::Message() : Message(nullptr) {}
 
-Message::Message(DBusMessage* msg) : _msg(msg), _is_extracted(false), indent(0) {
+Message::Message(DBusMessage* msg) : _msg(msg), _iter_initialized(false), _is_extracted(false), indent(0) {
     if (is_valid()) {
         _unique_id = creation_counter++;
     } else {
@@ -55,10 +47,11 @@ Message::Message(Message&& other) : Message() {
     indent = other.indent;
 
     this->_unique_id = other._unique_id;
+    this->_iter_initialized = other._iter_initialized;
     this->_is_extracted = other._is_extracted;
     this->_extracted = other._extracted;
     this->_msg = other._msg;
-    this->_iter_ptr = other._iter_ptr;
+    this->_iter = other._iter;
     this->_arguments = other._arguments;
 
     // Invalidate the old message.
@@ -88,10 +81,11 @@ Message& Message::operator=(Message&& other) {
         indent = other.indent;
 
         this->_unique_id = other._unique_id;
+        this->_iter_initialized = other._iter_initialized;
         this->_is_extracted = other._is_extracted;
         this->_extracted = other._extracted;
         this->_msg = other._msg;
-        this->_iter_ptr = other._iter_ptr;
+        this->_iter = other._iter;
         this->_arguments = other._arguments;
 
         // Invalidate the old message.
@@ -124,18 +118,22 @@ Message& Message::operator=(const Message& other) {
 void Message::_invalidate() {
     this->_unique_id = -1;
     this->_msg = nullptr;
+    this->_iter_initialized = false;
     this->_is_extracted = false;
     this->_extracted = Holder();
-    this->_iter_ptr = nullptr;
+
+#ifdef DBUS_MESSAGE_ITER_INIT_CLOSED
+    this->_iter = DBUS_MESSAGE_ITER_INIT_CLOSED;
+#else
+    // For older versions of DBus, DBUS_MESSAGE_ITER_INIT_CLOSED is not defined.
+    this->_iter = DBusMessageIter();
+#endif
     this->_arguments.clear();
 }
 
 void Message::_safe_delete() {
     if (is_valid()) {
-        dbus_message_unref(_msg);
-        if (_iter_ptr) {
-            delete _iter_ptr;
-        }
+        dbus_message_unref(this->_msg);
         _invalidate();
     }
 }
@@ -289,12 +287,8 @@ void Message::_append_argument(DBusMessageIter* iter, Holder& argument, std::str
 }
 
 void Message::append_argument(Holder argument, std::string signature) {
-    if (!_iter_ptr) {
-        _iter_ptr = new DBusMessageIter();
-    }
-
-    dbus_message_iter_init_append(_msg, _iter_ptr);
-    _append_argument(_iter_ptr, argument, signature);
+    dbus_message_iter_init_append(_msg, &_iter);
+    _append_argument(&_iter, argument, signature);
     _arguments.push_back(argument);
 }
 
@@ -309,8 +303,8 @@ uint32_t Message::get_serial() {
 }
 
 std::string Message::get_signature() {
-    if (is_valid() && _iter_ptr) {
-        return dbus_message_iter_get_signature(_iter_ptr);
+    if (is_valid() && _iter_initialized) {
+        return dbus_message_iter_get_signature(&_iter);
     } else {
         return "";
     }
@@ -403,10 +397,10 @@ Holder Message::extract() {
     }
 
     if (!_is_extracted) {
-        if (_iter_ptr == nullptr) {
+        if (!_iter_initialized) {
             extract_reset();
         }
-        _extracted = _extract_generic(_iter_ptr);
+        _extracted = _extract_generic(&_iter);
         _is_extracted = true;
     }
     return _extracted;
@@ -414,16 +408,16 @@ Holder Message::extract() {
 
 void Message::extract_reset() {
     if (is_valid()) {
-        _iter_ptr = new DBusMessageIter();
-        dbus_message_iter_init(_msg, _iter_ptr);
+        dbus_message_iter_init(_msg, &_iter);
+        _iter_initialized = true;
     }
 }
 
-bool Message::extract_has_next() { return _iter_ptr && dbus_message_iter_has_next(_iter_ptr); }
+bool Message::extract_has_next() { return _iter_initialized && dbus_message_iter_has_next(&_iter); }
 
 void Message::extract_next() {
     if (extract_has_next()) {
-        dbus_message_iter_next(_iter_ptr);
+        dbus_message_iter_next(&_iter);
         _is_extracted = false;
     }
 }
