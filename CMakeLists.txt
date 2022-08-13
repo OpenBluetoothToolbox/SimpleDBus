@@ -91,27 +91,64 @@ if(SIMPLEDBUS_COVERAGE MATCHES "On")
     target_link_libraries(simpledbus PUBLIC gcov)
 endif()
 
-
+include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/simpledbus.pc.in
             ${CMAKE_CURRENT_BINARY_DIR}/simpledbus.pc @ONLY)
 
-install(
-    TARGETS simpledbus
-    EXPORT simpledbus-config
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+write_basic_package_version_file(
+    "simpledbusConfigVersion.cmake"
+    COMPATIBILITY SameMajorVersion
+)
 
 install(
-    EXPORT simpledbus-config
+    TARGETS simpledbus
+    EXPORT simpledbusTargets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+
+install(
+    FILES cmake/install-config.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/simpledbus
+    RENAME "simpledbusConfig.cmake"
+)
+
+install(
+    FILES "${PROJECT_BINARY_DIR}/simpledbusConfigVersion.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/simpledbus
+)
+
+install(
+    EXPORT simpledbusTargets
     NAMESPACE simpledbus::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/simpledbus)
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/simpledbus
+)
 
 install(
     DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/simpledbus/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpledbus)
+
+
+# install(
+#     TARGETS simpledbus
+#     EXPORT simpledbus-config
+#     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+# install(
+#     EXPORT simpledbus-config
+#     NAMESPACE simpledbus::
+#     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/simpledbus)
+
+# install(
+#     DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/simpledbus/
+#     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpledbus)
 
 install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/simpledbus.pc

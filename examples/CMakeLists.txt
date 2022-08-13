@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 if (SIMPLEDBUS_LOCAL)
+    message(STATUS "Selecting local SimpleDBus")
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/.. ${CMAKE_BINARY_DIR}/simpledbus)
 else()
     find_package(simpledbus CONFIG REQUIRED)
