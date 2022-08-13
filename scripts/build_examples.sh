@@ -2,7 +2,7 @@
 
 PROJECT_ROOT=$(realpath $(dirname `realpath $0`)/..)
 SOURCE_ROOT=$PROJECT_ROOT/examples
-BUILD_PATH=$PROJECT_ROOT/build
+BUILD_PATH=$PROJECT_ROOT/build_examples
 
 # Parse the received commands
 while :; do
@@ -22,5 +22,5 @@ fi
 # Compile!
 mkdir -p $BUILD_PATH
 cd $BUILD_PATH
-cmake -H$SOURCE_ROOT
+cmake -H$SOURCE_ROOT -DSIMPLEDBUS_LOCAL=OFF
 make -j
