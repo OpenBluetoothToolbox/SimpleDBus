@@ -21,6 +21,6 @@ fi
 # Compile!
 mkdir -p $BUILD_PATH
 cd $BUILD_PATH
-cmake -H$PROJECT_ROOT
+cmake -H$PROJECT_ROOT -DCMAKE_BUILD_TYPE=Release
 cmake --build . -j7
 sudo make install
