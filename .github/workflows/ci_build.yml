@@ -31,7 +31,6 @@ jobs:
           cd $GITHUB_WORKSPACE/build
           cmake -DCMAKE_BUILD_TYPE=Release ..
           make -j4
-          sudo make install
       - name: Compile Examples for Ubuntu with local lib
         run: |
           mkdir $GITHUB_WORKSPACE/build_examples_local
