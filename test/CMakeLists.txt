@@ -9,6 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/.. ${CMAKE_BINARY_DIR}/simpledbus)
+include_directories(${SIMPLEDBUS_INCLUDES})
 find_package(Python3 COMPONENTS Development REQUIRED)
 find_package(GTest REQUIRED)
 

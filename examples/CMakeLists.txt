@@ -12,5 +12,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/.. ${CMAKE_BINARY_DIR}/simpledbus)
+include_directories(${SIMPLEDBUS_INCLUDES})
 
 add_subdirectory(notification)

@@ -60,6 +60,11 @@ target_link_libraries(simpledbus PRIVATE fmt::fmt-header-only)
 
 target_include_directories(simpledbus PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+# Export the variables needed by the parent project
+if(NOT ${STANDALONE})
+    set(SIMPLEDBUS_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include PARENT_SCOPE)
+endif()
+
 set_property(TARGET simpledbus APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${DBus1_INCLUDE_DIRS})
 
 # Append additional flags for address and thread sanitization
