@@ -5,6 +5,8 @@ A simple C++ wrapper around DBus with a commercially-friendly licence.
 
 |Latest Documentation Status| |Code Coverage|
 
+**THIS PROJECT HAS MOVED TO https://github.com/OpenBluetoothToolbox/SimpleBLE**
+
 Overview
 --------
 
